@@ -22,7 +22,7 @@ object Test {
 
     println(eval.visit(exp))
 
-    val input = "true"
+    val input = "if true then 10 else 3"
 
     val parser = new Parse[Alg] {
       override val f: Factory[Alg] = new Factory[Alg] {}
