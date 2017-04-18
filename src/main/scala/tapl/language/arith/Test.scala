@@ -1,5 +1,6 @@
 package tapl.language.arith
 
+import tapl.common.Exp
 import tapl.language.arith.Syntax.Factory._
 import tapl.language.arith.Syntax._
 
@@ -11,7 +12,7 @@ object Test {
 
   def main(args: Array[String]): Unit = {
 
-    val exp: Exp = TmIf(TmFalse(), TmZero(), TmPred(TmZero()))
+    val exp: Exp[Alg] = TmIf(TmFalse(), TmZero(), TmPred(TmZero()))
 
     println(PrintImpl.visit(exp))
 
@@ -20,6 +21,20 @@ object Test {
     }
 
     println(eval.visit(exp))
+
+    val input = "true"
+
+    val parser = new Parse[Alg] {
+      override val f: Factory[Alg] = new Factory[Alg] {}
+    }
+
+    val ast: Exp[Alg] = parser.parse(input) match {
+      case Some(t) => t
+      case None => sys.error("error")
+    }
+
+    println(ast(eval))
+
   }
 
 }

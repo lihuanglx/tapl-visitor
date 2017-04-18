@@ -1,23 +1,23 @@
 package tapl.component.bool
 
-import tapl.common.Exp
+import tapl.common.{CommonParser, Exp}
 
-import scala.util.parsing.combinator.PackratParsers
-import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends StandardTokenParsers with PackratParsers {
-  // todo: fix
-  //lexical.reserved += ("true", "false", "if", "then", "else")
-  //lexical.delimiters += ("(", ")")
+trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
+  lexical.reserved += ("true", "false", "if", "then", "else")
+  lexical.delimiters += ("(", ")")
 
   val f: Factory[A]
 
-  lazy val pBoolE: Parser[Exp[A]] =
-    // todo: check
-    "true" ^^^ f.TmTrue |||
-      "false" ^^ { _ => f.TmFalse() } |||
-      ("if" ~> pE) ~ ("then" ~> pE) ~ ("else" ~> pE) ^^ { case e1 ~ e2 ~ e3 => f.TmIf(e1, e2, e3) } |||
-      "(" ~> pE <~ ")"
+  private lazy val pTrue = "true" ^^ { _ => f.TmTrue() }
+
+  private lazy val pFalse = "false" ^^ { _ => f.TmFalse() }
+
+  private lazy val pIf = ("if" ~> pE) ~ ("then" ~> pE) ~ ("else" ~> pE) ^^ { case e1 ~ e2 ~ e3 => f.TmIf(e1, e2, e3) }
+
+  private lazy val pParen: Parser[Exp[A]] = "(" ~> pE <~ ")"
+
+  lazy val pBoolE: Parser[Exp[A]] = pTrue ||| pFalse ||| pIf ||| pParen
 
   val pE: Parser[Exp[A]]
 }
