@@ -5,18 +5,18 @@ import tapl.common.Value._
 
 import scalaz.Monad
 
-trait Eval[A[-R, _], M[_] <: Monad[M]] extends Alg[Exp[A], M[Value]] {
-  implicit def M: Monad[M]
+trait Eval[A[-R, _], M[_]] extends Alg[Exp[A], M[Value]] {
+  implicit val m: Monad[M]
 
-  override def TmZero(): M[Value] = M.point(0)
+  override def TmZero(): M[Value] = m.point(0)
 
   // todo: "for" notation
   override def TmPred(e: Exp[A]): M[Value] =
-    M.bind(visit(e))(intVal andThen (x => M.point(x - 1)))
+    m.bind(visit(e))(intVal andThen (x => m.point(x - 1)))
 
   override def TmSucc(e: Exp[A]): M[Value] =
-    M.bind(visit(e))(intVal andThen (x => M.point(x + 1)))
+    m.bind(visit(e))(intVal andThen (x => m.point(x + 1)))
 
   override def TmIsZero(e: Exp[A]): M[Value] =
-    M.bind(visit(e))(intVal andThen (x => M.point(x == 0)))
+    m.bind(visit(e))(intVal andThen (x => m.point(x == 0)))
 }

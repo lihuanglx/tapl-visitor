@@ -2,9 +2,7 @@ package tapl.common
 
 object Value {
 
-  trait Value {
-    def dummy(): Unit = ()
-  }
+  trait Value
 
   case class BoolVal(b: Boolean) extends Value
 
