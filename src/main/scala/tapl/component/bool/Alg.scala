@@ -7,5 +7,5 @@ trait Alg[-R, E] {
 
   def TmIf(e1: R, e2: R, e3: R): E
 
-  def visit(e: R): E
+  def apply(e: R): E
 }

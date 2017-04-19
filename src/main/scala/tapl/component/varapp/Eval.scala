@@ -1,15 +1,17 @@
 package tapl.component.varapp
 
 import tapl.common.Exp
-import tapl.common.Val._
 
-import scalaz.Monad
+import scalaz._
 
-trait Eval[A[-R, _], M[_]] extends Alg[Exp[A], M[Val]] {
+
+trait Eval[A[-R, _], M[_]] extends Alg[Exp[A], M[Exp[A]]] {
   implicit val m: Monad[M]
 
-  //todo: implement
-  override def TmVar(x: String): M[Val] = ???
+  val subst: (String, Exp[A]) => Alg[Exp[A], Exp[A]]
 
-  override def TmApp(e1: Exp[A], e2: Exp[A]): M[Val] = ???
+  //todo: implement
+  override def TmVar(x: String): M[Exp[A]] = ???
+
+  override def TmApp(e1: Exp[A], e2: Exp[A]): M[Exp[A]] = ???
 }

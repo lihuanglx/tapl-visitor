@@ -9,5 +9,5 @@ trait Alg[-R, E] {
 
   def TmIsZero(e: R): E
 
-  def visit(e: R): E
+  def apply(e: R): E
 }

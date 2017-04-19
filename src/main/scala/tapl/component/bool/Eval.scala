@@ -1,21 +1,32 @@
 package tapl.component.bool
 
-import tapl.common.Exp
-import tapl.common.Val._
-
-import scalaz.Scalaz._
-import scalaz._
+import tapl.common.{EvalAuxiliary, Exp}
 
 
-trait Eval[A[-R, _], M[_]] extends Alg[Exp[A], M[Val]] {
-  implicit val m: Monad[M]
+trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
+  val f: Alg[Exp[A], Exp[A]]
 
-  override def TmTrue(): M[Val] = m.point(true)
+  override def TmTrue(): M[Exp[A]] = m.point(f.TmTrue())
 
-  override def TmFalse(): M[Val] = m.point(false)
+  override def TmFalse(): M[Exp[A]] = m.point(f.TmFalse())
 
-  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): M[Val] = for {
-    x <- visit(e1) >>= boolVal[M]
-    r <- if (x) visit(e2) else visit(e3)
-  } yield r
+  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): M[Exp[A]] = {
+    if (e1(isVal)) {
+      // todo
+      val k = ???
+      val r = e1(k)
+      m.point(r)
+    } else {
+      m.bind(apply(e1))(x => m.point(f.TmIf(x, e2, e3)))
+    }
+  }
+}
+
+
+trait IsVal[A[-R, _]] extends Query[A, Boolean] {
+  override val default: Boolean = false
+
+  override def TmTrue(): Boolean = true
+
+  override def TmFalse(): Boolean = true
 }
