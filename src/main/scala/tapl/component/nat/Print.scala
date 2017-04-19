@@ -10,13 +10,13 @@ trait Print[A[-R, _]] extends Alg[Exp[A], String] {
 
   override def TmSucc(e: Exp[A]): String =
     e(isNumVal) match {
-      case Some(x) => x.toString
+      case Some(x) => (x + 1).toString
       case _ => "succ (" + apply(e) + ")"
     }
 
   override def TmPred(e: Exp[A]): String =
     e(isNumVal) match {
-      case Some(x) => x.toString
+      case Some(x) => (x - 1).toString
       case _ => "pred (" + apply(e) + ")"
     }
 
