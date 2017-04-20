@@ -16,33 +16,24 @@ trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y], M[_]]
 
   override def TmPred(e: Exp[A]): M[Exp[A]] =
     if (e(isVal)) {
-      val r = e(isNumVal) match {
-        case Some(_) => f.TmPred(e)
-        case _ => typeError()
-      }
-      m.point(r)
+      e(isNumVal).getOrElse(typeError())
+      m.point(f.TmPred(e))
     } else {
       m.bind(apply(e))(x => m.point(f.TmPred(x)))
     }
 
   override def TmSucc(e: Exp[A]): M[Exp[A]] =
     if (e(isVal)) {
-      val r = e(isNumVal) match {
-        case Some(_) => f.TmSucc(e)
-        case _ => typeError()
-      }
-      m.point(r)
+      e(isNumVal).getOrElse(typeError())
+      m.point(f.TmSucc(e))
     } else {
       m.bind(apply(e))(x => m.point(f.TmSucc(x)))
     }
 
   override def TmIsZero(e: Exp[A]): M[Exp[A]] =
     if (e(isVal)) {
-      val r = e(isNumVal) match {
-        case Some(x) => if (x == 0) f.TmTrue() else f.TmFalse()
-        case _ => typeError()
-      }
-      m.point(r)
+      val x = e(isNumVal).getOrElse(typeError())
+      m.point(if (x == 0) f.TmTrue() else f.TmFalse())
     } else {
       m.bind(apply(e))(x => m.point(f.TmIsZero(x)))
     }

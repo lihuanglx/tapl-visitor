@@ -15,11 +15,8 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with Eval
 
   override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): M[Exp[A]] = {
     if (e1(isVal)) {
-      val r = e1(isBoolVal) match {
-        case Some(b) => if (b) e2 else e3
-        case _ => typeError()
-      }
-      m.point(r)
+      val b = e1(isBoolVal).getOrElse(typeError())
+      m.point(if (b) e2 else e3)
     } else {
       m.bind(apply(e1))(x => m.point(f.TmIf(x, e2, e3)))
     }
