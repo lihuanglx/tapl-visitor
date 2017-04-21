@@ -23,20 +23,14 @@ trait EvalM[M[_]] extends Eval[Alg, M] {
 
 trait IsVal[A[-R, _]] extends Alg[Exp[A], Boolean] with bool.IsVal[A] with nat.IsVal[A]
 
-object IsValImpl extends IsVal[Alg] {
-  override def apply(e: Exp[Alg]): Boolean = e(this)
-}
+object IsValImpl extends IsVal[Alg] with Impl[Boolean]
 
 
 trait IsNumVal[A[-R, _]] extends Query[A, Option[Int]] with nat.IsNumVal[A]
 
-object IsNumValImpl extends IsNumVal[Alg] {
-  override def apply(e: Exp[Alg]): Option[Int] = e(this)
-}
+object IsNumValImpl extends IsNumVal[Alg] with Impl[Option[Int]]
 
 
 trait IsBoolVal[A[-R, _]] extends Query[A, Option[Boolean]] with bool.IsBoolVal[A]
 
-object IsBoolValImpl extends IsBoolVal[Alg] {
-  override def apply(e: Exp[Alg]): Option[Boolean] = e(this)
-}
+object IsBoolValImpl extends IsBoolVal[Alg] with Impl[Option[Boolean]]

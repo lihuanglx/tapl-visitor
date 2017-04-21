@@ -2,7 +2,6 @@ package tapl.component.bool
 
 import tapl.common.{CommonParser, Exp}
 
-
 trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
   lexical.reserved += ("true", "false", "if", "then", "else")
   lexical.delimiters += ("(", ")")

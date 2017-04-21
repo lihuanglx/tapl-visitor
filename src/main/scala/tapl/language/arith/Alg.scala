@@ -11,3 +11,7 @@ trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with bool.Facto
 object Factory extends Factory[Alg] {
   override def apply(e: Exp[Alg]): Exp[Alg] = e(Factory)
 }
+
+trait Impl[T] extends Alg[Exp[Alg], T] {
+  override def apply(e: Exp[Alg]): T = e(this)
+}
