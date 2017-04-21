@@ -11,7 +11,7 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
 
   private lazy val pVar = lcid ^^ f.TmVar
 
-  private lazy val pVarAppE: Parser[Exp[A]] = pVar ||| pApp ||| "(" ~> pE <~ ")"
+  lazy val pVarAppE: Parser[Exp[A]] = pVar ||| pApp ||| "(" ~> pE <~ ")"
 
   val pE: Parser[Exp[A]]
 }

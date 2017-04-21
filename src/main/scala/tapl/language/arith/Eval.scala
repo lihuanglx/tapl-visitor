@@ -3,7 +3,6 @@ package tapl.language.arith
 import tapl.common.Exp
 import tapl.component._
 
-
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends
   Alg[Exp[A], M[Exp[A]]] with bool.Eval[A, M] with nat.Eval[A, M]
 

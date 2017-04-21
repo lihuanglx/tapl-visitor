@@ -6,10 +6,10 @@ import scalaz.Scalaz._
 import scalaz._
 
 // todo: check
-trait Eval[A[-R, _], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  implicit val m: MonadState[M, Context[A]]
+trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
+  override implicit val m: MonadState[M, Context[A]]
 
-  val f: Alg[Exp[A], Exp[A]]
+  val f: A[Exp[A], Exp[A]]
 
   val subst: (String, Exp[A]) => Alg[Exp[A], Exp[A]]
   val isFuncVal: A[Exp[A], Option[(String, Exp[A])]]
@@ -30,4 +30,10 @@ trait Eval[A[-R, _], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, 
       _e1 <- apply(e1)
     } yield f.TmApp(_e1, e2)
   }
+}
+
+trait IsVal[A[-R, _]] extends Query[A, Boolean] {
+  override val default: Boolean = false
+
+  override def TmVar(x: String): Boolean = true
 }

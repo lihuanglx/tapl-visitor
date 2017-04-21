@@ -7,7 +7,7 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
 
   val f: Factory[A]
 
-  lazy val pUntypedAbsE: Parser[Exp[A]] =
+  lazy val pLamE: Parser[Exp[A]] =
     ("\\" ~> lcid) ~ ("." ~> pE) ^^ { case x ~ e0 => f.TmAbs(x, e0) }
 
   val pE: Parser[Exp[A]]
