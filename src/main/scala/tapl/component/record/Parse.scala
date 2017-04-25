@@ -1,8 +1,8 @@
 package tapl.component.record
 
-import tapl.common.{CommonParser, Exp}
+import tapl.common.{EParser, Exp}
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
+trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
   lexical.delimiters += ("{", "}", ",", ".", "(", ")", "=")
 
   val f: Factory[A]
@@ -13,6 +13,4 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
   private lazy val pProj = pE ~ ("." ~> lcid) ^^ { case e ~ x => f.TmProj(e, x) }
 
   lazy val pRecordE: Parser[Exp[A]] = pRec ||| pProj
-
-  val pE: Parser[Exp[A]]
 }

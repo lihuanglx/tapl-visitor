@@ -1,9 +1,9 @@
 package tapl.component.nat
 
-import tapl.common.{CommonParser, Exp}
+import tapl.common.{EParser, Exp}
 
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
+trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
   lexical.reserved += ("iszero", "succ", "pred")
   lexical.delimiters += ("(", ")")
 
@@ -27,6 +27,4 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
   private lazy val pParen = "(" ~> pE <~ ")"
 
   lazy val pNatE: Parser[Exp[A]] = pNum ||| pSucc ||| pPred ||| pIsZero ||| pParen
-
-  val pE: Parser[Exp[A]]
 }

@@ -1,8 +1,8 @@
 package tapl.component.bool
 
-import tapl.common.{CommonParser, Exp}
+import tapl.common.{EParser, Exp}
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
+trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
   lexical.reserved += ("true", "false", "if", "then", "else")
   lexical.delimiters += ("(", ")")
 
@@ -17,6 +17,4 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends CommonParser[Exp[A]] {
   private lazy val pParen: Parser[Exp[A]] = "(" ~> pE <~ ")"
 
   lazy val pBoolE: Parser[Exp[A]] = pTrue ||| pFalse ||| pIf ||| pParen
-
-  val pE: Parser[Exp[A]]
 }

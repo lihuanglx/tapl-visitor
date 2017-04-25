@@ -1,22 +1,17 @@
 package tapl.component.varapp
 
-import tapl.common.{Context, EvalAuxiliary, Exp, Util}
+import tapl.common.{EvalAuxiliary, Exp, Util}
 
 import scalaz.Scalaz._
-import scalaz._
 
-// todo: check
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  override implicit val m: MonadState[M, Context[A]]
-
   val f: A[Exp[A], Exp[A]]
 
-  val subst: (String, Exp[A]) => Alg[Exp[A], Exp[A]]
+  val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
   val isFuncVal: A[Exp[A], Option[(String, Exp[A])]]
 
-  override def TmVar(x: String): M[Exp[A]] = for {
-    c <- m.get
-  } yield c.lookup(x)
+  // todo: check
+  override def TmVar(x: String): M[Exp[A]] = m.point(f.TmVar(x))
 
   override def TmApp(e1: Exp[A], e2: Exp[A]): M[Exp[A]] = {
     if (e1(isVal))
@@ -36,4 +31,11 @@ trait IsVal[A[-R, _]] extends Query[A, Boolean] {
   override val default: Boolean = false
 
   override def TmVar(x: String): Boolean = true
+}
+
+trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] {
+  val x: String
+  val e: Exp[A]
+
+  override def TmVar(x: String): Exp[A] = if (x == this.x) e else f.TmVar(x)
 }
