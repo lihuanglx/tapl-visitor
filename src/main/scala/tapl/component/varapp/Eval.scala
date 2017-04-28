@@ -5,8 +5,6 @@ import tapl.common.{EvalAuxiliary, Exp, Util}
 import scalaz.Scalaz._
 
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  val f: A[Exp[A], Exp[A]]
-
   val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
   val isFuncVal: A[Exp[A], Option[(String, Exp[A])]]
 

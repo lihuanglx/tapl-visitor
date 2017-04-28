@@ -5,8 +5,6 @@ import tapl.common.{EvalAuxiliary, Exp}
 import scalaz.Scalaz._
 
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  val f: A[Exp[A], Exp[A]]
-
   override def TmFloat(d: Double): M[Exp[A]] = m.point(f.TmFloat(d))
 
   override def TmString(s: String): M[Exp[A]] = m.point(f.TmString(s))

@@ -4,8 +4,6 @@ import tapl.common.{EvalAuxiliary, Exp}
 import tapl.common.Util.typeError
 
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  val f: A[Exp[A], Exp[A]]
-
   def matcher[E]: Matcher[A, E]
 
   override def TmTrue(): M[Exp[A]] = m.point(f.TmTrue())

@@ -3,8 +3,6 @@ package tapl.component.lambda
 import tapl.common.{EvalAuxiliary, Exp}
 
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  val f: A[Exp[A], Exp[A]]
-
   override def TmAbs(x: String, e: Exp[A]): M[Exp[A]] = m.point(f.TmAbs(x, e))
 }
 
