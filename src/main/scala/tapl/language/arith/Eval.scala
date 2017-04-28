@@ -16,8 +16,6 @@ trait EvalM[M[_]] extends Eval[Alg, M] {
 
   override val isNumVal: Alg[Exp[Alg], Option[Int]] = IsNumValImpl
 
-  override val isBoolVal: Alg[Exp[Alg], Option[Boolean]] = IsBoolValImpl
-
   override def matcher[E]: Matcher[Alg, E] = new MatcherImpl[E] {}
 }
 
@@ -30,8 +28,3 @@ object IsValImpl extends IsVal[Alg] with Impl[Boolean]
 trait IsNumVal[A[-R, _]] extends Query[A, Option[Int]] with nat.IsNumVal[A]
 
 object IsNumValImpl extends IsNumVal[Alg] with Impl[Option[Int]]
-
-
-trait IsBoolVal[A[-R, _]] extends Query[A, Option[Boolean]] with bool.IsBoolVal[A]
-
-object IsBoolValImpl extends IsBoolVal[Alg] with Impl[Option[Boolean]]

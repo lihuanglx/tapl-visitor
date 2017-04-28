@@ -6,8 +6,6 @@ import tapl.common.Util.typeError
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
   val f: A[Exp[A], Exp[A]]
 
-  val isBoolVal: A[Exp[A], Option[Boolean]]
-
   def matcher[E]: Matcher[A, E]
 
   override def TmTrue(): M[Exp[A]] = m.point(f.TmTrue())
@@ -26,20 +24,10 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with Eval
   }
 }
 
-
 trait IsVal[A[-R, _]] extends Query[A, Boolean] {
   override val default: Boolean = false
 
   override def TmTrue(): Boolean = true
 
   override def TmFalse(): Boolean = true
-}
-
-
-trait IsBoolVal[A[-R, _]] extends Query[A, Option[Boolean]] {
-  override val default: Option[Boolean] = None
-
-  override def TmTrue(): Option[Boolean] = Some(true)
-
-  override def TmFalse(): Option[Boolean] = Some(false)
 }
