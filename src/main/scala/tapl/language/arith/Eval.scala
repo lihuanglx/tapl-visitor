@@ -25,6 +25,6 @@ trait IsVal[A[-R, _]] extends Alg[Exp[A], Boolean] with bool.IsVal[A] with nat.I
 object IsValImpl extends IsVal[Alg] with Impl[Boolean]
 
 
-trait IsNumVal[A[-R, _]] extends Query[A, Option[Int]] with nat.IsNumVal[A]
+trait IsNumVal[A[-R, _]] extends Query[Exp[A], Option[Int]] with nat.IsNumVal[A]
 
 object IsNumValImpl extends IsNumVal[Alg] with Impl[Option[Int]]

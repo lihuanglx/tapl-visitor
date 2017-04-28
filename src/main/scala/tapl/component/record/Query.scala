@@ -1,9 +1,9 @@
 package tapl.component.record
 
-import tapl.common.{Default, Exp}
+import tapl.common.Default
 
-trait Query[A[-R, _], T] extends Alg[Exp[A], T] with Default[T] {
-  override def TmRecord(l: List[(String, Exp[A])]): T = default
+trait Query[R, T] extends Alg[R, T] with Default[T] {
+  override def TmRecord(l: List[(String, R)]): T = default
 
-  override def TmProj(e: Exp[A], x: String): T = default
+  override def TmProj(e: R, x: String): T = default
 }

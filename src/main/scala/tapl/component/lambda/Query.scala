@@ -1,7 +1,7 @@
 package tapl.component.lambda
 
-import tapl.common.{Default, Exp}
+import tapl.common.Default
 
-trait Query[A[-R, _], T] extends Alg[Exp[A], T] with Default[T] {
-  override def TmAbs(x: String, e: Exp[A]): T = default
+trait Query[R, T] extends Alg[R, T] with Default[T] {
+  override def TmAbs(x: String, e: R): T = default
 }

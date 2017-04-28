@@ -41,7 +41,7 @@ trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y], M[_]]
 }
 
 
-trait IsVal[A[-R, _]] extends Query[A, Boolean] {
+trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
   override val default: Boolean = false
 
   override def TmZero(): Boolean = true
@@ -52,7 +52,7 @@ trait IsVal[A[-R, _]] extends Query[A, Boolean] {
 }
 
 
-trait IsNumVal[A[-R, _]] extends Query[A, Option[Int]] {
+trait IsNumVal[A[-R, _]] extends Query[Exp[A], Option[Int]] {
   override val default: Option[Int] = None
 
   override def TmZero(): Option[Int] = Some(0)

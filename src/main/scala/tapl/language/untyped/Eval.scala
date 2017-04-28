@@ -18,11 +18,11 @@ trait EvalM[M[_]] extends Eval[Alg, M] {
   override val subst: (String, Exp[Alg]) => Alg[Exp[Alg], Exp[Alg]] = (x, e) => new SubstImpl(x, e)
 }
 
-trait IsVal[A[-R, _]] extends Query[A, Boolean] with lambda.IsVal[A] with varapp.IsVal[A]
+trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with lambda.IsVal[A] with varapp.IsVal[A]
 
 object IsValImpl extends IsVal[Alg] with Impl[Boolean]
 
-trait IsFuncVal[A[-R, _]] extends Query[A, Option[(String, Exp[A])]] with lambda.IsFuncVal[A]
+trait IsFuncVal[A[-R, _]] extends Query[Exp[A], Option[(String, Exp[A])]] with lambda.IsFuncVal[A]
 
 object IsFuncValImpl extends IsFuncVal[Alg] with Impl[Option[(String, Exp[Alg])]]
 

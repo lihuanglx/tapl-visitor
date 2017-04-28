@@ -1,11 +1,11 @@
 package tapl.component.bool
 
-import tapl.common.{Default, Exp}
+import tapl.common.Default
 
-trait Query[A[-R, _], T] extends Alg[Exp[A], T] with Default[T] {
+trait Query[R, T] extends Alg[R, T] with Default[T] {
   override def TmTrue(): T = default
 
   override def TmFalse(): T = default
 
-  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): T = default
+  override def TmIf(e1: R, e2: R, e3: R): T = default
 }
