@@ -17,6 +17,8 @@ trait EvalM[M[_]] extends Eval[Alg, M] {
   override val isNumVal: Alg[Exp[Alg], Option[Int]] = IsNumValImpl
 
   override val isBoolVal: Alg[Exp[Alg], Option[Boolean]] = IsBoolValImpl
+
+  override def matcher[E]: Matcher[Alg, E] = new MatcherImpl[E] {}
 }
 
 
