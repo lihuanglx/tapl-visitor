@@ -18,7 +18,7 @@ object Test {
   }
 
   def main(args: Array[String]): Unit = {
-    val input = "\\x.x"
+    val input = "(\\x.x x) (\\y.y)"
     val ast: Exp[Alg] = parser.parse(input).get
     go(ast, 1)
   }

@@ -10,14 +10,13 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with Eval
   val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
   val isFuncVal: A[Exp[A], Option[(String, Exp[A])]]
 
-  // todo: check
   override def TmVar(x: String): M[Exp[A]] = m.point(f.TmVar(x))
 
   override def TmApp(e1: Exp[A], e2: Exp[A]): M[Exp[A]] = {
     if (e1(isVal))
       if (e2(isVal)) {
         val (x, body) = e1(isFuncVal).getOrElse(Util.typeError())
-        m.point(subst(x, e1)(body))
+        m.point(subst(x, e2)(body))
       } else for {
         _e2 <- apply(e2)
       } yield f.TmApp(e1, _e2)
