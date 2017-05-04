@@ -3,6 +3,8 @@ package tapl.component.bool
 import tapl.common.{EvalAuxiliary, Exp}
 import tapl.common.Util.typeError
 
+import scalaz.Scalaz._
+
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
   def matcher[E]: Matcher[A, E]
 
@@ -16,9 +18,9 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with Eval
       //m.point(if (b) e2 else e3)
       val r = matcher.CaseTrue(e2).CaseFalse(e3).CaseDefault(typeError()).apply(e1)
       m.point(r)
-    } else {
-      m.bind(apply(e1))(x => m.point(f.TmIf(x, e2, e3)))
-    }
+    } else for {
+      _e1 <- apply(e1)
+    } yield f.TmIf(_e1, e2, e3)
   }
 }
 

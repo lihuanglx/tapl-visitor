@@ -1,5 +1,7 @@
 package play
 
+import scala.language.reflectiveCalls
+
 trait Visitor {
   type R
   type E
@@ -8,10 +10,12 @@ trait Visitor {
 }
 
 trait Exp {
+  self =>
+
   type A <: Visitor
   type Vis[X, Y] = A {type R = X; type E = Y}
 
-  def apply[E](alg: Vis[Exp, E]): E
+  def apply[E](alg: Vis[Exp {type A = self.A}, E]): E
 }
 
 trait VA extends Visitor {
@@ -42,16 +46,32 @@ trait VAll extends VA with VB
 
 trait EvalAll extends VAll with EvalA with EvalB
 
-object Test {
-  /*
-  type CurrVisitor = VAll {type R = CurrExp}
-  type CurrExp = Exp {type A = VAll}
+object EvalAllImpl extends EvalAll {
+  override type R = Exp {type A = VAll}
 
-  val EvalAllImpl: CurrVisitor = new EvalAll {
-    override type R = CurrExp
-
-    override def apply(e: CurrExp): Int = e(EvalAllImpl)
-  }
-  */
+  override def apply(e: R): Int = e(this)
 }
 
+/*
+object Test {
+  type CurrExp = Exp {type A = VAll}
+
+  def Lit(x: Int): Exp = new Exp {
+    type A = VA
+
+    //override def apply[E](alg: Vis[Exp {type A = this.A}, E]): E = ???
+    override def apply[E](alg: Vis[Exp, E]): E = alg.Lit(x)
+  }
+
+  def Add(e1: Exp, e2: Exp) = new Exp {
+    type A = VAll
+
+    override def apply[E](alg: Vis[Exp, E]): E = alg.Add(e1, e2)
+  }
+
+  def main(args: Array[String]): Unit = {
+    val e = Add(Lit(3), Lit(4))
+    println(e(EvalAllImpl))
+  }
+}
+*/
