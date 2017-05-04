@@ -1,6 +1,6 @@
 package play
 
-object Test {
+object CaseClass {
 
   trait Alg1[-R, E] {
     def Lit(x: Int): E
