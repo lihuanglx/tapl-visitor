@@ -2,7 +2,6 @@ package tapl.component.varapp
 
 import tapl.common.Exp
 
-
 trait Alg[-R, E] {
   def TmVar(x: String): E
 
@@ -11,14 +10,16 @@ trait Alg[-R, E] {
   def apply(e: R): E
 }
 
-trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
+trait Factory {
 
-  override def TmVar(x: String): Exp[A] = new Exp[A] {
+  case class CVar[A[-X, Y] <: Alg[X, Y]](x: String) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmVar(x)
   }
 
-  override def TmApp(e1: Exp[A], e2: Exp[A]): Exp[A] = new Exp[A] {
+  case class CApp[A[-X, Y] <: Alg[X, Y]](e1: Exp[A], e2: Exp[A]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmApp(e1, e2)
   }
 
 }
+
+object Factory extends Factory

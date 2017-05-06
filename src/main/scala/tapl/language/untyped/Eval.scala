@@ -9,8 +9,6 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends
 trait EvalM[M[_]] extends Eval[Alg, M] {
   override def apply(e: Exp[Alg]): M[Exp[Alg]] = e(this)
 
-  override val f: Alg[Exp[Alg], Exp[Alg]] = Factory
-
   override val isVal: Alg[Exp[Alg], Boolean] = IsValImpl
 
   override val isFuncVal: Alg[Exp[Alg], Option[(String, Exp[Alg])]] = IsFuncValImpl
@@ -31,5 +29,4 @@ trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with varapp.Subst[A]
 class SubstImpl(_x: String, _e: Exp[Alg]) extends Subst[Alg] with Impl[Exp[Alg]] {
   override val x: String = _x
   override val e: Exp[Alg] = _e
-  override val f: Factory[Alg] = Factory
 }

@@ -5,10 +5,9 @@ import tapl.component._
 
 trait Alg [-R, E] extends lambda.Alg[R, E] with varapp.Alg[R, E]
 
-trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]]
-  with lambda.Factory[A] with varapp.Factory[A]
+trait Factory extends lambda.Factory with varapp.Factory
 
-object Factory extends Factory[Alg] with Impl[Exp[Alg]]
+object Factory extends Factory
 
 trait Impl[T] extends Alg[Exp[Alg], T] {
   override def apply(e: Exp[Alg]): T = e(this)

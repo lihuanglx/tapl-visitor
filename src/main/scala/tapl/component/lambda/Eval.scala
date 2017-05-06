@@ -1,9 +1,10 @@
 package tapl.component.lambda
 
 import tapl.common.{EvalAuxiliary, Exp}
+import tapl.component.lambda.Factory._
 
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  override def TmAbs(x: String, e: Exp[A]): M[Exp[A]] = m.point(f.TmAbs(x, e))
+  override def TmAbs(x: String, e: Exp[A]): M[Exp[A]] = m.point(CAbs(x, e))
 }
 
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
