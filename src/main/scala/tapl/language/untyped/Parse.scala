@@ -8,5 +8,5 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends lambda.Parse[A] with varapp.Parse[A] 
 
   override val pE: Parser[Exp[A]] = pUntypedE
 
-  override def parse(inp: String): Option[Exp[A]] = parseBy(pE)(inp)
+  def parse(inp: String): Option[Exp[A]] = parseBy(pE)(inp)
 }
