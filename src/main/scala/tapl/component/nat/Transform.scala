@@ -1,15 +1,14 @@
 package tapl.component.nat
 
 import tapl.common.Exp
+import tapl.component.nat.Factory._
 
 trait Transform[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
-  val f: Factory[A]
+  override def TmZero(): Exp[A] = CZero[A]()
 
-  override def TmZero(): Exp[A] = f.TmZero()
+  override def TmPred(e: Exp[A]): Exp[A] = CPred[A](apply(e))
 
-  override def TmPred(e: Exp[A]): Exp[A] = f.TmPred(apply(e))
+  override def TmSucc(e: Exp[A]): Exp[A] = CSucc[A](apply(e))
 
-  override def TmSucc(e: Exp[A]): Exp[A] = f.TmSucc(apply(e))
-
-  override def TmIsZero(e: Exp[A]): Exp[A] = f.TmIsZero(apply(e))
+  override def TmIsZero(e: Exp[A]): Exp[A] = CIsZero[A](apply(e))
 }

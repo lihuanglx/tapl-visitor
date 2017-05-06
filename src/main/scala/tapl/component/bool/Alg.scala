@@ -12,18 +12,20 @@ trait Alg[-R, E] {
   def apply(e: R): E
 }
 
-trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
+trait Factory {
 
-  override def TmTrue(): Exp[A] = new Exp[A] {
+  case class CTrue[A[-X, Y] <: Alg[X, Y]]() extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmTrue()
   }
 
-  override def TmFalse(): Exp[A] = new Exp[A] {
+  case class CFalse[A[-X, Y] <: Alg[X, Y]]() extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmFalse()
   }
 
-  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[A] = new Exp[A] {
+  case class CIf[A[-X, Y] <: Alg[X, Y]](e1: Exp[A], e2: Exp[A], e3: Exp[A]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmIf(e1, e2, e3)
   }
 
 }
+
+object Factory extends Factory

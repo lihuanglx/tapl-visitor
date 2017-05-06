@@ -2,7 +2,6 @@ package tapl.component.nat
 
 import tapl.common.Exp
 
-
 trait Print[A[-R, _]] extends Alg[Exp[A], String] with IsNatVal[A] {
   override def TmZero() = "0"
 

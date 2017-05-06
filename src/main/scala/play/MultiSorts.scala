@@ -207,6 +207,7 @@ object M2 {
     val eval2 = new EVal2[EAlg2, Exp[TAlg1]] {
       override def apply(e: Exp[({type lam[-X, Y] = EAlg2[X, Y, Exp[TAlg1]]})#lam]): Int = e(this)
     }
+    println(e1(eval2))
     println(e2(eval2))
     println(e22(eval2))
     println(e23(eval2))

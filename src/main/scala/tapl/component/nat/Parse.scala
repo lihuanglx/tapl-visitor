@@ -1,28 +1,26 @@
 package tapl.component.nat
 
 import tapl.common.{EParser, Exp}
-
+import tapl.component.nat.Factory._
 
 trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
   lexical.reserved += ("iszero", "succ", "pred")
   lexical.delimiters += ("(", ")")
 
-  val f: Factory[A]
-
   private lazy val pNum = numericLit ^^ (x => {
     def num(x: Int): Exp[A] = x match {
-      case 0 => f.TmZero()
-      case _ => f.TmSucc(num(x - 1))
+      case 0 => CZero[A]()
+      case _ => CSucc[A](num(x - 1))
     }
 
     num(x.toInt)
   })
 
-  private lazy val pSucc = "succ" ~> pE ^^ f.TmSucc
+  private lazy val pSucc = "succ" ~> pE ^^ CSucc[A]
 
-  private lazy val pPred = "pred" ~> pE ^^ f.TmPred
+  private lazy val pPred = "pred" ~> pE ^^ CPred[A]
 
-  private lazy val pIsZero = "iszero" ~> pE ^^ f.TmIsZero
+  private lazy val pIsZero = "iszero" ~> pE ^^ CIsZero[A]
 
   private lazy val pParen = "(" ~> pE <~ ")"
 

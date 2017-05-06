@@ -1,14 +1,13 @@
 package tapl.component.nat
 
 import tapl.common.Exp
+import tapl.component.nat.Factory._
 
 trait IsNatVal[A[-X, Y]] {
-  def matcher[E]: Matcher[A, E]
-
-  def isNatVal(e: Exp[A]): Option[Int] = matcher[Option[Int]].
-    CaseZero(Some(0)).
-    CasePred(isNatVal(_).map(_ - 1)).
-    CaseSucc(isNatVal(_).map(_ + 1)).
-    CaseDefault(None).
-    apply(e)
+  def isNatVal(e: Exp[A]): Option[Int] = e match {
+    case CZero() => Some(0)
+    case CPred(x) => isNatVal(x).map(_ - 1)
+    case CSucc(x) => isNatVal(x).map(_ + 1)
+    case _ => None
+  }
 }

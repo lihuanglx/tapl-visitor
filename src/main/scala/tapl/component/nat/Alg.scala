@@ -2,7 +2,6 @@ package tapl.component.nat
 
 import tapl.common.Exp
 
-
 trait Alg[-R, E] {
   def TmZero(): E
 
@@ -15,22 +14,24 @@ trait Alg[-R, E] {
   def apply(e: R): E
 }
 
-trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
+trait Factory {
 
-  override def TmZero(): Exp[A] = new Exp[A] {
+  case class CZero[A[-X, Y] <: Alg[X, Y]]() extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmZero()
   }
 
-  override def TmSucc(e: Exp[A]): Exp[A] = new Exp[A] {
+  case class CSucc[A[-X, Y] <: Alg[X, Y]](e: Exp[A]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmSucc(e)
   }
 
-  override def TmPred(e: Exp[A]): Exp[A] = new Exp[A] {
+  case class CPred[A[-X, Y] <: Alg[X, Y]](e: Exp[A]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmPred(e)
   }
 
-  override def TmIsZero(e: Exp[A]): Exp[A] = new Exp[A] {
+  case class CIsZero[A[-X, Y] <: Alg[X, Y]](e: Exp[A]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmIsZero(e)
   }
 
 }
+
+object Factory extends Factory
