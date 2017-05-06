@@ -10,12 +10,16 @@ trait Alg[-R, E] {
   def apply(e: R): E
 }
 
-trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
-  override def TmRecord(l: List[(String, Exp[A])]): Exp[A] = new Exp[A] {
+trait Factory {
+
+  case class CRecord[A[-X, Y] <: Alg[X, Y]](l: List[(String, Exp[A])]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmRecord(l)
   }
 
-  override def TmProj(e: Exp[A], x: String): Exp[A] = new Exp[A] {
+  case class CProj[A[-X, Y] <: Alg[X, Y]](e: Exp[A], x: String) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmProj(e, x)
   }
+
 }
+
+object Factory extends Factory

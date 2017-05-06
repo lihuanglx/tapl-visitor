@@ -11,8 +11,6 @@ object Test {
 
   val eval = new EvalM[Option] {
     override implicit val m: Monad[Option] = implicitly[Monad[Option]]
-
-    override lazy val f: Alg[Exp[Alg], Exp[Alg]] = ???
   }
 
   val parser = new Parse[Alg] {}

@@ -1,12 +1,11 @@
 package tapl.component.record
 
 import tapl.common.{EvalAuxiliary, Exp}
+import tapl.component.record.Factory._
 
 import scalaz.Scalaz._
 
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  //def matcher[E]: Matcher
-
   override def TmRecord(l: List[(String, Exp[A])]): M[Exp[A]] = ???
 
   // todo
@@ -15,5 +14,5 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with Eval
       ???
     } else for {
       _e <- apply(e)
-    } yield f.TmProj(_e, x)
+    } yield CProj(_e, x)
 }

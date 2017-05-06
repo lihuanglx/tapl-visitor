@@ -12,16 +12,20 @@ trait Alg[-R, E] {
   def apply(e: R): E
 }
 
-trait Factory[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
-  override def TmFloat(d: Double): Exp[A] = new Exp[A] {
+trait Factory {
+
+  case class CFloat[A[-X, Y] <: Alg[X, Y]](d: Double) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmFloat(d)
   }
 
-  override def TmTimes(e1: Exp[A], e2: Exp[A]): Exp[A] = new Exp[A] {
+  case class CTimes[A[-X, Y] <: Alg[X, Y]](e1: Exp[A], e2: Exp[A]) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmTimes(e1, e2)
   }
 
-  override def TmString(s: String): Exp[A] = new Exp[A] {
+  case class CString[A[-X, Y] <: Alg[X, Y]](s: String) extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TmString(s)
   }
+
 }
+
+object Factory extends Factory
