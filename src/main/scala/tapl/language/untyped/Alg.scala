@@ -1,11 +1,19 @@
 package tapl.language.untyped
 
 import tapl.common.Exp
-import tapl.component._
+import tapl.component.varapp
 
-trait Alg [-R, E] extends lambda.Alg[R, E] with varapp.Alg[R, E]
+trait Alg[-R, E] extends varapp.Alg[R, E] {
+  def TmAbs(x: String, e: R): E
+}
 
-trait Factory extends lambda.Factory with varapp.Factory
+trait Factory extends varapp.Factory {
+
+  case class CAbs[A[-X, Y] <: Alg[X, Y]](x: String, e: Exp[A]) extends Exp[A] {
+    override def apply[E](alg: A[Exp[A], E]): E = alg.TmAbs(x, e)
+  }
+
+}
 
 object Factory extends Factory
 
