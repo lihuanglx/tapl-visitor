@@ -6,9 +6,7 @@ import tapl.component._
 trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends
   Alg[Exp[A], M[Exp[A]]] with lambda.Eval[A, M] with varapp.Eval[A, M]
 
-trait EvalM[M[_]] extends Eval[Alg, M] {
-  override def apply(e: Exp[Alg]): M[Exp[Alg]] = e(this)
-
+trait EvalM[M[_]] extends Eval[Alg, M] with Impl[M[Exp[Alg]]] {
   override val isVal: Alg[Exp[Alg], Boolean] = IsValImpl
 
   override val isFuncVal: Alg[Exp[Alg], Option[(String, Exp[Alg])]] = IsFuncValImpl
