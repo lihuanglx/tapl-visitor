@@ -1,11 +1,11 @@
 package tapl.component.floatstring
 
-import tapl.common.{EvalAuxiliary, Exp}
+import tapl.common.{EvalAux, Exp}
 import tapl.component.floatstring.Factory._
 
 import scalaz.Scalaz._
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
+trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAux[A, M] {
   override def TmFloat(d: Double): M[Exp[A]] = m.point(CFloat[A](d))
 
   override def TmString(s: String): M[Exp[A]] = m.point(CString[A](s))

@@ -4,9 +4,7 @@ import tapl.common.Exp
 import tapl.component._
 
 trait Parse[A[-X, Y] <: Alg[X, Y]] extends lambda.Parse[A] with varapp.Parse[A] {
-  val pUntypedE: Parser[Exp[A]] = pLamE ||| pVarAppE
+  lazy val pUntypedE: Parser[Exp[A]] = pLamE ||| pVarAppE
 
-  override val pE: Parser[Exp[A]] = pUntypedE
-
-  def parse(inp: String): Option[Exp[A]] = parseBy(pE)(inp)
+  override lazy val pE: Parser[Exp[A]] = pUntypedE
 }

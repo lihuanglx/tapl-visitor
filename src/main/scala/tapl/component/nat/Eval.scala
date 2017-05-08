@@ -1,13 +1,13 @@
 package tapl.component.nat
 
 import tapl.common.Util._
-import tapl.common.{EvalAuxiliary, Exp}
+import tapl.common.{EvalAux, Exp}
 import tapl.component.bool
 import tapl.component.bool.Factory._
 import tapl.component.nat.Factory._
 
 trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y], M[_]]
-  extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] with IsNatVal[A] {
+  extends Alg[Exp[A], M[Exp[A]]] with EvalAux[A, M] with IsNatVal[A] {
 
   override def TmZero(): M[Exp[A]] = m.point(CZero[A]())
 

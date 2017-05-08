@@ -22,7 +22,7 @@ trait IsFuncVal[A[-R, _]] extends Query[Exp[A], Option[(String, Exp[A])]] with l
 
 object IsFuncValImpl extends IsFuncVal[Alg] with Impl[Option[(String, Exp[Alg])]]
 
-trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with varapp.Subst[A]
+trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with varapp.Subst[A] with lambda.Subst[A]
 
 class SubstImpl(_x: String, _e: Exp[Alg]) extends Subst[Alg] with Impl[Exp[Alg]] {
   override val x: String = _x

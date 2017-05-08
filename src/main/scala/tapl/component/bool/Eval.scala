@@ -1,12 +1,12 @@
 package tapl.component.bool
 
 import tapl.common.Util.typeError
-import tapl.common.{EvalAuxiliary, Exp}
+import tapl.common.{EvalAux, Exp}
 import tapl.component.bool.Factory._
 
 import scalaz.Scalaz._
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
+trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAux[A, M] {
   override def TmTrue(): M[Exp[A]] = m.point(CTrue[A]())
 
   override def TmFalse(): M[Exp[A]] = m.point(CFalse[A]())

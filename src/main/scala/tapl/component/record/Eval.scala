@@ -1,12 +1,12 @@
 package tapl.component.record
 
 import tapl.common.Util._
-import tapl.common.{EvalAuxiliary, Exp}
+import tapl.common.{EvalAux, Exp}
 import tapl.component.record.Factory._
 
 import scalaz.Scalaz._
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
+trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAux[A, M] {
   override def TmRecord(l: List[(String, Exp[A])]): M[Exp[A]] = {
     val (vs, es) = l.partition(x => isVal(x._2))
     es match {

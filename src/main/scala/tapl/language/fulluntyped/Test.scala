@@ -1,4 +1,4 @@
-package tapl.language.untyped
+package tapl.language.fulluntyped
 
 import tapl.common.Exp
 
@@ -6,9 +6,6 @@ import scalaz.Monad
 import scalaz.std.AllInstances._
 
 object Test {
-
-  val f = Factory
-
   val eval = new EvalM[Option] {
     override implicit val m: Monad[Option] = implicitly[Monad[Option]]
   }
@@ -16,7 +13,8 @@ object Test {
   val parser = new Parse[Alg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\x.(\\x.x)) (\\y.y)"
+    //val input = "{x=\\x.x, y=(\\x.x)(\\x.x)}.x"
+    val input = "(\\x.\\x.x) 3"
     val ast: Exp[Alg] = parser.parse(input).get
     go(ast, 1)
   }

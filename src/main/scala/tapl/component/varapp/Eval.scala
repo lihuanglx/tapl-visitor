@@ -1,12 +1,11 @@
 package tapl.component.varapp
 
-import tapl.common.{EvalAuxiliary, Exp, Util}
+import tapl.common.{EvalSubst, Exp, SubstAux, Util}
 import tapl.component.varapp.Factory._
 
 import scalaz.Scalaz._
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAuxiliary[A, M] {
-  val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
+trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalSubst[A, M] {
   val isFuncVal: A[Exp[A], Option[(String, Exp[A])]]
 
   override def TmVar(x: String): M[Exp[A]] = m.point(CVar[A](x))
@@ -31,9 +30,6 @@ trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
   override def TmVar(x: String): Boolean = true
 }
 
-trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] {
-  val x: String
-  val e: Exp[A]
-
+trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with SubstAux[A] {
   override def TmVar(x: String): Exp[A] = if (x == this.x) e else CVar[A](x)
 }

@@ -18,10 +18,14 @@ trait CommonParser extends StandardTokenParsers with PackratParsers {
 
 trait EParser[A[-X, Y]] extends CommonParser {
   val pE: Parser[Exp[A]]
+
+  def parse(inp: String): Option[Exp[A]] = parseBy(pE)(inp)
 }
 
 trait TParser[A[-X, Y]] extends CommonParser {
   val pT: Parser[Exp[A]]
+
+  def parseT(inp: String): Option[Exp[A]] = parseBy(pT)(inp)
 }
 
 trait ETParser[A[-R, E], B[-F, T]] extends EParser[A] with TParser[B]

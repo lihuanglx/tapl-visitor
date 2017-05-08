@@ -9,6 +9,4 @@ trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends typedbool.Par
 
   override val pE: Parser[Exp[A]] = pTyArithE
   override val pT: Parser[Exp[B]] = pTyArithT
-
-  def parse(inp: String): Option[Exp[A]] = parseBy(pE)(inp)
 }
