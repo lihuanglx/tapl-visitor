@@ -28,4 +28,4 @@ trait TParser[A[-X, Y]] extends CommonParser {
   def parseT(inp: String): Option[Exp[A]] = parseBy(pT)(inp)
 }
 
-trait ETParser[A[-R, E], B[-F, T]] extends EParser[A] with TParser[B]
+trait ETParser[A[-R, E, -F], B[-F, T]] extends EParser[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] with TParser[B]

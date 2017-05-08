@@ -4,7 +4,7 @@ version := "1.0"
 
 scalaVersion := "2.12.2"
 
-scalacOptions ++= Seq("-language:higherKinds", "-language:implicitConversions", "-feature", "-deprecation")
+scalacOptions ++= Seq("-language:higherKinds", "-language:implicitConversions", "-language:reflectiveCalls", "-feature", "-deprecation")
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.12"
 

@@ -1,10 +1,10 @@
 package tapl.component.typednat
 
-import tapl.common.{ETParser, Exp}
+import tapl.common.{EParser, Exp, TParser}
 import tapl.component.nat
 import tapl.component.typednat.TFactory._
 
-trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B] with nat.Parse[A] {
+trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends EParser[A] with TParser[B] with nat.Parse[A] {
   lexical.reserved += "Nat"
 
   lazy val pTypedNatE: Parser[Exp[A]] = pNatE
