@@ -18,3 +18,7 @@ object TFactory extends TFactory
 trait Impl[T] extends Alg[Exp[Alg], T] {
   override def apply(e: Exp[Alg]): T = e(this)
 }
+
+trait TImpl[T] extends TAlg[Exp[TAlg], T] {
+  override def apply(t: Exp[TAlg]): T = t(this)
+}

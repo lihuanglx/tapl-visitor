@@ -6,6 +6,10 @@ import scalaz.Monad
 import scalaz.std.AllInstances._
 
 object Test {
+  val typer = new TyperM[Option] {
+    override implicit val m: Monad[Option] = implicitly[Monad[Option]]
+  }
+
   val eval = new EvalM[Option] {
     override implicit val m: Monad[Option] = implicitly[Monad[Option]]
   }
@@ -19,8 +23,9 @@ object Test {
   }
 
   def go(e: Exp[Alg], step: Int): Unit = {
-    print("Step " ++ step.toString ++ ": ")
-    println(e(PrintImpl))
+    println("Step " + step.toString + ": ")
+    println("  Term: " + e(PrintImpl))
+    println("  Type: " + e(typer).get.apply(TPrintImpl))
     if (e(IsValImpl)) {
       println("Value")
     } else {

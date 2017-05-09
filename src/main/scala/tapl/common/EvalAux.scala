@@ -16,3 +16,9 @@ trait SubstAux[A[-R, _]] {
   val x: String
   val e: Exp[A]
 }
+
+trait TyperAux[A[-X, Y], M[_]] {
+  implicit val m: Monad[M]
+
+  val tEquals: A[Exp[A], Exp[A] => Boolean]
+}

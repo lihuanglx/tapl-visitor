@@ -11,6 +11,8 @@ object Factory extends Factory
 
 trait TAlg[-F, T] {
   def TyNat(): T
+
+  def apply(t: F): T
 }
 
 trait TFactory {

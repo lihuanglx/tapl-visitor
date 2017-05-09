@@ -27,6 +27,7 @@ trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with Eval
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
   override val default: Boolean = false
 
+  // todo
   override def TmVar(x: String): Boolean = true
 }
 
