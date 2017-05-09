@@ -7,15 +7,11 @@ trait Print[A[-R, _]] extends Alg[Exp[A], String] with IsNatVal[A] {
 
   override def TmSucc(e: Exp[A]): String =
     isNatVal(e) match {
-      case Some(x) => (x + 1).toString
+      case Some((x, _)) => (x + 1).toString
       case _ => "succ (" + apply(e) + ")"
     }
 
-  override def TmPred(e: Exp[A]): String =
-    isNatVal(e) match {
-      case Some(x) => (x - 1).toString
-      case _ => "pred (" + apply(e) + ")"
-    }
+  override def TmPred(e: Exp[A]): String = "pred (" + apply(e) + ")"
 
   override def TmIsZero(e: Exp[A]): String = "iszero (" + apply(e) + ")"
 }

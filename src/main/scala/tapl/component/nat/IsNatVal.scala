@@ -4,10 +4,12 @@ import tapl.common.Exp
 import tapl.component.nat.Factory._
 
 trait IsNatVal[A[-X, Y]] {
-  def isNatVal(e: Exp[A]): Option[Int] = e match {
-    case CZero() => Some(0)
-    case CPred(x) => isNatVal(x).map(_ - 1)
-    case CSucc(x) => isNatVal(x).map(_ + 1)
+  // Int value and predecessor
+  def isNatVal(e: Exp[A]): Option[(Int, Exp[A])] = e match {
+    case CZero() => Some((0, e))
+    case CSucc(x) => for {
+      (i, _) <- isNatVal(x)
+    } yield (i + 1, x)
     case _ => None
   }
 }

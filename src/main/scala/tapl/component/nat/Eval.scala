@@ -6,6 +6,8 @@ import tapl.component.bool
 import tapl.component.bool.Factory._
 import tapl.component.nat.Factory._
 
+import scalaz.Scalaz._
+
 trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y], M[_]]
   extends Alg[Exp[A], M[Exp[A]]] with EvalAux[A, M] with IsNatVal[A] {
 
@@ -13,35 +15,33 @@ trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y], M[_]]
 
   override def TmPred(e: Exp[A]): M[Exp[A]] =
     if (e(isVal)) {
-      isNatVal(e).getOrElse(typeError())
-      m.point(CPred[A](e))
-    } else {
-      m.bind(apply(e))(x => m.point(CPred[A](x)))
-    }
+      val (_, p) = isNatVal(e).getOrElse(typeError())
+      m.point(p)
+    } else for {
+      _e <- apply(e)
+    } yield CPred[A](_e)
 
   override def TmSucc(e: Exp[A]): M[Exp[A]] =
     if (e(isVal)) {
       isNatVal(e).getOrElse(typeError())
       m.point(CSucc[A](e))
-    } else {
-      m.bind(apply(e))(x => m.point(CSucc[A](x)))
-    }
+    } else for {
+      _e <- apply(e)
+    } yield CSucc[A](_e)
 
   override def TmIsZero(e: Exp[A]): M[Exp[A]] =
     if (e(isVal)) {
-      val x = isNatVal(e).getOrElse(typeError())
-      m.point(if (x == 0) CTrue[A]() else CFalse[A]())
-    } else {
-      m.bind(apply(e))(x => m.point(CIsZero[A](x)))
-    }
+      val (i, _) = isNatVal(e).getOrElse(typeError())
+      m.point(if (i == 0) CTrue[A]() else CFalse[A]())
+    } else for {
+      _e <- apply(e)
+    } yield CIsZero[A](_e)
 }
 
-trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
+trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with IsNatVal[A] {
   override val default: Boolean = false
 
   override def TmZero(): Boolean = true
 
-  override def TmPred(e: Exp[A]): Boolean = apply(e)
-
-  override def TmSucc(e: Exp[A]): Boolean = apply(e)
+  override def TmSucc(e: Exp[A]): Boolean = isNatVal(e).nonEmpty
 }

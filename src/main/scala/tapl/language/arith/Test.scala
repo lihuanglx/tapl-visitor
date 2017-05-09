@@ -15,7 +15,7 @@ object Test {
   val parser = new Parse[Alg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "if true then (if false then 2 else 4) else 3"
+    val input = "if true then (if false then 2 else (pred 4)) else 3"
     val ast: Exp[Alg] = parser.parse(input).get
     go(ast, 1)
   }
