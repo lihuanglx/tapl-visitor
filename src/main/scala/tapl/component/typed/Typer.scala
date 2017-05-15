@@ -1,18 +1,15 @@
 package tapl.component.typed
 
-import tapl.common.Util.E3
-import tapl.common.{Exp, TyperAux}
+import tapl.common.Exp
+import tapl.common.Util._
 import tapl.component.typed.TFactory._
+import tapl.component.varapp
 
-import scalaz.Scalaz._
+trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
+  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with varapp.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y], M[_]]
-  extends Alg[E3[A, Exp[B]], M[Exp[B]], Exp[B]] with TyperAux[B, M] {
-
-  override def TmAbs(x: String, t: Exp[B], e: E3[A, Exp[B]]): M[Exp[B]] = for {
-  // todo
-    tb <- apply(e)
-  } yield CTyArr(t, tb)
+  override def TmAbs(x: String, t: Exp[B], e: E3[A, Exp[B]]): Type[B] =
+    c => CTyArr(t, apply(e)(c + (x, t)))
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {

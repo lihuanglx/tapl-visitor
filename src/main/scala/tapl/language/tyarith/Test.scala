@@ -1,14 +1,9 @@
 package tapl.language.tyarith
 
-import tapl.common.Exp
-
-import scalaz.Monad
-import scalaz.std.AllInstances._
+import tapl.common.{Context, Exp}
 
 object Test {
-  val typer = new TyperM[Option] {
-    override implicit val m: Monad[Option] = implicitly[Monad[Option]]
-  }
+  val typer = new TyperM {}
 
   val eval = new EvalM {}
 
@@ -23,7 +18,7 @@ object Test {
   def go(e: Exp[Alg], step: Int): Unit = {
     println("Step " + step.toString + ": ")
     println("  Term: " + e(PrintImpl))
-    println("  Type: " + e(typer).get.apply(TPrintImpl))
+    println("  Type: " + e(typer)(Context.empty())(TPrintImpl))
     if (e(IsValImpl)) {
       println("Value")
     } else {

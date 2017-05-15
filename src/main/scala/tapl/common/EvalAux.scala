@@ -1,6 +1,6 @@
 package tapl.common
 
-import scalaz.Monad
+import tapl.common.Util.Type
 
 trait EvalAux[A[-X, Y]] {
   val isVal: A[Exp[A], Boolean]
@@ -15,8 +15,8 @@ trait SubstAux[A[-R, _]] {
   val e: Exp[A]
 }
 
-trait TyperAux[A[-X, Y], M[_]] {
-  implicit val m: Monad[M]
-
+trait TyperAux[A[-X, Y]] {
   val tEquals: A[Exp[A], Exp[A] => Boolean]
+
+  implicit def constType(t: Exp[A]): Type[A] = _ => t
 }

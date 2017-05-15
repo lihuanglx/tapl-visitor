@@ -1,12 +1,14 @@
 package tapl.language.simplebool
 
-import tapl.common.Exp
+import tapl.common.{Context, Exp}
 import tapl.common.Util.E3
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   val eval = new EvalM {}
+
+  val typer = new TyperM {}
 
   def main(args: Array[String]): Unit = {
     val input = "(\\x:Bool.x) true"
@@ -15,8 +17,9 @@ object Test {
   }
 
   def go(e: E3[Alg, Exp[TAlg]], step: Int): Unit = {
-    print("Step " ++ step.toString ++ ": ")
-    println(e(PrintImpl))
+    println("Step " + step.toString + ": ")
+    println("  Term: " + e(PrintImpl))
+    println("  Type: " + e(typer)(Context.empty())(TPrintImpl))
     if (e(IsValImpl)) {
       println("Value")
     } else {

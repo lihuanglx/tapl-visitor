@@ -1,36 +1,38 @@
 package tapl.component.typednat
 
+import tapl.common.Util._
 import tapl.common.{Exp, TyperAux}
 import tapl.component.typedbool
 import tapl.component.typedbool.TFactory.CTyBool
 import tapl.component.typednat.TFactory._
 
-import scalaz.Scalaz._
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X, Y]]
+  extends Alg[Exp[A], Type[B]] with TyperAux[B] {
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X, Y], M[_]]
-  extends Alg[Exp[A], M[Exp[B]]] with TyperAux[B, M] {
+  override def TmZero(): Type[B] = CTyNat[B]()
 
-  override def TmZero(): M[Exp[B]] = m.point(CTyNat[B]())
-
-  override def TmPred(e: Exp[A]): M[Exp[B]] = for {
-    t <- apply(e)
-  } yield t match {
-    case CTyNat() => t
-    case _ => ??? //todo
+  override def TmPred(e: Exp[A]): Type[B] = c => {
+    val t = apply(e)(c)
+    t match {
+      case CTyNat() => t
+      case _ => typeError()
+    }
   }
 
-  override def TmSucc(e: Exp[A]): M[Exp[B]] = for {
-    t <- apply(e)
-  } yield t match {
-    case CTyNat() => t
-    case _ => ??? //todo
+  override def TmSucc(e: Exp[A]): Type[B] = c => {
+    val t = apply(e)(c)
+    t match {
+      case CTyNat() => t
+      case _ => typeError()
+    }
   }
 
-  override def TmIsZero(e: Exp[A]): M[Exp[B]] = for {
-    t <- apply(e)
-  } yield t match {
-    case CTyNat() => CTyBool[B]()
-    case _ => ??? //todo
+  override def TmIsZero(e: Exp[A]): Type[B] = c => {
+    val t = apply(e)(c)
+    t match {
+      case CTyNat() => CTyBool[B]()
+      case _ => typeError()
+    }
   }
 }
 
