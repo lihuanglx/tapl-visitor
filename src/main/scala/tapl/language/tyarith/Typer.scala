@@ -9,7 +9,7 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]]
 
 trait TyperM extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
   override val tEquals: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] =
-    new TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean] {}
+    new TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]

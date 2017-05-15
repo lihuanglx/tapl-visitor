@@ -11,7 +11,8 @@ trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with varapp.Eval[A
 trait EvalM extends Eval[Alg] with Impl[Exp[Alg]] {
   override val isVal: Alg[Exp[Alg], Boolean] = IsValImpl
 
-  override val isFuncVal: Alg[Exp[Alg], Option[(String, Exp[Alg])]] = IsFuncValImpl
+  override val isFuncVal: Alg[Exp[Alg], Option[(String, Exp[Alg])]] =
+    new IsFuncVal[Alg] with Impl[Option[(String, Exp[Alg])]]
 
   override val subst: (String, Exp[Alg]) => Alg[Exp[Alg], Exp[Alg]] = (x, e) => new SubstImpl(x, e)
 }
@@ -27,8 +28,6 @@ trait IsFuncVal[A[-R, _]] extends Query[Exp[A], Option[(String, Exp[A])]] {
 
   override def TmAbs(x: String, e: Exp[A]) = Some((x, e))
 }
-
-object IsFuncValImpl extends IsFuncVal[Alg] with Impl[Option[(String, Exp[Alg])]]
 
 trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with varapp.Subst[A] {
   override def TmAbs(x: String, e: Exp[A]): Exp[A] = CAbs[A](x, if (this.x == x) e else apply(e))
