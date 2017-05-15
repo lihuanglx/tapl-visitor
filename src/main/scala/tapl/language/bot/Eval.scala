@@ -4,9 +4,9 @@ import tapl.common.Exp
 import tapl.common.Util.E3
 import tapl.component.typed
 
-trait Eval[A[-R, E, -F] <: Alg[R, E, F], M[_], V] extends Alg[E3[A, V], M[E3[A, V]], V] with typed.Eval[A, M, V]
+trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V] with typed.Eval[A, V]
 
-trait EvalM[M[_]] extends Eval[Alg, M, Exp[TAlg]] with Impl[M[E3[Alg, Exp[TAlg]]]] {
+trait EvalM extends Eval[Alg, Exp[TAlg]] with Impl[E3[Alg, Exp[TAlg]]] {
   override val isVal: Alg[E3[Alg, Exp[TAlg]], Boolean, Exp[TAlg]] = IsValImpl
 
   override val isFuncVal: Alg[E3[Alg, Exp[TAlg]], Option[(String, E3[Alg, Exp[TAlg]])], Exp[TAlg]] = IsFuncValImpl

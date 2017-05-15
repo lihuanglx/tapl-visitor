@@ -3,15 +3,10 @@ package tapl.language.simplebool
 import tapl.common.Exp
 import tapl.common.Util.E3
 
-import scalaz.Monad
-import scalaz.std.AllInstances._
-
 object Test {
   val parser = new Parse[Alg, TAlg] {}
 
-  val eval = new EvalM[Option] {
-    override implicit val m: Monad[Option] = implicitly[Monad[Option]]
-  }
+  val eval = new EvalM {}
 
   def main(args: Array[String]): Unit = {
     val input = "(\\x:Bool.x) true"
@@ -25,7 +20,7 @@ object Test {
     if (e(IsValImpl)) {
       println("Value")
     } else {
-      go(e(eval).get, step + 1)
+      go(e(eval), step + 1)
     }
   }
 }

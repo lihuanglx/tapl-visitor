@@ -4,11 +4,11 @@ import tapl.common.Exp
 import tapl.component._
 import tapl.language.untyped.Factory._
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with varapp.Eval[A, M] {
-  override def TmAbs(x: String, e: Exp[A]): M[Exp[A]] = m.point(CAbs(x, e))
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with varapp.Eval[A] {
+  override def TmAbs(x: String, e: Exp[A]): Exp[A] = CAbs(x, e)
 }
 
-trait EvalM[M[_]] extends Eval[Alg, M] with Impl[M[Exp[Alg]]] {
+trait EvalM extends Eval[Alg] with Impl[Exp[Alg]] {
   override val isVal: Alg[Exp[Alg], Boolean] = IsValImpl
 
   override val isFuncVal: Alg[Exp[Alg], Option[(String, Exp[Alg])]] = IsFuncValImpl

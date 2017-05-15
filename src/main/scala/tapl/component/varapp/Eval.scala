@@ -3,24 +3,22 @@ package tapl.component.varapp
 import tapl.common.{EvalSubst, Exp, SubstAux, Util}
 import tapl.component.varapp.Factory._
 
-import scalaz.Scalaz._
-
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalSubst[A, M] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalSubst[A] {
   val isFuncVal: A[Exp[A], Option[(String, Exp[A])]]
 
-  override def TmVar(x: String): M[Exp[A]] = m.point(CVar[A](x))
+  override def TmVar(x: String): Exp[A] = CVar[A](x)
 
-  override def TmApp(e1: Exp[A], e2: Exp[A]): M[Exp[A]] = {
-    if (e1(isVal))
+  override def TmApp(e1: Exp[A], e2: Exp[A]): Exp[A] = {
+    if (e1(isVal)) {
       if (e2(isVal)) {
         val (x, body) = e1(isFuncVal).getOrElse(Util.typeError())
-        m.point(subst(x, e2)(body))
-      } else for {
-        _e2 <- apply(e2)
-      } yield CApp(e1, _e2)
-    else for {
-      _e1 <- apply(e1)
-    } yield CApp(_e1, e2)
+        subst(x, e2)(body)
+      } else {
+        CApp(e1, apply(e2))
+      }
+    } else {
+      CApp(apply(e1), e2)
+    }
   }
 }
 

@@ -4,10 +4,10 @@ import tapl.common.Exp
 import tapl.component.{floatstring, let, record}
 import tapl.language.{arith, untyped}
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with arith.Eval[A, M] with untyped.Eval[A, M]
-  with floatstring.Eval[A, M] with let.Eval[A, M] with record.Eval[A, M]
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with arith.Eval[A] with untyped.Eval[A]
+  with floatstring.Eval[A] with let.Eval[A] with record.Eval[A]
 
-trait EvalM[M[_]] extends Eval[Alg, M] with Impl[M[Exp[Alg]]] {
+trait EvalM extends Eval[Alg] with Impl[Exp[Alg]] {
   override val isVal: Alg[Exp[Alg], Boolean] = IsValImpl
 
   override val isFuncVal: Alg[Exp[Alg], Option[(String, Exp[Alg])]] = IsFuncValImpl

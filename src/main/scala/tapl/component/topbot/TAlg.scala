@@ -8,9 +8,11 @@ trait TAlg[-F, T] extends top.TAlg[F, T] {
 }
 
 trait TFactory {
+
   case class CTyBot[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
     override def apply[E](alg: A[Exp[A], E]): E = alg.TyBot()
   }
+
 }
 
 object TFactory extends TFactory

@@ -1,6 +1,6 @@
 package tapl.component.varapp
 
-import tapl.common.{Default, Exp}
+import tapl.common.Default
 
 trait Query[R, T] extends Alg[R, T] with Default[T] {
   override def TmVar(x: String): T = default

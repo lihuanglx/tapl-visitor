@@ -4,24 +4,21 @@ import tapl.common.Util.typeError
 import tapl.common.{EvalAux, Exp}
 import tapl.component.bool.Factory._
 
-import scalaz.Scalaz._
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
+  override def TmTrue(): Exp[A] = CTrue[A]()
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with EvalAux[A, M] {
-  override def TmTrue(): M[Exp[A]] = m.point(CTrue[A]())
+  override def TmFalse(): Exp[A] = CFalse[A]()
 
-  override def TmFalse(): M[Exp[A]] = m.point(CFalse[A]())
-
-  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): M[Exp[A]] = {
+  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[A] = {
     if (e1(isVal)) {
-      val r = e1 match {
+      e1 match {
         case CTrue() => e2
         case CFalse() => e3
         case _ => typeError()
       }
-      m.point(r)
-    } else for {
-      _e1 <- apply(e1)
-    } yield CIf(_e1, e2, e3)
+    } else {
+      CIf(apply(e1), e2, e3)
+    }
   }
 }
 

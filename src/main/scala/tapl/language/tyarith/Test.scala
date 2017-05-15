@@ -10,9 +10,7 @@ object Test {
     override implicit val m: Monad[Option] = implicitly[Monad[Option]]
   }
 
-  val eval = new EvalM[Option] {
-    override implicit val m: Monad[Option] = implicitly[Monad[Option]]
-  }
+  val eval = new EvalM {}
 
   val parser = new Parse[Alg, TAlg] {}
 
@@ -29,7 +27,7 @@ object Test {
     if (e(IsValImpl)) {
       println("Value")
     } else {
-      go(e(eval).get, step + 1)
+      go(e(eval), step + 1)
     }
   }
 }

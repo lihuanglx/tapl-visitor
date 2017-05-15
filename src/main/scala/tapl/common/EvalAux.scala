@@ -2,13 +2,11 @@ package tapl.common
 
 import scalaz.Monad
 
-trait EvalAux[A[-X, Y], M[_]] {
-  implicit val m: Monad[M]
-
+trait EvalAux[A[-X, Y]] {
   val isVal: A[Exp[A], Boolean]
 }
 
-trait EvalSubst[A[-R, _], M[_]] extends EvalAux[A, M] {
+trait EvalSubst[A[-R, _]] extends EvalAux[A] {
   val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
 }
 

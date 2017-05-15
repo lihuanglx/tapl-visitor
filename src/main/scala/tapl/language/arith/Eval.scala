@@ -3,9 +3,9 @@ package tapl.language.arith
 import tapl.common.Exp
 import tapl.component._
 
-trait Eval[A[-X, Y] <: Alg[X, Y], M[_]] extends Alg[Exp[A], M[Exp[A]]] with bool.Eval[A, M] with nat.Eval[A, M]
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with bool.Eval[A] with nat.Eval[A]
 
-trait EvalM[M[_]] extends Eval[Alg, M] with Impl[M[Exp[Alg]]] {
+trait EvalM extends Eval[Alg] with Impl[Exp[Alg]] {
   override val isVal: Alg[Exp[Alg], Boolean] = IsValImpl
 }
 
