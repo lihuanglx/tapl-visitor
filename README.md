@@ -4,7 +4,7 @@
 - [x] Untyped
 - [x] FullUntyped
 - [x] TyArith
-- [ ] SimpleBool
+- [x] SimpleBool
 - [ ] FullSimple
 - [ ] Bot
 - [ ] FullRef
