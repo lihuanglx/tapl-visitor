@@ -15,12 +15,13 @@ trait Factory extends record.Factory
 
 object Factory extends Factory
 
+case class CTyRecord[A[-X, Y] <: TAlg[X, Y]](l: List[(String, Exp[A])]) extends Exp[A] {
+  override def apply[E](alg: A[Exp[A], E]): E = alg.TyRecord(l)
+}
+
 trait TFactory {
-
-  case class CTyRecord[A[-X, Y] <: TAlg[X, Y]](l: List[(String, Exp[A])]) extends Exp[A] {
-    override def apply[E](alg: A[Exp[A], E]): E = alg.TyRecord(l)
-  }
-
+  type CTyRecord[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typedrecord.CTyRecord[A]
+  val CTyRecord = tapl.component.typedrecord.CTyRecord
 }
 
 object TFactory extends TFactory

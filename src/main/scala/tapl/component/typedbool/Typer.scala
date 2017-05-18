@@ -1,10 +1,9 @@
 package tapl.component.typedbool
 
 import tapl.common.Util._
-import tapl.common.{Exp, TyperAux}
-import tapl.component.typedbool.TFactory._
+import tapl.common.{Exp, TyperEq}
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAux[B] {
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperEq[B] {
 
   override def TmTrue(): Type[B] = CTyBool[B]()
 

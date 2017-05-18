@@ -2,8 +2,6 @@ package tapl.component.variant
 
 import tapl.common.Util.E3
 import tapl.common.{ETParser, Exp}
-import tapl.component.variant.Factory._
-import tapl.component.variant.TFactory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B] {
   lexical.reserved += ("as", "case", "of")

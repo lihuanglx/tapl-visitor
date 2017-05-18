@@ -2,7 +2,6 @@ package tapl.component.record
 
 import tapl.common.Util._
 import tapl.common.{EvalAux, Exp}
-import tapl.component.record.Factory._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
   override def TmRecord(l: List[(String, Exp[A])]): Exp[A] = {

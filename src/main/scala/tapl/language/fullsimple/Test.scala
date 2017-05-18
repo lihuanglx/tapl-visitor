@@ -7,7 +7,7 @@ object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\f:Bool->Bool.f true) (\\x:Bool.if x then false else true)"
+    val input = "(\\r:{x:Nat, y:Bool}. (r.x)) {x = 3, y = true}"
     val ast: E3[Alg, Exp[TAlg]] = parser.parse(input).get
     go(ast, 1)
   }

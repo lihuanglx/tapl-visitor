@@ -1,6 +1,6 @@
 package tapl.component.typed
 
-import tapl.common.Util.{E3, typeError}
+import tapl.common.Util._
 import tapl.component.typed.Factory._
 import tapl.component.varapp
 

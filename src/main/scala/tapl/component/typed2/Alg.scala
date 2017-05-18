@@ -13,12 +13,13 @@ trait Factory extends typed.Factory
 
 object Factory extends Factory
 
+case class CTyVar[A[-X, Y] <: TAlg[X, Y]](x: String) extends Exp[A] {
+  override def apply[E](alg: A[Exp[A], E]): E = alg.TyVar(x)
+}
+
 trait TFactory extends typed.TFactory {
-
-  case class CTyVar[A[-X, Y] <: TAlg[X, Y]](x: String) extends Exp[A] {
-    override def apply[E](alg: A[Exp[A], E]): E = alg.TyVar(x)
-  }
-
+  type CTyVar[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typed2.CTyVar[A]
+  val CTyVar = tapl.component.typed2.CTyVar
 }
 
 object TFactory extends TFactory

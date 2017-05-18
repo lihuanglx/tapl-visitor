@@ -2,8 +2,6 @@ package tapl.component.simple
 
 import tapl.common.Exp
 import tapl.common.Util.E3
-import tapl.component.simple.Factory._
-import tapl.component.simple.TFactory._
 import tapl.component.{floatstring, let, typed2, typedrecord}
 import tapl.language.tyarith
 

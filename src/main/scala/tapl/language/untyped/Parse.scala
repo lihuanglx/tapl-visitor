@@ -2,7 +2,6 @@ package tapl.language.untyped
 
 import tapl.common.Exp
 import tapl.component.varapp
-import tapl.language.untyped.Factory._
 
 trait Parse[A[-X, Y] <: Alg[X, Y]] extends varapp.Parse[A] {
   lexical.delimiters += ("\\", ".")

@@ -1,7 +1,6 @@
 package tapl.component.floatstring
 
 import tapl.common.Exp
-import tapl.component.floatstring.Factory._
 
 trait Transform[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
   override def TmString(s: String): Exp[A] = CString[A](s)

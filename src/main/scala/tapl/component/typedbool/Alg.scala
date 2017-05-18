@@ -15,12 +15,13 @@ trait TAlg[-F, T] {
   def apply(t: F): T
 }
 
+case class CTyBool[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
+  override def apply[E](alg: A[Exp[A], E]): E = alg.TyBool()
+}
+
 trait TFactory {
-
-  case class CTyBool[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
-    override def apply[E](alg: A[Exp[A], E]): E = alg.TyBool()
-  }
-
+  type CTyBool[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typedbool.CTyBool[A]
+  val CTyBool = tapl.component.typedbool.CTyBool
 }
 
 object TFactory extends TFactory

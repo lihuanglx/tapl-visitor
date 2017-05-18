@@ -1,7 +1,6 @@
 package tapl.component.bool
 
 import tapl.common.Exp
-import tapl.component.bool.Factory._
 
 trait Transform[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
   override def TmTrue(): Exp[A] = CTrue[A]()

@@ -16,7 +16,13 @@ trait SubstAux[A[-R, _]] {
 }
 
 trait TyperAux[A[-X, Y]] {
-  val tEquals: A[Exp[A], Exp[A] => Boolean]
-
   implicit def constType(t: Exp[A]): Type[A] = _ => t
+}
+
+trait TyperEq[A[-X, Y]] extends TyperAux[A] {
+  val tEquals: A[Exp[A], Exp[A] => Boolean]
+}
+
+trait TyperSub[A[-X, Y]] extends TyperAux[A] {
+  val subtypeOf: A[Exp[A], Exp[A] => Boolean]
 }

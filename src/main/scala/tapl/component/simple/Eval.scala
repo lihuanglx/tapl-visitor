@@ -1,7 +1,7 @@
 package tapl.component.simple
 
 import tapl.common.Util._
-import tapl.component.simple.Factory._
+import tapl.component.simple.Factory.CAbs
 import tapl.component.{floatstring, let, typed2, typedrecord}
 import tapl.language.tyarith
 

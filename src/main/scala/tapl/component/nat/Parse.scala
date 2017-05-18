@@ -1,7 +1,6 @@
 package tapl.component.nat
 
 import tapl.common.{EParser, Exp}
-import tapl.component.nat.Factory._
 
 trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
   lexical.reserved += ("iszero", "succ", "pred")

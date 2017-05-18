@@ -15,12 +15,13 @@ trait TAlg[-F, T] {
   def apply(t: F): T
 }
 
+case class CTyNat[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
+  override def apply[E](alg: A[Exp[A], E]): E = alg.TyNat()
+}
+
 trait TFactory {
-
-  case class CTyNat[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
-    override def apply[E](alg: A[Exp[A], E]): E = alg.TyNat()
-  }
-
+  type CTyNat[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typednat.CTyNat[A]
+  val CTyNat = tapl.component.typednat.CTyNat
 }
 
 object TFactory extends TFactory

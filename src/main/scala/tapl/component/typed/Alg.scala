@@ -14,22 +14,24 @@ trait TAlg[-F, T] {
   def apply(t: F): T
 }
 
+case class CAbs[A[-R, E, -F] <: Alg[R, E, F], V](x: String, t: V, e: E3[A, V]) extends E3[A, V] {
+  override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmAbs(x, t, e)
+}
+
 trait Factory extends varapp.Factory {
-
-  case class CAbs[A[-R, E, -F] <: Alg[R, E, F], V](x: String, t: V, e: E3[A, V]) extends E3[A, V] {
-    override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmAbs(x, t, e)
-  }
-
+  type CAbs[A[-R, E, -F] <: Alg[R, E, F], V] = tapl.component.typed.CAbs[A, V]
+  val CAbs = tapl.component.typed.CAbs
 }
 
 object Factory extends Factory
 
+case class CTyArr[A[-X, Y] <: TAlg[X, Y]](t1: Exp[A], t2: Exp[A]) extends Exp[A] {
+  override def apply[E](alg: A[Exp[A], E]): E = alg.TyArr(t1, t2)
+}
+
 trait TFactory {
-
-  case class CTyArr[A[-X, Y] <: TAlg[X, Y]](t1: Exp[A], t2: Exp[A]) extends Exp[A] {
-    override def apply[E](alg: A[Exp[A], E]): E = alg.TyArr(t1, t2)
-  }
-
+  type CTyArr[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typed.CTyArr[A]
+  val CTyArr = tapl.component.typed.CTyArr
 }
 
 object TFactory extends TFactory

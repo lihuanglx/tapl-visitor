@@ -4,7 +4,6 @@ import tapl.common.Util._
 import tapl.common.{EvalAux, Exp}
 import tapl.component.bool
 import tapl.component.bool.Factory._
-import tapl.component.nat.Factory._
 
 trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y]]
   extends Alg[Exp[A], Exp[A]] with EvalAux[A] with IsNatVal[A] {
