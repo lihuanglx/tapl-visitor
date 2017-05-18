@@ -11,7 +11,7 @@ object Test {
   val typer = new TyperM {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\f:Bool->Bool.f false) (\\x:Bool.if x then false else true)"
+    val input = "(\\f:Bool->Bool.f true) (\\x:Bool.if x then false else true)"
     val ast: E3[Alg, Exp[TAlg]] = parser.parse(input).get
     go(ast, 1)
   }

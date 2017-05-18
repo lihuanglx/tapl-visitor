@@ -3,11 +3,11 @@ package tapl.component.simple
 import tapl.common.Exp
 import tapl.common.Util._
 import tapl.component.simple.TFactory._
-import tapl.component.{let, typed, typedrecord}
+import tapl.component.{let, typed2, typedrecord}
 import tapl.language.tyarith
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with typed.Typer[A, B]
+  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with typed2.Typer[A, B]
     with tyarith.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
     with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
     with let.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
@@ -39,7 +39,9 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   }
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+  with typed2.TEquals[A] with tyarith.TEquals[A] with typedrecord.TEquals[A] {
+
   override def TyUnit(): (Exp[A]) => Boolean = {
     case CTyUnit() => true
     case _ => false
