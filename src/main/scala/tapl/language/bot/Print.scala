@@ -8,10 +8,10 @@ trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed.Print[A
 
 trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed.TPrint[A] with topbot.TPrint[A]
 
-object PrintImpl extends Print[Alg, Exp[TAlg]] with Impl[String] {
-  override def printT(t: Exp[TAlg]): String = t(TPrintImpl)
+object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
+  override def printT(t: Exp[TAlg]): String = t(TPrint)
 }
 
-object TPrintImpl extends TPrint[TAlg] {
+object TPrint extends TPrint[TAlg] {
   override def apply(t: Exp[TAlg]): String = t(this)
 }

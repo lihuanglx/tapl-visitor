@@ -7,4 +7,4 @@ trait Print[A[-R, _]] extends Alg[Exp[A], String] with varapp.Print[A] {
   override def TmAbs(x: String, e: Exp[A]): String = "\\" + x + "." + apply(e)
 }
 
-object PrintImpl extends Print[Alg] with Impl[String]
+object Print extends Print[Alg] with Impl[String]

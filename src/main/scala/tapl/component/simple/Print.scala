@@ -20,7 +20,9 @@ trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed2.Print[
   override def TmInert(t: V): String = "inert [" + t + "]"
 }
 
-trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] {
+trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed2.TPrint[A]
+  with tyarith.TPrint[A] with typedrecord.TPrint[A] {
+
   override def TyUnit(): String = "Unit"
 
   override def TyString(): String = "String"

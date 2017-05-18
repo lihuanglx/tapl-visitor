@@ -25,3 +25,15 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       case _ => typeError()
     }
 }
+
+trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+  override def TyVariant(l: List[(String, Exp[A])]): (Exp[A]) => Boolean = {
+    case CTyVariant(l2) => l.foldRight(true)({
+      case ((n, t), b) => l2.find(_._1 == n) match {
+        case Some((_, t2)) => apply(t)(t2) && b
+        case _ => false
+      }
+    })
+    case _ => false
+  }
+}

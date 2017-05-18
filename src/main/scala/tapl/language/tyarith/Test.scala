@@ -3,10 +3,6 @@ package tapl.language.tyarith
 import tapl.common.{Context, Exp}
 
 object Test {
-  val typer = new TyperM {}
-
-  val eval = new EvalM {}
-
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
@@ -17,12 +13,12 @@ object Test {
 
   def go(e: Exp[Alg], step: Int): Unit = {
     println("Step " + step.toString + ": ")
-    println("  Term: " + e(PrintImpl))
-    println("  Type: " + e(typer)(Context.empty())(TPrintImpl))
-    if (e(IsValImpl)) {
+    println("  Term: " + e(Print))
+    println("  Type: " + e(Typer)(Context.empty())(TPrint))
+    if (e(IsVal)) {
       println("Value")
     } else {
-      go(e(eval), step + 1)
+      go(e(Eval), step + 1)
     }
   }
 }

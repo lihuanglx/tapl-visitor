@@ -3,8 +3,6 @@ package tapl.language.fulluntyped
 import tapl.common.Exp
 
 object Test {
-  val eval = new EvalM {}
-
   val parser = new Parse[Alg] {}
 
   def main(args: Array[String]): Unit = {
@@ -16,11 +14,11 @@ object Test {
 
   def go(e: Exp[Alg], step: Int): Unit = {
     print("Step " ++ step.toString ++ ": ")
-    println(e(PrintImpl))
-    if (e(IsValImpl)) {
+    println(e(Print))
+    if (e(IsVal)) {
       println("Value")
     } else {
-      go(e(eval), step + 1)
+      go(e(Eval), step + 1)
     }
   }
 

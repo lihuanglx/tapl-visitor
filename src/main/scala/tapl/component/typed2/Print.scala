@@ -6,6 +6,6 @@ import tapl.component.typed
 
 trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed.Print[A, V]
 
-trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] {
+trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed.TPrint[A] {
   override def TyVar(x: String): String = x
 }

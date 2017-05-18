@@ -26,6 +26,14 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
   override def TmInert(t: V): E3[A, V] = ???
 }
 
-trait IsVal[A[-R, E, -F], V] extends Query[E3[A, V], Boolean, V] {
+trait IsVal[A[-R, E, -F], V] extends Query[E3[A, V], Boolean, V]
+  with tyarith.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with floatstring.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with typed2.IsVal[A, V]
+  with typedrecord.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+
   override def TmUnit(): Boolean = true
 }
+
+trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
+  with let.Subst[({type lam[-X, Y] = A[X, Y, V]})#lam] with typed2.Subst[A, V]

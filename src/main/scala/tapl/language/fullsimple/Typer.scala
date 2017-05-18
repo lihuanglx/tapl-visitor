@@ -1,11 +1,11 @@
-package tapl.language.simplebool
+package tapl.language.fullsimple
 
 import tapl.common.Exp
 import tapl.common.Util._
-import tapl.component.{typed, typedbool}
+import tapl.component.{simple, variant}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[E3[A, Exp[B]], Type[B], Exp[B]]
-  with typed.Typer[A, B] with typedbool.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
+  with simple.Typer[A, B] with variant.Typer[A, B]
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
   override val tEquals: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] =
@@ -13,4 +13,4 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with typed.TEquals[A] with typedbool.TEquals[A]
+  with simple.TEquals[A] with variant.TEquals[A]
