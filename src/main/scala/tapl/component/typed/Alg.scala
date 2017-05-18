@@ -14,8 +14,7 @@ trait TAlg[-F, T] {
   def apply(t: F): T
 }
 
-trait Factory {
-
+trait Factory extends varapp.Factory {
 
   case class CAbs[A[-R, E, -F] <: Alg[R, E, F], V](x: String, t: V, e: E3[A, V]) extends E3[A, V] {
     override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmAbs(x, t, e)

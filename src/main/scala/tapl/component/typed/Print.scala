@@ -3,9 +3,10 @@ package tapl.component.typed
 import tapl.common.Exp
 import tapl.common.Util.E3
 import tapl.component.varapp
+import tapl.common.PrintT
 
-trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with varapp.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] {
-  def printT(t: V): String
+trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V]
+  with varapp.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] with PrintT[V] {
 
   override def TmAbs(x: String, t: V, e: E3[A, V]): String = "\\(" + x + ":" + printT(t) + ")." + apply(e)
 }

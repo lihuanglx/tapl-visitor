@@ -6,7 +6,9 @@ import tapl.component.typed.Factory._
 import tapl.component.typed.TFactory._
 import tapl.component.varapp
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B] with varapp.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
+trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B]
+  with varapp.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
+
   lexical.delimiters += ("\\", ".", "(", ")", ":", "->")
 
   private val pAbsE: Parser[E3[A, Exp[B]]] =
