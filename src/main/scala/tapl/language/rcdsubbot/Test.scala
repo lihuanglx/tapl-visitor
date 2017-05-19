@@ -1,20 +1,13 @@
-package tapl.language.fullsimple
+package tapl.language.rcdsubbot
 
 import tapl.common.{Context, Exp}
-import tapl.common.Util._
+import tapl.common.Util.E3
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input =
-      """((\r: {x:Nat, y:Bool}.
-        |  \v: <l:Nat, r:Nat>.
-        |  case v of <l=lv> => if r.y then lv else r.x
-        |          | <r=rv> => rv)
-        |{x = 3, y = false})
-        |(<l = 5> as <l:Nat, r:Nat>)
-      """.stripMargin
+    val input = "(\\r:{x:Top, y:Top}. r.x) {x = (\\x:Top.x), y = (\\y:Bot.y)}"
     val ast: E3[Alg, Exp[TAlg]] = parser.parse(input).get
     go(ast, 1)
   }
