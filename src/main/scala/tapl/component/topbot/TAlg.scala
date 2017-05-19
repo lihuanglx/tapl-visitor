@@ -11,7 +11,7 @@ case class CTyBot[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
   override def apply[E](alg: A[Exp[A], E]): E = alg.TyBot()
 }
 
-trait TFactory {
+trait TFactory extends top.TFactory {
   type CTyBot[A[-X, Y] <: TAlg[X, Y]] = tapl.component.topbot.CTyBot[A]
   val CTyBot = tapl.component.topbot.CTyBot
 }

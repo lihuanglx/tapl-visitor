@@ -1,6 +1,6 @@
 package tapl.common
 
-import tapl.common.Util.Type
+import tapl.common.Util._
 
 trait EvalAux[A[-X, Y]] {
   val isVal: A[Exp[A], Boolean]
@@ -19,10 +19,13 @@ trait TyperAux[A[-X, Y]] {
   implicit def constType(t: Exp[A]): Type[A] = _ => t
 }
 
-trait TyperEq[A[-X, Y]] extends TyperAux[A] {
+trait TyperAuxEq[A[-X, Y]] extends TyperAux[A] {
   val tEquals: A[Exp[A], Exp[A] => Boolean]
 }
 
-trait TyperSub[A[-X, Y]] extends TyperAux[A] {
+trait TyperAuxSub[A[-X, Y]] extends TyperAux[A] {
   val subtypeOf: A[Exp[A], Exp[A] => Boolean]
+
+  def chooseSuper(t1: Exp[A], t2: Exp[A]): Exp[A] =
+    if (t1(subtypeOf)(t2)) t2 else if (t2(subtypeOf)(t1)) t1 else typeError()
 }
