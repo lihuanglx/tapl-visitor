@@ -5,7 +5,7 @@ import tapl.common.Util._
 import tapl.component.{topbot, typed}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with typed.Typer2[A, B]
+  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with typed.Typer3[A, B]
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
   override val tEquals: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] =

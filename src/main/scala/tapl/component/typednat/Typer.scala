@@ -1,13 +1,13 @@
 package tapl.component.typednat
 
 import tapl.common.Util._
-import tapl.common.{Exp, TyperAuxEq}
+import tapl.common.{Exp, TyperAux}
 import tapl.component.typedbool
 import tapl.component.typedbool.TFactory.CTyBool
 import tapl.component.typednat.TFactory._
 
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X, Y]]
-  extends Alg[Exp[A], Type[B]] with TyperAuxEq[B] {
+  extends Alg[Exp[A], Type[B]] with TyperAux[B] {
 
   override def TmZero(): Type[B] = CTyNat[B]()
 

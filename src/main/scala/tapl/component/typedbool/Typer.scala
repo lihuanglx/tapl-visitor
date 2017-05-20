@@ -1,9 +1,9 @@
 package tapl.component.typedbool
 
 import tapl.common.Util._
-import tapl.common.{Exp, TyperAuxEq, TyperAuxSub}
+import tapl.common.{Exp, TyperAux, TyperAuxSub}
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAuxEq[B] {
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAux[B] {
 
   override def TmTrue(): Type[B] = CTyBool[B]()
 
@@ -27,5 +27,5 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
 }
 
 trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] with TyperAuxSub[B] {
-  override protected def retTypeIf(t1: Exp[B], t2: Exp[B]): Exp[B] = chooseSuper(t1, t2)
+  override protected def retTypeIf(t1: Exp[B], t2: Exp[B]): Exp[B] = join(t1, t2)
 }

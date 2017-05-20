@@ -2,10 +2,10 @@ package tapl.component.simple
 
 import tapl.common.Util._
 import tapl.common.{Exp, PrintT}
-import tapl.component.{floatstring, let, typed2, typedrecord}
+import tapl.component.{floatstring, let, typed, typedrecord, typevar}
 import tapl.language.tyarith
 
-trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed2.Print[A, V]
+trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed.Print[A, V]
   with tyarith.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with floatstring.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with let.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
@@ -20,8 +20,8 @@ trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed2.Print[
   override def TmInert(t: V): String = "inert [" + t + "]"
 }
 
-trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed2.TPrint[A]
-  with tyarith.TPrint[A] with typedrecord.TPrint[A] {
+trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed.TPrint[A]
+  with tyarith.TPrint[A] with typedrecord.TPrint[A] with typevar.TPrint[A] {
 
   override def TyUnit(): String = "Unit"
 

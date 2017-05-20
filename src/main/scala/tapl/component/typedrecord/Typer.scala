@@ -1,10 +1,10 @@
 package tapl.component.typedrecord
 
 import tapl.common.Util._
-import tapl.common.{Exp, TyperAuxEq}
+import tapl.common.{Exp, TyperAux}
 import tapl.component.top.CTyTop
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAuxEq[B] {
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAux[B] {
   override def TmRecord(l: List[(String, Exp[A])]): Type[B] = c =>
     CTyRecord[B](l.map(x => (x._1, apply(x._2)(c))))
 

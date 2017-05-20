@@ -1,7 +1,7 @@
 package tapl.language.fullerror
 
-import tapl.common.{Context, Exp}
 import tapl.common.Util.E3
+import tapl.common.{Context, Exp}
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}

@@ -2,7 +2,7 @@ package tapl.component.simple
 
 import tapl.common.Exp
 import tapl.common.Util.E3
-import tapl.component.{floatstring, let, typed2, typedrecord}
+import tapl.component.{floatstring, let, typed, typedrecord, typevar}
 import tapl.language.tyarith
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
@@ -10,7 +10,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with floatstring.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]
     with let.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]
     with typedrecord.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-    with typed2.Parse[A, B] {
+    with typed.Parse[A, B] with typevar.Parse[B] {
 
   lexical.reserved += ("unit", "Unit", "as", "fix", "String", "Float", "inert")
   lexical.delimiters += ("(", ")", "[", "]")
@@ -30,5 +30,5 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     pTyArithE ||| pTypedE ||| pTypedRecordE ||| pExtensionE ||| pFloatStringE ||| pLetE
 
   lazy val pSimpleT: Parser[Exp[B]] =
-    pTyArithT ||| pTypedT ||| pTypedRecordT ||| pExtensionT
+    pTyArithT ||| pTypedT ||| pTypedRecordT ||| pExtensionT ||| pTypeVarT
 }

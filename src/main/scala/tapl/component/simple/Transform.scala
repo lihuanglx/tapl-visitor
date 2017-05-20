@@ -1,14 +1,14 @@
 package tapl.component.simple
 
 import tapl.common.Util._
-import tapl.component.{floatstring, let, typed2, typedrecord}
+import tapl.component.{floatstring, let, typed, typedrecord}
 import tapl.language.tyarith
 
 trait Transform[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
   with tyarith.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with floatstring.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with let.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with typed2.Transform[A, V]
+  with typed.Transform[A, V]
   with typedrecord.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
   override def TmUnit(): E3[A, V] = CUnit[A, V]()

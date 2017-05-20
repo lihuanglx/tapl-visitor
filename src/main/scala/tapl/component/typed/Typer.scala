@@ -3,7 +3,8 @@ package tapl.component.typed
 import tapl.common.Util._
 import tapl.common.{Exp, TyperAuxSub}
 import tapl.component.top.TFactory.CTyTop
-import tapl.component.varapp
+import tapl.component.topbot.CTyBot
+import tapl.component.{topbot, varapp}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with varapp.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
@@ -43,3 +44,12 @@ trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     }
 }
 
+trait Typer3[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y] with topbot.TAlg[X, Y]]
+  extends Typer2[A, B] {
+
+  override def TmApp(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c =>
+    apply(e1)(c) match {
+      case CTyBot() => CTyBot[B]()
+      case _ => super.TmApp(e1, e2)(c)
+    }
+}
