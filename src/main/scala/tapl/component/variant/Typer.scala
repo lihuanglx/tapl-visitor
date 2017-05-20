@@ -1,7 +1,6 @@
 package tapl.component.variant
 
-import tapl.common.{Exp, TyperAux}
-import tapl.common.Util._
+import tapl.common._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with TyperAux[B] {

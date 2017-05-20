@@ -1,7 +1,6 @@
 package tapl.component.typedbool
 
-import tapl.common.Util._
-import tapl.common.{Exp, TyperAux, TyperAuxSub}
+import tapl.common._
 
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAux[B] {
 

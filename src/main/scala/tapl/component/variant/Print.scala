@@ -1,7 +1,6 @@
 package tapl.component.variant
 
-import tapl.common.{Exp, PrintT}
-import tapl.common.Util.E3
+import tapl.common._
 
 trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with PrintT[V] {
   override def TmTag(x: String, e: E3[A, V], t: V): String = "<" + x + "=" + apply(e) + "> as " + printT(t)

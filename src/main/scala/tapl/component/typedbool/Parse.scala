@@ -1,6 +1,6 @@
 package tapl.component.typedbool
 
-import tapl.common.{EParser, Exp, TParser}
+import tapl.common._
 import tapl.component.bool
 
 trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends EParser[A] with TParser[B] with bool.Parse[A] {

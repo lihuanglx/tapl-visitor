@@ -1,6 +1,6 @@
 package tapl.language.arith
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component.{bool, nat}
 
 trait Parse[A[-X, Y] <: Alg[X, Y]] extends bool.Parse[A] with nat.Parse[A] {

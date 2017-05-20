@@ -1,7 +1,6 @@
 package tapl.component.typed
 
-import tapl.common.Util._
-import tapl.common.{Exp, TyperAuxSub}
+import tapl.common._
 import tapl.component.top.TFactory.CTyTop
 import tapl.component.topbot.CTyBot
 import tapl.component.{topbot, varapp}

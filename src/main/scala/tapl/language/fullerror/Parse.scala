@@ -1,7 +1,6 @@
 package tapl.language.fullerror
 
-import tapl.common.Exp
-import tapl.common.Util._
+import tapl.common._
 import tapl.component.{typedbool, typevar}
 import tapl.language.bot
 

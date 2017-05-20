@@ -1,7 +1,6 @@
 package tapl.component.simple
 
-import tapl.common.Exp
-import tapl.common.Util._
+import tapl.common._
 import tapl.component.simple.TFactory.CTyArr
 import tapl.component.{let, typed, typedrecord, typevar}
 import tapl.language.tyarith

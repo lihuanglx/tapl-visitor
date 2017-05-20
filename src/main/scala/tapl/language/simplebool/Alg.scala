@@ -1,7 +1,6 @@
 package tapl.language.simplebool
 
-import tapl.common.Exp
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.{typed, typedbool}
 
 trait Alg[-R, E, -F] extends typed.Alg[R, E, F] with typedbool.Alg[R, E]

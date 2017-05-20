@@ -1,7 +1,6 @@
 package tapl.component.bool
 
-import tapl.common.Util.typeError
-import tapl.common.{EvalAux, Exp}
+import tapl.common._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
   override def TmTrue(): Exp[A] = CTrue[A]()

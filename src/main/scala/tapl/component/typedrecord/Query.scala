@@ -1,6 +1,6 @@
 package tapl.component.typedrecord
 
-import tapl.common.Default
+import tapl.common._
 import tapl.component.record
 
 trait Query[R, T] extends Alg[R, T] with record.Query[R, T]

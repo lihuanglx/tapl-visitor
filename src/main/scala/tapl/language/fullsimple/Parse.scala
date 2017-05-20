@@ -1,7 +1,6 @@
 package tapl.language.fullsimple
 
-import tapl.common.Exp
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.{simple, variant}
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]

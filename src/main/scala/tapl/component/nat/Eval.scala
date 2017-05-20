@@ -1,7 +1,6 @@
 package tapl.component.nat
 
-import tapl.common.Util._
-import tapl.common.{EvalAux, Exp}
+import tapl.common._
 import tapl.component.bool
 import tapl.component.bool.Factory._
 

@@ -1,6 +1,6 @@
 package tapl.language.fulluntyped
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component.{floatstring, let, record}
 import tapl.language.{arith, untyped}
 

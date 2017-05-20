@@ -1,8 +1,7 @@
 package tapl.component.simple
 
-import tapl.common.Util._
-import tapl.common.{Exp, PrintT}
-import tapl.component.{floatstring, let, typed, typedrecord, typevar}
+import tapl.common._
+import tapl.component._
 import tapl.language.tyarith
 
 trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V] with typed.Print[A, V]

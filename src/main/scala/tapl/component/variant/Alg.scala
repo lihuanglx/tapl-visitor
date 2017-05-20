@@ -1,7 +1,6 @@
 package tapl.component.variant
 
-import tapl.common.Exp
-import tapl.common.Util.E3
+import tapl.common._
 
 trait Alg[-R, E, -F] {
   def TmTag(x: String, e: R, t: F): E

@@ -1,13 +1,13 @@
 package tapl.language.fullerror
 
-import tapl.common.Util.E3
-import tapl.common.{Context, Exp}
+import tapl.common._
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\f:Bool->Bool. try (f true) with false) (\\x:Bool.if x then error else true)"
+    //val input = "(\\f:Bool->Bool. try (f true) with false) (\\x:Bool.if x then error else true)"
+    val input = "error true"
     val ast: E3[Alg, Exp[TAlg]] = parser.parse(input).get
     go(ast, 1)
   }

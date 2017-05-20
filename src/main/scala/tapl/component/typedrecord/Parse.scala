@@ -1,6 +1,6 @@
 package tapl.component.typedrecord
 
-import tapl.common.{Exp, TParser}
+import tapl.common._
 import tapl.component.record
 
 trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends TParser[B] with record.Parse[A] {

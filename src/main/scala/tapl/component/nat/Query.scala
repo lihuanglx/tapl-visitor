@@ -1,6 +1,6 @@
 package tapl.component.nat
 
-import tapl.common.Default
+import tapl.common._
 
 trait Query[R, T] extends Alg[R, T] with Default[T] {
   override def TmZero(): T = default

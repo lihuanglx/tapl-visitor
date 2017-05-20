@@ -1,6 +1,6 @@
 package tapl.component.typedbool
 
-import tapl.common.Default
+import tapl.common._
 import tapl.component.bool
 
 trait Query[R, T] extends Alg[R, T] with bool.Query[R, T]

@@ -1,6 +1,6 @@
 package tapl.component.floatstring
 
-import tapl.common.{EvalAux, Exp}
+import tapl.common._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
   override def TmFloat(d: Double): Exp[A] = CFloat[A](d)

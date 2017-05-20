@@ -1,6 +1,6 @@
 package tapl.language.rcdsubbot
 
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.typedrecord
 import tapl.language.bot
 

@@ -1,7 +1,6 @@
 package tapl.component.typednat
 
-import tapl.common.Util._
-import tapl.common.{Exp, TyperAux}
+import tapl.common._
 import tapl.component.typedbool
 import tapl.component.typedbool.TFactory.CTyBool
 import tapl.component.typednat.TFactory._

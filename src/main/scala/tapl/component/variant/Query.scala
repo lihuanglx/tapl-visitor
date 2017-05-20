@@ -1,6 +1,6 @@
 package tapl.component.variant
 
-import tapl.common.Default
+import tapl.common._
 
 trait Query[R, E, F] extends Alg[R, E, F] with Default[E] {
   override def TmTag(x: String, e: R, t: F): E = default

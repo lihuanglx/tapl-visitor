@@ -1,6 +1,6 @@
 package tapl.language.tyarith
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component.{typedbool, typednat}
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with typedbool.Eval[A] with typednat.Eval[A]

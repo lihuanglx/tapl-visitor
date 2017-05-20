@@ -1,6 +1,6 @@
 package tapl.component.typednat
 
-import tapl.common.Default
+import tapl.common._
 import tapl.component.nat
 
 trait Query[R, T] extends Alg[R, T] with nat.Query[R, T]

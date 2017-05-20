@@ -1,7 +1,6 @@
 package tapl.language.fullerror
 
-import tapl.common.Exp
-import tapl.common.Util._
+import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
 
@@ -30,7 +29,10 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[E3[Alg, Exp[TAlg]]] {
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[E3[A, V], Boolean, V]
-  with bot.IsVal[A, V] with typedbool.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with bot.IsVal[A, V] with typedbool.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+
+  override def TmError(): Boolean = true
+}
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 

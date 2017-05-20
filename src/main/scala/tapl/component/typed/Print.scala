@@ -1,9 +1,7 @@
 package tapl.component.typed
 
-import tapl.common.Exp
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.varapp
-import tapl.common.PrintT
 
 trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V]
   with varapp.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] with PrintT[V] {

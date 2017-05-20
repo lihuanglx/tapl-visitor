@@ -1,6 +1,6 @@
 package tapl.language.arith
 
-import tapl.common.Exp
+import tapl.common._
 
 
 object Test {

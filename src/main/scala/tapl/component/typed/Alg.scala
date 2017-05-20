@@ -1,7 +1,6 @@
 package tapl.component.typed
 
-import tapl.common.Exp
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.varapp
 
 trait Alg[-R, E, -F] extends varapp.Alg[R, E] {

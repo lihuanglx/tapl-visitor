@@ -1,6 +1,6 @@
 package tapl.language.untyped
 
-import tapl.common.Exp
+import tapl.common._
 
 object Test {
   val parser = new Parse[Alg] {}

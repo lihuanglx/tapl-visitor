@@ -1,6 +1,6 @@
 package tapl.language.fullerror
 
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
 

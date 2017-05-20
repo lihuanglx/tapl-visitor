@@ -1,7 +1,6 @@
 package tapl.language.tyarith
 
-import tapl.common.Exp
-import tapl.common.Util._
+import tapl.common._
 import tapl.component.{typedbool, typednat}
 
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]]

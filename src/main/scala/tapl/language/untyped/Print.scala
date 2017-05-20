@@ -1,6 +1,6 @@
 package tapl.language.untyped
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component.varapp
 
 trait Print[A[-R, _]] extends Alg[Exp[A], String] with varapp.Print[A] {

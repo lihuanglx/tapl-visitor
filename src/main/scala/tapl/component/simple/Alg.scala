@@ -1,8 +1,7 @@
 package tapl.component.simple
 
-import tapl.common.Exp
-import tapl.common.Util.E3
-import tapl.component.{floatstring, let, typed, typedrecord, typevar}
+import tapl.common._
+import tapl.component._
 import tapl.language.tyarith
 
 trait Alg[-R, E, -F] extends typed.Alg[R, E, F] with tyarith.Alg[R, E]

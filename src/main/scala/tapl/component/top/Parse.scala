@@ -1,6 +1,6 @@
 package tapl.component.top
 
-import tapl.common.{Exp, TParser}
+import tapl.common._
 
 trait Parse[A[-X, Y] <: TAlg[X, Y]] extends TParser[A] {
   lexical.reserved += "Top"

@@ -1,6 +1,6 @@
 package tapl.language.arith
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component._
 
 trait Alg[-R, E] extends bool.Alg[R, E] with nat.Alg[R, E]

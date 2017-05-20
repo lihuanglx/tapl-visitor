@@ -1,7 +1,6 @@
 package tapl.language.fullsimple
 
-import tapl.common.Exp
-import tapl.common.Util.E3
+import tapl.common._
 import tapl.component.{simple, variant}
 
 trait Alg[-R, E, -F] extends simple.Alg[R, E, F] with variant.Alg[R, E, F]

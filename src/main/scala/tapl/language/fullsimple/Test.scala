@@ -1,7 +1,6 @@
 package tapl.language.fullsimple
 
-import tapl.common.{Context, Exp}
-import tapl.common.Util._
+import tapl.common._
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}

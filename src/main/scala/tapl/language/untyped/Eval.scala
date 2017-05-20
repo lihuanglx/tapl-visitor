@@ -1,9 +1,8 @@
 package tapl.language.untyped
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component._
 import tapl.language.untyped.Factory._
-import tapl.common.Util._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with varapp.Eval[A] {
   override def TmAbs(x: String, e: Exp[A]): Exp[A] = CAbs(x, e)

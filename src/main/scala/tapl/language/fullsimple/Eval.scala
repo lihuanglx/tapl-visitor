@@ -1,7 +1,6 @@
 package tapl.language.fullsimple
 
-import tapl.common.Exp
-import tapl.common.Util._
+import tapl.common._
 import tapl.component.{simple, variant}
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]

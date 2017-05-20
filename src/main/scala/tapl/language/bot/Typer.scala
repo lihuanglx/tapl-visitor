@@ -1,7 +1,6 @@
 package tapl.language.bot
 
-import tapl.common.Exp
-import tapl.common.Util._
+import tapl.common._
 import tapl.component.{topbot, typed}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]

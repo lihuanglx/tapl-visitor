@@ -1,7 +1,6 @@
 package tapl.component.variant
 
-import tapl.common.Util._
-import tapl.common.{EvalSubst, SubstAux}
+import tapl.common._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
   with EvalSubst[({type lam[-X, Y] = A[X, Y, V]})#lam] {

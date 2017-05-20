@@ -1,6 +1,6 @@
 package tapl.language.untyped
 
-import tapl.common.Exp
+import tapl.common._
 import tapl.component.varapp
 
 trait Transform[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with varapp.Transform[A] {

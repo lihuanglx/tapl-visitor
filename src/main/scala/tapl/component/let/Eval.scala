@@ -1,6 +1,6 @@
 package tapl.component.let
 
-import tapl.common.{EvalSubst, Exp, SubstAux}
+import tapl.common._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalSubst[A] {
   override def TmLet(x: String, e1: Exp[A], e2: Exp[A]): Exp[A] =
