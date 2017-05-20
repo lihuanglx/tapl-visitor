@@ -7,7 +7,7 @@ object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\r:{x:Top, y:Top}. r.x) {x = (\\x:Top.x), y = (\\y:Bot.y)}"
+    val input = "(\\r:{x:Top, y:Top}. r.x) {x = (\\x:Top.x), y = (\\y:Bot.y), z = (\\z:Top.z)}"
     val ast: E3[Alg, Exp[TAlg]] = parser.parse(input).get
     go(ast, 1)
   }
