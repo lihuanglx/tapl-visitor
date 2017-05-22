@@ -43,7 +43,10 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 object SubtypeOf extends SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
 trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with bot.Join[A] with typedbool.Join[A] with typevar.Join[A]
+  with bot.Join[A] with typevar.Join[A] {
+
+  override def TyBool(): Exp[A] => Exp[A] = directJoin(CTyBool[A](), _).getOrElse(CTyTop[A]())
+}
 
 object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
   override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
@@ -52,7 +55,10 @@ object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
 }
 
 trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with bot.Meet[A] with typedbool.Meet[A] with typevar.Meet[A]
+  with bot.Meet[A] with typevar.Meet[A] {
+
+  override def TyBool(): Exp[A] => Exp[A] = directMeet(CTyBool[A](), _).getOrElse(CTyBot[A]())
+}
 
 object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
   override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf

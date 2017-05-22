@@ -39,11 +39,3 @@ trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] 
     }
   }
 }
-
-trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
-  override def TyBool(): Exp[A] => Exp[A] = directJoin(CTyBool[A](), _).getOrElse(CTyTop[A]())
-}
-
-trait Meet[A[-X, Y] <: TAlg[X, Y] with topbot.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with MeetAux[A] {
-  override def TyBool(): Exp[A] => Exp[A] = directMeet(CTyBool[A](), _).getOrElse(CTyBot[A]())
-}
