@@ -5,6 +5,8 @@ import tapl.component.typed.Factory._
 import tapl.component.varapp
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
+  with IIsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with ISubst[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with varapp.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
   override def TmAbs(x: String, t: V, e: E3[A, V]): E3[A, V] = CAbs[A, V](x, t, e)

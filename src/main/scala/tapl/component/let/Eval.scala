@@ -2,7 +2,7 @@ package tapl.component.let
 
 import tapl.common._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalSubst[A] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] with ISubst[A] {
   override def TmLet(x: String, e1: Exp[A], e2: Exp[A]): Exp[A] =
     if (e1(isVal)) {
       e2(subst(x, e1))

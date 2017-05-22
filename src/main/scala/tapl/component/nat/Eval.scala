@@ -5,7 +5,7 @@ import tapl.component.bool
 import tapl.component.bool.Factory._
 
 trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y]]
-  extends Alg[Exp[A], Exp[A]] with EvalAux[A] with IsNatVal[A] {
+  extends Alg[Exp[A], Exp[A]] with IIsVal[A] with IsNatVal[A] {
 
   override def TmZero(): Exp[A] = CZero[A]()
 

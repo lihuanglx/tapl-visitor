@@ -2,8 +2,10 @@ package tapl.component.typedrecord
 
 import tapl.common._
 import tapl.component.top.CTyTop
+import tapl.component.topbot
+import tapl.component.topbot.CTyBot
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with TyperAux[B] {
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] {
   override def TmRecord(l: List[(String, Exp[A])]): Type[B] = c =>
     CTyRecord[B](l.map(x => (x._1, apply(x._2)(c))))
 
@@ -37,4 +39,12 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
     case CTyTop() => true
     case _ => false
   }
+}
+
+trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with topbot.TAlg[X, Y]] extends Typer[A, B] {
+  override def TmProj(e: Exp[A], x: String): Type[B] = c =>
+    apply(e)(c) match {
+      case CTyBot() => CTyBot[B]()
+      case _ => super.TmProj(e, x)(c)
+    }
 }

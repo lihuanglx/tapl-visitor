@@ -2,7 +2,7 @@ package tapl.component.varapp
 
 import tapl.common._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalSubst[A] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
   override def TmVar(x: String): Exp[A] = CVar[A](x)
 }
 

@@ -2,7 +2,7 @@ package tapl.component.bool
 
 import tapl.common._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
   override def TmTrue(): Exp[A] = CTrue[A]()
 
   override def TmFalse(): Exp[A] = CFalse[A]()

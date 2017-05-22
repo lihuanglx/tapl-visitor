@@ -3,7 +3,7 @@ package tapl.component.variant
 import tapl.common._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with TyperAux[B] {
+  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with ITEq[B] {
 
   override def TmTag(x: String, e: E3[A, Exp[B]], t: Exp[B]): Type[B] = c =>
     t match {

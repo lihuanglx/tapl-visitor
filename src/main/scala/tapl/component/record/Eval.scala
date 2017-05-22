@@ -2,7 +2,7 @@ package tapl.component.record
 
 import tapl.common._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
   override def TmRecord(l: List[(String, Exp[A])]): Exp[A] = {
     val (vs, es) = l.partition(x => isVal(x._2))
     es match {

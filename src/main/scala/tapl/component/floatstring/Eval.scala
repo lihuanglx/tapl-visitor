@@ -2,7 +2,7 @@ package tapl.component.floatstring
 
 import tapl.common._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with EvalAux[A] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
   override def TmFloat(d: Double): Exp[A] = CFloat[A](d)
 
   override def TmString(s: String): Exp[A] = CString[A](s)

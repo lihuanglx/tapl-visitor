@@ -4,7 +4,9 @@ import tapl.common._
 import tapl.component._
 import tapl.language.untyped.Factory._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with varapp.Eval[A] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]]
+  with varapp.Eval[A] with IIsVal[A] with ISubst[A] {
+
   override def TmAbs(x: String, e: Exp[A]): Exp[A] = CAbs(x, e)
 
   override def TmApp(e1: Exp[A], e2: Exp[A]): Exp[A] =

@@ -26,6 +26,8 @@ package object common {
 
   type Type[A[-X, Y]] = Context[String, Exp[A]] => Exp[A]
 
+  implicit def constType[A[-X, Y]](t: Exp[A]): Type[A] = _ => t
+
   class Context[K, V](m: Map[K, V]) {
     def +(b: (K, V)): Context[K, V] = new Context(m + b)
 
@@ -36,11 +38,11 @@ package object common {
     def empty[K, V](): Context[K, V] = new Context[K, V](Map())
   }
 
-  trait EvalAux[A[-X, Y]] {
+  trait IIsVal[A[-X, Y]] {
     val isVal: A[Exp[A], Boolean]
   }
 
-  trait EvalSubst[A[-R, _]] extends EvalAux[A] {
+  trait ISubst[A[-R, _]] {
     val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
   }
 
@@ -49,17 +51,30 @@ package object common {
     val e: Exp[A]
   }
 
-  trait TyperAux[A[-X, Y]] {
+  trait ITEq[A[-X, Y]] {
     val tEquals: A[Exp[A], Exp[A] => Boolean]
-
-    implicit def constType(t: Exp[A]): Type[A] = _ => t
   }
 
-  trait TyperAuxSub[A[-X, Y]] extends TyperAux[A] {
+  trait ISubtypeOf[A[-X, Y]] {
     val subtypeOf: A[Exp[A], Exp[A] => Boolean]
+  }
 
-    def join(t1: Exp[A], t2: Exp[A]): Exp[A] =
-      if (t1(subtypeOf)(t2)) t2 else if (t2(subtypeOf)(t1)) t1 else typeError()
+  trait IJoin[A[-X, Y]] {
+    val join: A[Exp[A], Exp[A] => Exp[A]]
+  }
+
+  trait IMeet[A[-X, Y]] {
+    val meet: A[Exp[A], Exp[A] => Exp[A]]
+  }
+
+  trait JoinAux[A[-X, Y]] extends IMeet[A] with ISubtypeOf[A] {
+    def directJoin(t1: Exp[A], t2: Exp[A]): Option[Exp[A]] =
+      if (t1(subtypeOf)(t2)) Some(t2) else if (t2(subtypeOf)(t1)) Some(t1) else None
+  }
+
+  trait MeetAux[A[-X, Y]] extends IJoin[A] with ISubtypeOf[A] {
+    def directMeet(t1: Exp[A], t2: Exp[A]): Option[Exp[A]] =
+      if (t1(subtypeOf)(t2)) Some(t1) else if (t2(subtypeOf)(t1)) Some(t2) else None
   }
 
   // parsing

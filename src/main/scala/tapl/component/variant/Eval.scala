@@ -3,7 +3,8 @@ package tapl.component.variant
 import tapl.common._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
-  with EvalSubst[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+  with IIsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with ISubst[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
   override def TmTag(x: String, e: E3[A, V], t: V): E3[A, V] =
     CTag[A, V](x, if (e(isVal)) e else apply(e), t)

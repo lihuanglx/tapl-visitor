@@ -11,16 +11,20 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 
   override def TmError(): Type[B] = CTyBot[B]()
 
-  override def TmTry(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c =>
-    join(apply(e1)(c), apply(e2)(c))
+  override def TmTry(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
+    val t1 = apply(e1)(c)
+    val t2 = apply(e2)(c)
+    t1(join)(t2)
+  }
 }
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
   override val tEquals: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] =
     new TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
-  override val subtypeOf: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] =
-    new SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
+  override val subtypeOf: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] = SubtypeOf
+
+  override val join: TAlg[Exp[TAlg], (Exp[TAlg]) => Exp[TAlg]] = Join
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
@@ -34,4 +38,24 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
     case CTyBool() => true
     case _ => false
   }
+}
+
+object SubtypeOf extends SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
+
+trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
+  with bot.Join[A] with typedbool.Join[A] with typevar.Join[A]
+
+object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
+  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+
+  override val meet: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Meet
+}
+
+trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
+  with bot.Meet[A] with typedbool.Meet[A] with typevar.Meet[A]
+
+object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
+  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+
+  override val join: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Join
 }
