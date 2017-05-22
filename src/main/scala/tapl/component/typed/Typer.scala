@@ -3,7 +3,7 @@ package tapl.component.typed
 import tapl.common._
 import tapl.component.top.TFactory.CTyTop
 import tapl.component.topbot.CTyBot
-import tapl.component.{topbot, varapp, top}
+import tapl.component.{top, topbot, varapp}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[E3[A, Exp[B]], Type[B], Exp[B]]
@@ -54,18 +54,12 @@ trait Typer3[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y] with topbot.TA
     }
 }
 
-trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]]
+  extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+
   override def TyArr(t1: Exp[A], t2: Exp[A]): (Exp[A]) => Exp[A] = u =>
     directJoin(CTyArr[A](t1, t2), u).getOrElse(u match {
       case CTyArr(t3, t4) => CTyArr[A](t1(meet)(t3), apply(t2)(t4))
       case _ => CTyTop[A]()
-    })
-}
-
-trait Meet[A[-X, Y] <: TAlg[X, Y] with topbot.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with MeetAux[A] {
-  override def TyArr(t1: Exp[A], t2: Exp[A]): (Exp[A]) => Exp[A] = u =>
-    directMeet(CTyArr[A](t1, t2), u).getOrElse(u match {
-      case CTyArr(t3, t4) => CTyArr[A](t1(join)(t3), apply(t2)(t4))
-      case _ => CTyBot[A]()
     })
 }

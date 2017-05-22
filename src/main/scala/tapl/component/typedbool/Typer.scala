@@ -1,9 +1,8 @@
 package tapl.component.typedbool
 
 import tapl.common._
+import tapl.component.top
 import tapl.component.top.CTyTop
-import tapl.component.topbot.CTyBot
-import tapl.component.{top, topbot}
 
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with ITEq[B] {
 
@@ -38,4 +37,16 @@ trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] 
       case _ => typeError()
     }
   }
+}
+
+trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+  override def TyBool(): (Exp[A]) => Boolean = {
+    case CTyTop() => true
+    case CTyBool() => true
+    case _ => false
+  }
+}
+
+trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+  override def TyBool(): Exp[A] => Exp[A] = directJoin(CTyBool[A](), _).getOrElse(CTyTop[A]())
 }

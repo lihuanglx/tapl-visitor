@@ -2,6 +2,7 @@ package tapl.language.bot
 
 import tapl.common._
 import tapl.component.{topbot, typed}
+import tapl.language.bot.TFactory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with typed.Typer3[A, B]
@@ -23,5 +24,10 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
   with typed.Join[A] with topbot.Join[A]
 
-trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with typed.Meet[A] with topbot.Meet[A]
+trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with topbot.Meet[A] {
+  override def TyArr(t1: Exp[A], t2: Exp[A]): (Exp[A]) => Exp[A] = u =>
+    directMeet(CTyArr[A](t1, t2), u).getOrElse(u match {
+      case CTyArr(t3, t4) => CTyArr[A](t1(join)(t3), apply(t2)(t4))
+      case _ => CTyBot[A]()
+    })
+}
