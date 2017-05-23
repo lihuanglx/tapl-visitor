@@ -1,8 +1,10 @@
 package tapl.component.typed
 
 import tapl.common._
-import tapl.component.top.TFactory.CTyTop
+import tapl.component.rectype.CTyRec
+import tapl.component.top.CTyTop
 import tapl.component.topbot.CTyBot
+import tapl.component.typed.TFactory._
 import tapl.component.{top, topbot, varapp}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
@@ -28,6 +30,33 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   override def TyId(x: String): Exp[A] => Boolean = {
     case CTyID(y) => x == y
     case _ => false
+  }
+}
+
+// with recursive type
+trait TEquals2[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] with IRecEq[A] {
+  override def TyId(x: String): (Exp[A]) => Boolean = recEq.TyId(x)(Set.empty)
+
+  override def TyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Boolean = recEq.TyArr(t1, t2)(Set.empty)
+}
+
+trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean] with ISubst[A] {
+  override def TyId(x: String): (Set[(Exp[A], Exp[A])]) => Exp[A] => Boolean = c => u => {
+    val p = (CTyId[A](x), u)
+    c(p) || (u match {
+      case CTyId(y) => x == y
+      case CTyRec(_, _) => apply(u)(c)(p._1)
+      case _ => false
+    })
+  }
+
+  override def TyArr(t1: Exp[A], t2: Exp[A]): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = c => u => {
+    val p = (CTyArr(t1, t2), u)
+    c(p) || (u match {
+      case CTyArr(t3, t4) => apply(t1)(c)(t3) && apply(t2)(c)(t4)
+      case CTyRec(_, _) => apply(u)(c)(p._1)
+      case _ => apply(u)(c)(p._1)
+    })
   }
 }
 

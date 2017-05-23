@@ -19,3 +19,13 @@ trait Transform[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V],
 
   override def TmInert(t: V): E3[A, V] = ???
 }
+
+trait TTransform[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A]]
+  with tyarith.TTransform[A] with typed.TTransform[A] with typedrecord.TTransform[A] {
+
+  override def TyFloat(): Exp[A] = CTyFloat[A]()
+
+  override def TyString(): Exp[A] = CTyString[A]()
+
+  override def TyUnit(): Exp[A] = CTyUnit[A]()
+}

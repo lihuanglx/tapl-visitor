@@ -25,53 +25,23 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
     (x, e) => new TSubstImpl(x, e)
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
-  val TEq: A[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
+trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+  with typed.TEquals2[A] with rectype.TEquals[A] {
 
   override def TyVar(x: String): Exp[A] => Boolean = _ => false
-
-  override def TyId(x: String): (Exp[A]) => Boolean = TEq.TyId(x)(Set.empty)
-
-  override def TyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Boolean = TEq.TyArr(t1, t2)(Set.empty)
-
-  override def TyRec(x: String, t: Exp[A]): Exp[A] => Boolean = TEq.TyRec(x, t)(Set.empty)
 }
 
-trait TEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean] with ISubst[A] {
-  override def TyId(x: String): (Set[(Exp[A], Exp[A])]) => Exp[A] => Boolean = c => u => {
-    val p = (CTyId[A](x), u)
-    c(p) || (u match {
-      case CTyId(y) => x == y
-      case CTyRec(_, _) => apply(u)(c)(p._1)
-      case _ => false
-    })
-  }
+trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
+  with typed.RecEq[A] with rectype.RecEq[A] {
 
   override def TyVar(x: String): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = _ => _ => false
-
-  override def TyRec(x: String, t: Exp[A]): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = c => u => {
-    val p = (CTyRec(x, t), u)
-    c(p) || {
-      val s = t(subst(x, p._1))
-      apply(s)(c + p)(u)
-    }
-  }
-
-  override def TyArr(t1: Exp[A], t2: Exp[A]): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = c => u => {
-    val p = (CTyArr(t1, t2), u)
-    c(p) || (u match {
-      case CTyArr(t3, t4) => apply(t1)(c)(t3) && apply(t2)(c)(t4)
-      case CTyRec(_, _) => apply(u)(c)(p._1)
-      case _ => apply(u)(c)(p._1)
-    })
-  }
 }
 
 object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean] {
-  override val TEq = tapl.language.equirec.TEq
+  override val recEq = RecEq
 }
 
-object TEq extends TEq[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
+object RecEq extends RecEq[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
   override val subst: (String, Exp[TAlg]) => TAlg[Exp[TAlg], Exp[TAlg]] =
     (x, e) => new TSubstImpl(x, e)
 }

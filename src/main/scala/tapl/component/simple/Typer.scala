@@ -1,9 +1,9 @@
 package tapl.component.simple
 
 import tapl.common._
+import tapl.component._
 import tapl.component.simple.TFactory.CTyArr
 import tapl.component.top.CTyTop
-import tapl.component._
 import tapl.language.tyarith
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
@@ -97,9 +97,9 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
   with typed.Join[A] with tyarith.Join[A] with typedrecord.Join[A] {
 
-  override def TyUnit(): (Exp[A]) => Exp[A] = directJoin(CTyUnit[A](), _).getOrElse(CTyTop[A]())
+  override def TyUnit(): Exp[A] => Exp[A] = directJoin(CTyUnit[A](), _).getOrElse(CTyTop[A]())
 
-  override def TyFloat(): (Exp[A]) => Exp[A] = directJoin(CTyFloat[A](), _).getOrElse(CTyTop[A]())
+  override def TyFloat(): Exp[A] => Exp[A] = directJoin(CTyFloat[A](), _).getOrElse(CTyTop[A]())
 
-  override def TyString(): (Exp[A]) => Exp[A] = directJoin(CTyString[A](), _).getOrElse(CTyTop[A]())
+  override def TyString(): Exp[A] => Exp[A] = directJoin(CTyString[A](), _).getOrElse(CTyTop[A]())
 }

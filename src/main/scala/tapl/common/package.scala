@@ -67,6 +67,10 @@ package object common {
     val meet: A[Exp[A], Exp[A] => Exp[A]]
   }
 
+  trait IRecEq[A[-X, Y]] {
+    val recEq: A[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
+  }
+
   trait JoinAux[A[-X, Y]] extends IMeet[A] with ISubtypeOf[A] {
     def directJoin(t1: Exp[A], t2: Exp[A]): Option[Exp[A]] =
       if (t1(subtypeOf)(t2)) Some(t2) else if (t2(subtypeOf)(t1)) Some(t1) else None
