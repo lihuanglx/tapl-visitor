@@ -28,7 +28,9 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   val TEq: A[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
 
-  override def TyVar(x: String): Exp[A] => Boolean = TEq.TyVar(x)(Set.empty)
+  override def TyVar(x: String): Exp[A] => Boolean = _ => false
+
+  override def TyId(x: String): (Exp[A]) => Boolean = TEq.TyId(x)(Set.empty)
 
   override def TyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Boolean = TEq.TyArr(t1, t2)(Set.empty)
 
@@ -36,14 +38,16 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
 }
 
 trait TEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean] with ISubst[A] {
-  override def TyVar(x: String): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = c => u => {
-    val p = (CTyVar[A](x), u)
+  override def TyId(x: String): (Set[(Exp[A], Exp[A])]) => Exp[A] => Boolean = c => u => {
+    val p = (CTyId[A](x), u)
     c(p) || (u match {
-      case CTyVar(y) => x == y
+      case CTyId(y) => x == y
       case CTyRec(_, _) => apply(u)(c)(p._1)
       case _ => false
     })
   }
+
+  override def TyVar(x: String): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = _ => _ => false
 
   override def TyRec(x: String, t: Exp[A]): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = c => u => {
     val p = (CTyRec(x, t), u)

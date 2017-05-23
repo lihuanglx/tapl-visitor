@@ -10,6 +10,8 @@ trait Alg[-R, E, -F] extends varapp.Alg[R, E] {
 trait TAlg[-F, T] {
   def TyArr(t1: F, t2: F): T
 
+  def TyId(x: String): T
+
   def apply(t: F): T
 }
 
@@ -28,9 +30,16 @@ case class CTyArr[A[-X, Y] <: TAlg[X, Y]](t1: Exp[A], t2: Exp[A]) extends Exp[A]
   override def apply[E](alg: A[Exp[A], E]): E = alg.TyArr(t1, t2)
 }
 
+case class CTyID[A[-X, Y] <: TAlg[X, Y]](x: String) extends Exp[A] {
+  override def apply[E](alg: A[Exp[A], E]): E = alg.TyId(x)
+}
+
 trait TFactory {
   type CTyArr[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typed.CTyArr[A]
   val CTyArr = tapl.component.typed.CTyArr
+
+  type CTyId[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typed.CTyID[A]
+  val CTyId = tapl.component.typed.CTyID
 }
 
 object TFactory extends TFactory

@@ -87,7 +87,12 @@ package object common {
 
     def parseBy[T](parser: Parser[T])(inp: String): Option[T] = {
       val t = phrase(parser)(new lexical.Scanner(inp))
-      if (t.successful) Some(t.get) else None
+      if (t.successful)
+        Some(t.get)
+      else {
+        println(t.toString)
+        None
+      }
     }
   }
 

@@ -11,4 +11,6 @@ trait Print[A[-R, E, -F], V] extends Alg[E3[A, V], String, V]
 
 trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] {
   override def TyArr(t1: Exp[A], t2: Exp[A]): String = apply(t1) + "->" + apply(t2)
+
+  override def TyId(x: String): String = x
 }

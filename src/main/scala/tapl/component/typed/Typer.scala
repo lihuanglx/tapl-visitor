@@ -24,12 +24,23 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
     case CTyArr(_t1, _t2) => apply(t1)(_t1) && apply(t2)(_t2)
     case _ => false
   }
+
+  override def TyId(x: String): Exp[A] => Boolean = {
+    case CTyID(y) => x == y
+    case _ => false
+  }
 }
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   override def TyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Boolean = {
     case CTyTop() => true
     case CTyArr(t3, t4) => apply(t3)(t1) && apply(t2)(t4)
+    case _ => false
+  }
+
+  override def TyId(x: String): Exp[A] => Boolean = {
+    case CTyTop() => true
+    case CTyID(y) => x == y
     case _ => false
   }
 }
@@ -57,9 +68,12 @@ trait Typer3[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y] with topbot.TA
 trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]]
   extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
 
-  override def TyArr(t1: Exp[A], t2: Exp[A]): (Exp[A]) => Exp[A] = u =>
+  override def TyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Exp[A] = u =>
     directJoin(CTyArr[A](t1, t2), u).getOrElse(u match {
       case CTyArr(t3, t4) => CTyArr[A](t1(meet)(t3), apply(t2)(t4))
       case _ => CTyTop[A]()
     })
+
+  override def TyId(x: String): Exp[A] => Exp[A] =
+    directJoin(CTyID[A](x), _).getOrElse(CTyTop[A]())
 }
