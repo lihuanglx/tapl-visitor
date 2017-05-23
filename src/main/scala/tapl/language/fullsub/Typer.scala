@@ -64,8 +64,6 @@ trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with t
     })
 
   override def TyString(): Exp[A] => Exp[A] = directMeet(CTyString[A](), _).getOrElse(typeError())
-
-  override def TyVar(x: String): Exp[A] => Exp[A] = directMeet(CTyVar[A](x), _).getOrElse(typeError())
 }
 
 object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {

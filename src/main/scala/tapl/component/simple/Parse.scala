@@ -9,7 +9,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with floatstring.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]
     with let.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]
     with typedrecord.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-    with typed.Parse[A, B] with typevar.Parse[B] {
+    with typed.Parse[A, B] {
 
   lexical.reserved += ("unit", "Unit", "as", "fix", "String", "Float", "inert")
   lexical.delimiters += ("(", ")", "[", "]")
@@ -29,5 +29,5 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     pTyArithE ||| pTypedE ||| pTypedRecordE ||| pExtensionE ||| pFloatStringE ||| pLetE
 
   lazy val pSimpleT: Parser[Exp[B]] =
-    pTyArithT ||| pTypedT ||| pTypedRecordT ||| pExtensionT ||| pTypeVarT
+    pTyArithT ||| pTypedT ||| pTypedRecordT ||| pExtensionT
 }

@@ -16,9 +16,7 @@ trait Alg[-R, E, -F] extends typed.Alg[R, E, F] with tyarith.Alg[R, E]
   def TmInert(t: F): E
 }
 
-trait TAlg[-F, T] extends typed.TAlg[F, T] with tyarith.TAlg[F, T]
-  with typedrecord.TAlg[F, T] with typevar.TAlg[F, T] {
-
+trait TAlg[-F, T] extends typed.TAlg[F, T] with tyarith.TAlg[F, T] with typedrecord.TAlg[F, T] {
   def TyUnit(): T
 
   def TyString(): T
@@ -72,7 +70,7 @@ case class CTyFloat[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
   override def apply[E](alg: A[Exp[A], E]): E = alg.TyFloat()
 }
 
-trait TFactory extends typed.TFactory with typedrecord.TFactory with tyarith.TFactory with typevar.TFactory {
+trait TFactory extends typed.TFactory with typedrecord.TFactory with tyarith.TFactory {
   type CTyUnit[A[-X, Y] <: TAlg[X, Y]] = tapl.component.simple.CTyUnit[A]
   val CTyUnit = tapl.component.simple.CTyUnit
 

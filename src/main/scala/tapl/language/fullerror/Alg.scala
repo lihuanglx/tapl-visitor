@@ -1,7 +1,7 @@
 package tapl.language.fullerror
 
 import tapl.common._
-import tapl.component.{typedbool, typevar}
+import tapl.component.typedbool
 import tapl.language.bot
 
 trait Alg[-R, E, -F] extends bot.Alg[R, E, F] with typedbool.Alg[R, E] {
@@ -10,7 +10,7 @@ trait Alg[-R, E, -F] extends bot.Alg[R, E, F] with typedbool.Alg[R, E] {
   def TmTry(e1: R, e2: R): E
 }
 
-trait TAlg[-F, T] extends bot.TAlg[F, T] with typedbool.TAlg[F, T] with typevar.TAlg[F, T]
+trait TAlg[-F, T] extends bot.TAlg[F, T] with typedbool.TAlg[F, T]
 
 case class CError[A[-R, E, -F] <: Alg[R, E, F], V]() extends E3[A, V] {
   override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmError()
@@ -30,7 +30,7 @@ trait Factory extends bot.Factory with typedbool.Factory {
 
 object Factory extends Factory
 
-trait TFactory extends bot.TFactory with typedbool.TFactory with typevar.TFactory
+trait TFactory extends bot.TFactory with typedbool.TFactory
 
 object TFactory extends TFactory
 
