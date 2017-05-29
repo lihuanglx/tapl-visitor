@@ -3,11 +3,9 @@ package tapl.language.untyped
 import tapl.common._
 
 object Test {
-  val parser = new Parse[Alg] {}
-
   def main(args: Array[String]): Unit = {
     val input = "(\\x.(\\x.x)) (\\y.y)"
-    val ast: Exp[Alg] = parser.parse(input).get
+    val ast: Exp[Alg] = Parse.parse(input).get
     go(ast, 1)
   }
 

@@ -13,3 +13,5 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends varapp.Parse[A] {
 
   override lazy val pE: Parser[Exp[A]] = pUntypedE
 }
+
+object Parse extends Parse[Alg]

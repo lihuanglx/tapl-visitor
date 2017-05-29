@@ -9,3 +9,5 @@ scalacOptions ++= Seq("-language:higherKinds", "-language:implicitConversions", 
 //libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.12"
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6"
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
