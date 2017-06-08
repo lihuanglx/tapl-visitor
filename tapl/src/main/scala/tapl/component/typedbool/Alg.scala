@@ -1,27 +1,15 @@
 package tapl.component.typedbool
 
-import tapl.common.Exp
+import macros.Visitor
+import tapl.common._
 import tapl.component.bool
 
+@Visitor("debug")
 trait Alg[-R, E] extends bool.Alg[R, E]
 
-trait Factory extends bool.Alg.Factory
-
-object Factory extends Factory
-
+@Visitor("debug")
 trait TAlg[-F, T] {
-  def TyBool(): T
+  def tyBool(): T
 
   def apply(t: F): T
 }
-
-case class CTyBool[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
-  override def apply[E](alg: A[Exp[A], E]): E = alg.TyBool()
-}
-
-trait TFactory {
-  type CTyBool[A[-X, Y] <: TAlg[X, Y]] = tapl.component.typedbool.CTyBool[A]
-  val CTyBool = tapl.component.typedbool.CTyBool
-}
-
-object TFactory extends TFactory

@@ -14,10 +14,10 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
     case _ => if (e1(isVal)) e1 else CTry[A, V](apply(e1), e2)
   }
 
-  override def TmApp(e1: E3[A, V], e2: E3[A, V]): E3[A, V] = (e1, e2) match {
+  override def tmApp(e1: E3[A, V], e2: E3[A, V]): E3[A, V] = (e1, e2) match {
     case (CError(), _) => e1
     case (_, CError()) => e2
-    case _ => super.TmApp(e1, e2)
+    case _ => super.tmApp(e1, e2)
   }
 }
 

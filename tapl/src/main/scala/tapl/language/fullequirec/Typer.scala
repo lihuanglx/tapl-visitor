@@ -8,7 +8,7 @@ import tapl.language.fullsimple
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] with ISubst[B] {
 
-  override def TmApp(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
+  override def tmApp(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
     def go(t: Exp[B]): Exp[B] = t match {
       case CTyRec(x, r) => go(r(subst(x, t)))
       case CTyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
@@ -35,9 +35,9 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 
   override def TyFloat(): Exp[A] => Boolean = recEq.TyFloat()(Set.empty)
 
-  override def TyNat(): Exp[A] => Boolean = recEq.TyNat()(Set.empty)
+  override def tyNat(): Exp[A] => Boolean = recEq.tyNat()(Set.empty)
 
-  override def TyBool(): Exp[A] => Boolean = recEq.TyBool()(Set.empty)
+  override def tyBool(): Exp[A] => Boolean = recEq.tyBool()(Set.empty)
 
   override def TyRecord(l: List[(String, Exp[A])]): Exp[A] => Boolean = recEq.TyRecord(l)(Set.empty)
 
@@ -71,13 +71,13 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
     case _ => false
   })
 
-  override def TyNat(): T = defaultEq(CTyNat[A](), _ => {
-    case CTyNat() => true
+  override def tyNat(): T = defaultEq(TyNat[A](), _ => {
+    case TyNat() => true
     case _ => false
   })
 
-  override def TyBool(): T = defaultEq(CTyBool[A](), _ => {
-    case CTyBool() => true
+  override def tyBool(): T = defaultEq(TyBool[A](), _ => {
+    case TyBool() => true
     case _ => false
   })
 

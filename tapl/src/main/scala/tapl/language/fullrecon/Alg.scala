@@ -8,7 +8,7 @@ trait Alg[-R, E, -F] extends recon.Alg[R, E, F] with let.Alg[R, E]
 
 trait TAlg[-F, T] extends recon.TAlg[F, T]
 
-trait Factory extends recon.Factory with let.Factory
+trait Factory extends recon.Factory with let.Alg.Factory
 
 object Factory extends Factory
 

@@ -19,7 +19,7 @@ case class CAbs[A[-R, E, -F] <: Alg[R, E, F], V](x: String, t: V, e: E3[A, V]) e
   override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmAbs(x, t, e)
 }
 
-trait Factory extends varapp.Factory {
+trait Factory extends varapp.Alg.Factory {
   type CAbs[A[-R, E, -F] <: Alg[R, E, F], V] = tapl.component.typed.CAbs[A, V]
   val CAbs = tapl.component.typed.CAbs
 }

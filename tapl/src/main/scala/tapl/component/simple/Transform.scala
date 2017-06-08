@@ -5,9 +5,9 @@ import tapl.component.{floatstring, let, typed, typedrecord}
 import tapl.language.tyarith
 
 trait Transform[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
-  with tyarith.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with floatstring.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with let.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with tyarith.Alg.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with floatstring.Alg.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with let.Alg.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with typed.Transform[A, V]
   with typedrecord.Transform[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
@@ -21,7 +21,7 @@ trait Transform[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V],
 }
 
 trait TTransform[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A]]
-  with tyarith.TTransform[A] with typed.TTransform[A] with typedrecord.TTransform[A] {
+  with tyarith.TAlg.Transform[A] with typed.TTransform[A] with typedrecord.TTransform[A] {
 
   override def TyFloat(): Exp[A] = CTyFloat[A]()
 

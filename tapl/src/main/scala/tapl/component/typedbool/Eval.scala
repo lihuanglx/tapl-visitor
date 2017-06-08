@@ -2,6 +2,7 @@ package tapl.component.typedbool
 
 import tapl.common.Exp
 import tapl.component.bool
+import tapl.component.typedbool.Alg._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with bool.Eval[A]
 

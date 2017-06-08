@@ -11,16 +11,16 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[E3[A, V], E3[A, V], V]
 
   override def TmAbs(x: String, t: V, e: E3[A, V]): E3[A, V] = CAbs[A, V](x, t, e)
 
-  override def TmApp(e1: E3[A, V], e2: E3[A, V]): E3[A, V] =
+  override def tmApp(e1: E3[A, V], e2: E3[A, V]): E3[A, V] =
     if (e1(isVal)) {
       if (e2(isVal)) e1 match {
         case CAbs(x, _, body) => body(subst(x, e2))
         case _ => typeError()
       } else {
-        CApp[({type lam[-X, Y] = A[X, Y, V]})#lam](e1, apply(e2))
+        TmApp[({type lam[-X, Y] = A[X, Y, V]})#lam](e1, apply(e2))
       }
     } else {
-      CApp[({type lam[-X, Y] = A[X, Y, V]})#lam](apply(e1), e2)
+      TmApp[({type lam[-X, Y] = A[X, Y, V]})#lam](apply(e1), e2)
     }
 }
 

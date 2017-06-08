@@ -11,7 +11,7 @@ trait TAlg[-F, T] {
   def apply(t: F): T
 }
 
-trait Factory extends record.Factory
+trait Factory extends record.Alg.Factory
 
 object Factory extends Factory
 

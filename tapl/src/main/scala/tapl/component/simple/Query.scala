@@ -3,8 +3,8 @@ package tapl.component.simple
 import tapl.component.{floatstring, let, typed, typedrecord}
 import tapl.language.tyarith
 
-trait Query[R, E, F] extends Alg[R, E, F] with floatstring.Query[R, E]
-  with let.Query[R, E] with typed.Query[R, E, F] with typedrecord.Query[R, E] with tyarith.Query[R, E] {
+trait Query[R, E, F] extends Alg[R, E, F] with floatstring.Alg.Query[R, E]
+  with let.Alg.Query[R, E] with typed.Query[R, E, F] with typedrecord.Query[R, E] with tyarith.Alg.Query[R, E] {
 
   override def TmUnit(): E = default
 

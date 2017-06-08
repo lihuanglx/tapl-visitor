@@ -35,7 +35,7 @@ object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
 }
 
 trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with top.Meet[A] {
-  override def TyBool(): Exp[A] => Exp[A] = directMeet(CTyBool[A](), _).getOrElse(typeError())
+  override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(typeError())
 
   override def TyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Exp[A] = u =>
     directMeet(CTyArr[A](t1, t2), u).getOrElse(u match {
@@ -47,7 +47,7 @@ trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with t
 
   override def TyFloat(): Exp[A] => Exp[A] = directMeet(CTyFloat[A](), _).getOrElse(typeError())
 
-  override def TyNat(): Exp[A] => Exp[A] = directMeet(CTyNat[A](), _).getOrElse(typeError())
+  override def tyNat(): Exp[A] => Exp[A] = directMeet(TyNat[A](), _).getOrElse(typeError())
 
   override def TyRecord(l: List[(String, Exp[A])]): Exp[A] => Exp[A] = u =>
     directMeet(CTyRecord[A](l), u).getOrElse(u match {

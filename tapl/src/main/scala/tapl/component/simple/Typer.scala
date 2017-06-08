@@ -27,11 +27,11 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   // todo
   override def TmInert(t: Exp[B]): Type[B] = ???
 
-  override def TmFloat(d: Double): Type[B] = CTyFloat[B]()
+  override def tmFloat(d: Double): Type[B] = CTyFloat[B]()
 
-  override def TmString(s: String): Type[B] = CTyString[B]()
+  override def tmString(s: String): Type[B] = CTyString[B]()
 
-  override def TmTimes(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
+  override def tmTimes(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
     (apply(e1)(c), apply(e2)(c)) match {
       case (CTyFloat(), CTyFloat()) => CTyFloat[B]()
       case _ => typeError()

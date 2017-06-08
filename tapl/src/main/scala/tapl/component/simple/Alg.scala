@@ -40,8 +40,8 @@ case class CInert[A[-R, E, -F] <: Alg[R, E, F], V](t: V) extends E3[A, V] {
   override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmInert(t)
 }
 
-trait Factory extends typed.Factory with tyarith.Factory with floatstring.Factory
-  with let.Factory with typedrecord.Factory {
+trait Factory extends typed.Factory with tyarith.Alg.Factory with floatstring.Alg.Factory
+  with let.Alg.Factory with typedrecord.Factory {
 
   type CUnit[A[-R, E, -F] <: Alg[R, E, F], V] = tapl.component.simple.CUnit[A, V]
   val CUnit = tapl.component.simple.CUnit
@@ -70,7 +70,7 @@ case class CTyFloat[A[-X, Y] <: TAlg[X, Y]]() extends Exp[A] {
   override def apply[E](alg: A[Exp[A], E]): E = alg.TyFloat()
 }
 
-trait TFactory extends typed.TFactory with typedrecord.TFactory with tyarith.TFactory {
+trait TFactory extends typed.TFactory with typedrecord.TFactory with tyarith.TAlg.Factory {
   type CTyUnit[A[-X, Y] <: TAlg[X, Y]] = tapl.component.simple.CTyUnit[A]
   val CTyUnit = tapl.component.simple.CTyUnit
 

@@ -3,6 +3,7 @@ package tapl.language.fulluntyped
 import tapl.common._
 import tapl.component.{floatstring, let, record}
 import tapl.language.{arith, untyped}
+import tapl.language.fulluntyped.Alg._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with arith.Eval[A] with untyped.Eval[A]
   with floatstring.Eval[A] with let.Eval[A] with record.Eval[A]
