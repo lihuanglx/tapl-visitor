@@ -3,7 +3,7 @@ package play.examples.lang0
 import macros.Visitor
 import play.examples.Common._
 
-@Visitor
+@Visitor("debug")
 trait Alg[-R, E] {
   def lit(x: Int): E
 

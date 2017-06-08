@@ -5,6 +5,11 @@ import scala.meta._
 
 class Visitor extends scala.annotation.StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
+    val debug = this match {
+      case q"new $_(${Lit.String(a)})" if a == "debug" => true
+      case _  => false
+    }
+
     defn match {
       // companion object exists
       case Term.Block(
@@ -49,7 +54,7 @@ class Visitor extends scala.annotation.StaticAnnotation {
       */
 
       case alg: Defn.Trait =>
-        Term.Block(Seq(alg, Util(alg).makeCompanion()))
+        Term.Block(Seq(alg, Util(alg, debug).makeCompanion()))
 
       case _ =>
         abort("@Visitor must annotate a trait.")
@@ -58,7 +63,7 @@ class Visitor extends scala.annotation.StaticAnnotation {
 
 }
 
-case class Util(alg: Defn.Trait) {
+case class Util(alg: Defn.Trait, debug: Boolean) {
 
   val parents: Seq[(String, Seq[Type])] = alg.templ.parents.map({
     case Term.Apply(Term.ApplyType(fun, targs), _) => (fun.syntax, targs)
@@ -79,6 +84,10 @@ case class Util(alg: Defn.Trait) {
   }
 
   val numOfSorts: Int = alg.tparams.length
+
+  def print(x: Any): Unit = {
+    if (debug) Predef.print(x)
+  }
 
   // generate a single class
   def genClass(defn: Decl.Def): Defn.Class = {
