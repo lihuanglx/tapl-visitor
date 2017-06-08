@@ -1,6 +1,6 @@
 package play
 
-object TestOverloading {
+object TestLifting {
 
   trait Exp[-A[-R, _]] {
     def apply[E](alg: A[Exp[A], E]): E
@@ -96,30 +96,4 @@ object TestOverloading {
     println(e1(E3)(Map("x" -> 2, "y" -> 3)))
   }
 
-}
-
-object T2 {
-
-  trait U {
-    val b: Boolean
-  }
-
-  trait T1 {
-    val b: Boolean = true
-
-    def go(): U = new U {
-      override val b: Boolean = T1.this.b
-    }
-  }
-
-  trait T2 {
-    val b: Boolean = false
-  }
-
-  def main(args: Array[String]): Unit = {
-    val t = new T1 with T2 {
-      override val b: Boolean = false
-    }
-    println(t.go().b)
-  }
 }
