@@ -7,7 +7,7 @@ class Visitor extends scala.annotation.StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
     val debug = this match {
       case q"new $_(${Lit.String(a)})" if a == "debug" => true
-      case _  => false
+      case _ => false
     }
 
     defn match {
@@ -102,19 +102,17 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
       val re = alg.tparams.head.name.value
 
       numOfSorts match {
-        case 2 =>
-          defn.paramss.map(_.map(t => {
-            val Type.Name(x) = t.decltpe.get
-            if (x == re) param"${t.name}: Exp[A]" else t
-          }))
+        case 2 => defn.paramss.map(_.map(t =>
+          t.transform({ case Type.Name(`re`) => t"Exp[A]" }).asInstanceOf[Term.Param]
+        ))
         case 3 =>
           val rt = alg.tparams(2).name.value
-          defn.paramss.map(_.map(t => {
-            val Type.Name(x) = t.decltpe.get
-            if (x == re) param"${t.name}: TExp[A, T]"
-            else if (x == rt) param"${t.name}: T"
-            else t
-          }))
+          defn.paramss.map(_.map(t =>
+            t.transform({
+              case Type.Name(`re`) => t"TExp[A, T]"
+              case Type.Name(`rt`) => t"T"
+            }).asInstanceOf[Term.Param]
+          ))
       }
     }
 
@@ -193,31 +191,42 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
   }
 
   def genTransform(): Defn.Trait = {
+
+    def addApply(tm: Term, ty: Type, nm: String): Term = ty match {
+      case t"${x: Type.Name}" => if (x.value == nm) q"apply($tm)" else tm
+      case t"(..$tpesnel)" =>
+        val exprsnel = tpesnel zip (Stream from 1) map {
+          case (t, i) =>
+            val id = Term.Name("_" + i.toString)
+            addApply(q"$tm.$id", t, nm)
+        }
+        q"(..$exprsnel)"
+      case t"List[$t]" => q"$tm.map(x => ${addApply(Term.Name("x"), t, nm)})"
+    }
+
     val ctor = Ctor.Ref.Name(alg.name.value)
 
     val stats: Seq[Defn.Def] = cases.map(d => {
       val re = alg.tparams.head.name.value
 
-      val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => {
-        val Type.Name(x) = t.decltpe.get
-        if (x == re) q"apply(${Term.Name(t.name.value)})" else Term.Name(t.name.value)
-      }))
+      val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t =>
+        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], re)
+      ))
 
       val capName = Term.Name(d.name.value.capitalize)
 
       val paramss = numOfSorts match {
-        case 2 => d.paramss.map(_.map(t => {
-          val Type.Name(x) = t.decltpe.get
-          if (x == re) param"${t.name}: Exp[A]" else t
-        }))
+        case 2 => d.paramss.map(_.map(t =>
+          t.transform({ case Type.Name(`re`) => t"Exp[A]" }).asInstanceOf[Term.Param]
+        ))
         case 3 =>
           val rt = alg.tparams(2).name.value
-          d.paramss.map(_.map(t => {
-            val Type.Name(x) = t.decltpe.get
-            if (x == re) param"${t.name}: TExp[A, T]"
-            else if (x == rt) param"${t.name}: T"
-            else t
-          }))
+          d.paramss.map(_.map(t =>
+            t.transform({
+              case Type.Name(`re`) => t"TExp[A, T]"
+              case Type.Name(`rt`) => t"T"
+            }).asInstanceOf[Term.Param]
+          ))
       }
 
       numOfSorts match {
@@ -267,10 +276,12 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
       }
     })
 
+    val mods = if (parents.isEmpty) Seq() else Seq(mod"override")
+
     val lifter = numOfSorts match {
       case 2 =>
         q"""trait Lifter[$recTp, E, C] extends $ctor[$recTy, C => E] with ..$pLifters {
-              def go(c: C): ${alg.name}[$recTy, E]
+              ..$mods def go(c: C): ${alg.name}[$recTy, E]
               ..$stats
             }
           """
@@ -278,7 +289,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
         val rp2 = alg.tparams(2)
         val rt2 = Type.Name(rp2.name.value)
         q"""trait Lifter[$recTp, E, $rp2, C] extends $ctor[$recTy, C => E, $rt2] with ..$pLifters {
-              def go(c: C): ${alg.name}[$recTy, E, $rt2]
+              ..$mods def go(c: C): ${alg.name}[$recTy, E, $rt2]
               ..$stats
             }
           """
