@@ -3,6 +3,7 @@ package tapl.language.rcdsubbot
 import tapl.common._
 import tapl.component.typedrecord
 import tapl.language.bot
+import tapl.language.rcdsubbot.Alg._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V]
   with typedrecord.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] with bot.Eval[A, V]

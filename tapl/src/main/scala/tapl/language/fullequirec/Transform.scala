@@ -8,4 +8,4 @@ trait Transform[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A,
   with fullsimple.Alg.Transform[A, V]
 
 trait TTransform[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A]]
-  with fullsimple.TAlg.Transform[A] with typevar.TTransform[A] with rectype.TTransform[A]
+  with fullsimple.TAlg.Transform[A] with typevar.TAlg.Transform[A] with rectype.TTransform[A]

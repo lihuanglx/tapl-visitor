@@ -12,7 +12,7 @@ object Factory extends Factory
 
 trait TAlg[-F, T] extends fullsimple.TAlg[F, T] with typevar.TAlg[F, T] with rectype.TAlg[F, T]
 
-trait TFactory extends fullsimple.TAlg.Factory with typevar.TFactory with rectype.TFactory
+trait TFactory extends fullsimple.TAlg.Factory with typevar.TAlg.Factory with rectype.TAlg.Factory
 
 object TFactory extends TFactory
 

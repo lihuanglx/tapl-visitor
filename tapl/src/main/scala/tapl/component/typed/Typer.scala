@@ -1,7 +1,7 @@
 package tapl.component.typed
 
 import tapl.common._
-import tapl.component.rectype.CTyRec
+import tapl.component.rectype.TAlg.Factory._
 import tapl.component.topbot.TAlg.Factory._
 import tapl.component.typed.TAlg.Factory._
 import tapl.component.{top, topbot, varapp}
@@ -44,7 +44,7 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
     val p = (TyId[A](x), u)
     c(p) || (u match {
       case TyId(y) => x == y
-      case CTyRec(_, _) => apply(u)(c)(p._1)
+      case TyRec(_, _) => apply(u)(c)(p._1)
       case _ => false
     })
   }
@@ -53,7 +53,7 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
     val p = (TyArr(t1, t2), u)
     c(p) || (u match {
       case TyArr(t3, t4) => apply(t1)(c)(t3) && apply(t2)(c)(t4)
-      case CTyRec(_, _) => apply(u)(c)(p._1)
+      case TyRec(_, _) => apply(u)(c)(p._1)
       case _ => apply(u)(c)(p._1)
     })
   }

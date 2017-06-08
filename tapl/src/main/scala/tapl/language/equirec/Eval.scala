@@ -2,6 +2,7 @@ package tapl.language.equirec
 
 import tapl.common._
 import tapl.component.typed
+import tapl.language.equirec.Alg._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V] with typed.Eval[A, V]
 

@@ -2,7 +2,7 @@ package tapl.language.fullsub
 
 import tapl.common._
 import tapl.component.{simple, top}
-import tapl.language.fullsub.TFactory._
+import tapl.language.fullsub.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with simple.Typer2[A, B]

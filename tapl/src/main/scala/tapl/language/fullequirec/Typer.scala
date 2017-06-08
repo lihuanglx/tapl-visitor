@@ -10,7 +10,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 
   override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
     def go(t: Exp[B]): Exp[B] = t match {
-      case CTyRec(x, r) => go(r(subst(x, t)))
+      case TyRec(x, r) => go(r(subst(x, t)))
       case TyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
       case _ => typeError()
     }
@@ -43,7 +43,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 
   override def tyString(): Exp[A] => Boolean = recEq.tyString()(Set.empty)
 
-  override def TyVar(x: String): Exp[A] => Boolean = _ => false
+  override def tyVar(x: String): Exp[A] => Boolean = _ => false
 }
 
 object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean] {
@@ -57,7 +57,7 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
 
   private def defaultEq(t: Exp[A], f: T): T =
     c => u => c((t, u)) || (u match {
-      case CTyRec(_, _) => apply(u)(c)(t)
+      case TyRec(_, _) => apply(u)(c)(t)
       case _ => f(c)(u)
     })
 
@@ -107,7 +107,7 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
     case _ => false
   })
 
-  override def TyVar(x: String): T = _ => _ => false
+  override def tyVar(x: String): T = _ => _ => false
 }
 
 object RecEq extends RecEq[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
