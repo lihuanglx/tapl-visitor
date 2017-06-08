@@ -6,12 +6,12 @@ import tapl.language.fullequirec.TFactory._
 import tapl.language.fullsimple
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] with ISubst[B] {
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] with ISubst[B] {
 
-  override def tmApp(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
+  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
     def go(t: Exp[B]): Exp[B] = t match {
       case CTyRec(x, r) => go(r(subst(x, t)))
-      case CTyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
+      case TyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
       case _ => typeError()
     }
 
@@ -29,19 +29,19 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
   with typed.TEquals2[A] with rectype.TEquals[A] {
 
-  override def TyVariant(l: List[(String, Exp[A])]): Exp[A] => Boolean = recEq.TyVariant(l)(Set.empty)
+  override def tyVariant(l: List[(String, Exp[A])]): Exp[A] => Boolean = recEq.tyVariant(l)(Set.empty)
 
-  override def TyUnit(): Exp[A] => Boolean = recEq.TyUnit()(Set.empty)
+  override def tyUnit(): Exp[A] => Boolean = recEq.tyUnit()(Set.empty)
 
-  override def TyFloat(): Exp[A] => Boolean = recEq.TyFloat()(Set.empty)
+  override def tyFloat(): Exp[A] => Boolean = recEq.tyFloat()(Set.empty)
 
   override def tyNat(): Exp[A] => Boolean = recEq.tyNat()(Set.empty)
 
   override def tyBool(): Exp[A] => Boolean = recEq.tyBool()(Set.empty)
 
-  override def TyRecord(l: List[(String, Exp[A])]): Exp[A] => Boolean = recEq.TyRecord(l)(Set.empty)
+  override def tyRecord(l: List[(String, Exp[A])]): Exp[A] => Boolean = recEq.tyRecord(l)(Set.empty)
 
-  override def TyString(): Exp[A] => Boolean = recEq.TyString()(Set.empty)
+  override def tyString(): Exp[A] => Boolean = recEq.tyString()(Set.empty)
 
   override def TyVar(x: String): Exp[A] => Boolean = _ => false
 }
@@ -61,13 +61,13 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
       case _ => f(c)(u)
     })
 
-  override def TyUnit(): T = defaultEq(CTyUnit[A](), _ => {
-    case CTyUnit() => true
+  override def tyUnit(): T = defaultEq(TyUnit[A](), _ => {
+    case TyUnit() => true
     case _ => false
   })
 
-  override def TyFloat(): T = defaultEq(CTyFloat[A](), _ => {
-    case CTyFloat() => true
+  override def tyFloat(): T = defaultEq(TyFloat[A](), _ => {
+    case TyFloat() => true
     case _ => false
   })
 
@@ -82,8 +82,8 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
   })
 
   // todo
-  override def TyRecord(l: List[(String, Exp[A])]): T = defaultEq(CTyRecord(l), c => {
-    case CTyRecord(l2) => l.foldRight(true)({
+  override def tyRecord(l: List[(String, Exp[A])]): T = defaultEq(TyRecord(l), c => {
+    case TyRecord(l2) => l.foldRight(true)({
       case ((n, t), b) => l2.find(_._1 == n) match {
         case Some((_, t2)) => apply(t)(c)(t2) && b
         case _ => false
@@ -92,8 +92,8 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
     case _ => false
   })
 
-  override def TyVariant(l: List[(String, Exp[A])]): T = defaultEq(CTyVariant(l), c => {
-    case CTyVariant(l2) => l.foldRight(true)({
+  override def tyVariant(l: List[(String, Exp[A])]): T = defaultEq(TyVariant(l), c => {
+    case TyVariant(l2) => l.foldRight(true)({
       case ((n, t), b) => l2.find(_._1 == n) match {
         case Some((_, t2)) => apply(t)(c)(t2) && b
         case _ => false
@@ -102,8 +102,8 @@ trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] =
     case _ => false
   })
 
-  override def TyString(): T = defaultEq(CTyString[A](), _ => {
-    case CTyString() => true
+  override def tyString(): T = defaultEq(TyString[A](), _ => {
+    case TyString() => true
     case _ => false
   })
 

@@ -1,7 +1,7 @@
 package tapl.component.typednat
 
 import tapl.common._
-import tapl.component.top.CTyTop
+import tapl.component.top.TAlg.Factory._
 import tapl.component.typedbool.TAlg.Factory._
 import tapl.component.typednat.TAlg.Factory._
 import tapl.component.{top, typedbool}
@@ -45,12 +45,12 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   override def tyNat(): (Exp[A]) => Boolean = {
-    case CTyTop() => true
+    case TyTop() => true
     case TyNat() => true
     case _ => false
   }
 }
 
 trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
-  override def tyNat(): Exp[A] => Exp[A] = directJoin(TyNat[A](), _).getOrElse(CTyTop[A]())
+  override def tyNat(): Exp[A] => Exp[A] = directJoin(TyNat[A](), _).getOrElse(TyTop[A]())
 }

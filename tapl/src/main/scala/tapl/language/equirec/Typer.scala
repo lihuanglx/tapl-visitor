@@ -5,12 +5,12 @@ import tapl.component.{rectype, typed, typevar}
 import tapl.language.equirec.TFactory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with typed.Typer[A, B] with ISubst[B] {
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with typed.Typer[A, B] with ISubst[B] {
 
-  override def tmApp(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
+  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
     def go(t: Exp[B]): Exp[B] = t match {
       case CTyRec(x, r) => go(r(subst(x, t)))
-      case CTyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
+      case TyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
       case _ => typeError()
     }
 

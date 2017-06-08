@@ -6,12 +6,12 @@ import tapl.language.bot
 import tapl.language.fullerror.TFactory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with bot.Typer[A, B]
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with bot.Typer[A, B]
     with typedbool.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
 
-  override def TmError(): Type[B] = CTyBot[B]()
+  override def TmError(): Type[B] = TyBot[B]()
 
-  override def TmTry(e1: E3[A, Exp[B]], e2: E3[A, Exp[B]]): Type[B] = c => {
+  override def TmTry(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
     val t1 = apply(e1)(c)
     val t2 = apply(e2)(c)
     t1(join)(t2)
@@ -45,9 +45,9 @@ object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
 }
 
 trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with bot.Meet[A] {
-  override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(CTyBot[A]())
+  override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(TyBot[A]())
 
-  override def TyId(x: String): Exp[A] => Exp[A] = directMeet(CTyId[A](x), _).getOrElse(CTyBot[A]())
+  override def tyId(x: String): Exp[A] => Exp[A] = directMeet(TyId[A](x), _).getOrElse(TyBot[A]())
 }
 
 object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {

@@ -2,7 +2,7 @@ package tapl.component.typedbool
 
 import tapl.common._
 import tapl.component.top
-import tapl.component.top.CTyTop
+import tapl.component.top.TAlg.Factory._
 import tapl.component.typedbool.TAlg.Factory._
 
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with ITEq[B] {
@@ -42,12 +42,12 @@ trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] 
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   override def tyBool(): (Exp[A]) => Boolean = {
-    case CTyTop() => true
+    case TyTop() => true
     case TyBool() => true
     case _ => false
   }
 }
 
 trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
-  override def tyBool(): Exp[A] => Exp[A] = directJoin(TyBool[A](), _).getOrElse(CTyTop[A]())
+  override def tyBool(): Exp[A] => Exp[A] = directJoin(TyBool[A](), _).getOrElse(TyTop[A]())
 }

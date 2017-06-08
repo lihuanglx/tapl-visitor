@@ -10,15 +10,15 @@ trait Alg[-R, E, -F] extends fullsimple.Alg[R, E, F] {
   def TmUnfold(e: R, t: F): E
 }
 
-case class CFold[A[-R, E, -F] <: Alg[R, E, F], V](e: E3[A, V], t: V) extends E3[A, V] {
+case class CFold[A[-R, E, -F] <: Alg[R, E, F], V](e: TExp[A, V], t: V) extends TExp[A, V] {
   override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmFold(e, t)
 }
 
-case class CUnFold[A[-R, E, -F] <: Alg[R, E, F], V](e: E3[A, V], t: V) extends E3[A, V] {
+case class CUnFold[A[-R, E, -F] <: Alg[R, E, F], V](e: TExp[A, V], t: V) extends TExp[A, V] {
   override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.TmUnfold(e, t)
 }
 
-trait Factory extends fullsimple.Factory {
+trait Factory extends fullsimple.Alg.Factory {
   type CFold[A[-R, E, -F] <: Alg[R, E, F], V] = tapl.language.fullisorec.CFold[A, V]
   val CFold = tapl.language.fullisorec.CFold
 
@@ -30,12 +30,12 @@ object Factory extends Factory
 
 trait TAlg[-F, T] extends fullsimple.TAlg[F, T] with rectype.TAlg[F, T]
 
-trait TFactory extends fullsimple.TFactory with rectype.TFactory
+trait TFactory extends fullsimple.TAlg.Factory with rectype.TFactory
 
 object TFactory extends TFactory
 
-trait Impl[T] extends Alg[E3[Alg, Exp[TAlg]], T, Exp[TAlg]] {
-  override def apply(e: E3[Alg, Exp[TAlg]]): T = e(this)
+trait Impl[T] extends Alg[TExp[Alg, Exp[TAlg]], T, Exp[TAlg]] {
+  override def apply(e: TExp[Alg, Exp[TAlg]]): T = e(this)
 }
 
 trait TImpl[T] extends TAlg[Exp[TAlg], T] {

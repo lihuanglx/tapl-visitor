@@ -3,7 +3,7 @@ package tapl.language.fullsimple
 import tapl.common._
 import tapl.component.{simple, variant}
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[E3[A, Exp[B]], Type[B], Exp[B]]
+trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]]
   with simple.Typer[A, B] with variant.Typer[A, B]
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {

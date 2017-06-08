@@ -5,11 +5,11 @@ import tapl.component.rectype
 import tapl.language.fullsimple
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[E3[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] {
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] {
 
-  override def TmFold(e: E3[A, Exp[B]], t: Exp[B]): Type[B] = ???
+  override def TmFold(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = ???
 
-  override def TmUnfold(e: E3[A, Exp[B]], t: Exp[B]): Type[B] = ???
+  override def TmUnfold(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = ???
 }
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {

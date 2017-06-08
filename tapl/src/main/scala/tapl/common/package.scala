@@ -10,7 +10,7 @@ package object common {
     def apply[E](alg: A[Exp[A], E]): E
   }
 
-  type E3[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  type TExp[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
 
   //
   trait Default[T] {

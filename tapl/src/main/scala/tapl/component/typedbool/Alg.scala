@@ -4,10 +4,10 @@ import macros.Visitor
 import tapl.common._
 import tapl.component.bool
 
-@Visitor("debug")
+@Visitor
 trait Alg[-R, E] extends bool.Alg[R, E]
 
-@Visitor("debug")
+@Visitor
 trait TAlg[-F, T] {
   def tyBool(): T
 

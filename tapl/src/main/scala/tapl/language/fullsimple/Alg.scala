@@ -1,22 +1,17 @@
 package tapl.language.fullsimple
 
+import macros.Visitor
 import tapl.common._
 import tapl.component.{simple, variant}
 
+@Visitor
 trait Alg[-R, E, -F] extends simple.Alg[R, E, F] with variant.Alg[R, E, F]
 
+@Visitor
 trait TAlg[-F, T] extends simple.TAlg[F, T] with variant.TAlg[F, T]
 
-trait Factory extends simple.Factory with variant.Factory
-
-object Factory extends Factory
-
-trait TFactory extends simple.TFactory with variant.TFactory
-
-object TFactory extends TFactory
-
-trait Impl[T] extends Alg[E3[Alg, Exp[TAlg]], T, Exp[TAlg]] {
-  override def apply(e: E3[Alg, Exp[TAlg]]): T = e(this)
+trait Impl[T] extends Alg[TExp[Alg, Exp[TAlg]], T, Exp[TAlg]] {
+  override def apply(e: TExp[Alg, Exp[TAlg]]): T = e(this)
 }
 
 trait TImpl[T] extends TAlg[Exp[TAlg], T] {
