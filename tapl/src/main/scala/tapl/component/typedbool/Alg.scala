@@ -5,7 +5,7 @@ import tapl.component.bool
 
 trait Alg[-R, E] extends bool.Alg[R, E]
 
-trait Factory extends bool.Factory
+trait Factory extends bool.Alg.Factory
 
 object Factory extends Factory
 

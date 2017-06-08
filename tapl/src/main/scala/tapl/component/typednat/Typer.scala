@@ -9,9 +9,9 @@ import tapl.component.{top, typedbool}
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X, Y]]
   extends Alg[Exp[A], Type[B]] {
 
-  override def TmZero(): Type[B] = CTyNat[B]()
+  override def tmZero(): Type[B] = CTyNat[B]()
 
-  override def TmPred(e: Exp[A]): Type[B] = c => {
+  override def tmPred(e: Exp[A]): Type[B] = c => {
     val t = apply(e)(c)
     t match {
       case CTyNat() => t
@@ -19,7 +19,7 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X,
     }
   }
 
-  override def TmSucc(e: Exp[A]): Type[B] = c => {
+  override def tmSucc(e: Exp[A]): Type[B] = c => {
     val t = apply(e)(c)
     t match {
       case CTyNat() => t
@@ -27,7 +27,7 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X,
     }
   }
 
-  override def TmIsZero(e: Exp[A]): Type[B] = c => {
+  override def tmIsZero(e: Exp[A]): Type[B] = c => {
     val t = apply(e)(c)
     t match {
       case CTyNat() => CTyBool[B]()

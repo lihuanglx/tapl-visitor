@@ -5,7 +5,7 @@ import tapl.component.nat
 
 trait Alg[-R, E] extends nat.Alg[R, E]
 
-trait Factory extends nat.Factory
+trait Factory extends nat.Alg.Factory
 
 object Factory extends Factory
 

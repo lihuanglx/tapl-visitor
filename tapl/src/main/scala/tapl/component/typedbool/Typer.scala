@@ -6,11 +6,11 @@ import tapl.component.top.CTyTop
 
 trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with ITEq[B] {
 
-  override def TmTrue(): Type[B] = CTyBool[B]()
+  override def tmTrue(): Type[B] = CTyBool[B]()
 
-  override def TmFalse(): Type[B] = CTyBool[B]()
+  override def tmFalse(): Type[B] = CTyBool[B]()
 
-  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Type[B] = c =>
+  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Type[B] = c =>
     apply(e1)(c) match {
       case CTyBool() =>
         val t2 = apply(e2)(c)
@@ -28,7 +28,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
 }
 
 trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] with IJoin[B] {
-  override def TmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Type[B] = c => {
+  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Type[B] = c => {
     apply(e1)(c) match {
       case CTyBool() =>
         val t2 = apply(e2)(c)

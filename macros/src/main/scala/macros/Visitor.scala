@@ -85,8 +85,8 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
   val numOfSorts: Int = alg.tparams.length
 
-  def print(x: Any): Unit = {
-    if (debug) Predef.print(x)
+  def debug(x: Any): Unit = {
+    if (debug) print(x)
   }
 
   // generate a single class
@@ -300,7 +300,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val stats = genStats()
     val companion = q"object ${Term.Name(alg.name.value)} { ..$stats }"
 
-    print(companion)
+    debug(companion)
     companion
   }
 

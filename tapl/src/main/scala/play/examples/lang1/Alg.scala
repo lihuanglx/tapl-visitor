@@ -4,7 +4,7 @@ import play.examples.Common._
 import macros.Visitor
 import play.examples._
 
-@Visitor("debug")
+@Visitor
 trait Alg[-N, E] extends lang0.Alg[N, E] {
   def vr(x: String): E
 }
