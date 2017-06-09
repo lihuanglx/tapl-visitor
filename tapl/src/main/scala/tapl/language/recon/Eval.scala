@@ -3,6 +3,7 @@ package tapl.language.recon
 import tapl.common._
 import tapl.component.typed
 import tapl.language.tyarith
+import tapl.language.recon.Alg._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V]
   with typed.Eval[A, V] with tyarith.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]

@@ -16,15 +16,15 @@ class Untyped extends FreeSpec with Matchers {
   val cases: List[Case] = List(
     new {
       val inp = "\\x.x (\\y.y)"
-      val ast = "CAbs(x,CApp(CVar(x),CAbs(y,CVar(y))))"
+      val ast = "TmAbs(x,TmApp(TmVar(x),TmAbs(y,TmVar(y))))"
       val print = "\\x.(x \\y.y)"
       val eval = ast
     },
     new {
       val inp = "(\\x.(\\x.x)) (\\y.y)"
-      val ast = "CApp(CAbs(x,CAbs(x,CVar(x))),CAbs(y,CVar(y)))"
+      val ast = "TmApp(TmAbs(x,TmAbs(x,TmVar(x))),TmAbs(y,TmVar(y)))"
       val print = "(\\x.\\x.x \\y.y)"
-      val eval = "CAbs(x,CVar(x))"
+      val eval = "TmAbs(x,TmVar(x))"
     }
   )
 

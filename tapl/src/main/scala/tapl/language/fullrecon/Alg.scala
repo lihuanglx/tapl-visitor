@@ -1,18 +1,15 @@
 package tapl.language.fullrecon
 
+import macros.Visitor
 import tapl.common._
 import tapl.component.let
 import tapl.language.recon
 
+@Visitor
 trait Alg[-R, E, -F] extends recon.Alg[R, E, F] with let.Alg[R, E]
 
+@Visitor
 trait TAlg[-F, T] extends recon.TAlg[F, T]
-
-trait Factory extends recon.Factory with let.Alg.Factory
-
-object Factory extends Factory
-
-trait TFactory extends recon.TFactory
 
 trait Impl[T] extends Alg[TExp[Alg, Exp[TAlg]], T, Exp[TAlg]] {
   override def apply(e: TExp[Alg, Exp[TAlg]]): T = e(this)

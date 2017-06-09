@@ -3,20 +3,22 @@ package tapl.language.fullerror
 import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
+import tapl.language.fullerror.Alg.{Query, Transform}
+import tapl.language.fullerror.Alg.Factory._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V]
   with bot.Eval[A, V] with typedbool.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
-  override def TmError(): TExp[A, V] = CError[A, V]()
+  override def tmError(): TExp[A, V] = TmError[A, V]()
 
-  override def TmTry(e1: TExp[A, V], e2: TExp[A, V]): TExp[A, V] = e1 match {
-    case CError() => e2
-    case _ => if (e1(isVal)) e1 else CTry[A, V](apply(e1), e2)
+  override def tmTry(e1: TExp[A, V], e2: TExp[A, V]): TExp[A, V] = e1 match {
+    case TmError() => e2
+    case _ => if (e1(isVal)) e1 else TmTry[A, V](apply(e1), e2)
   }
 
   override def tmApp(e1: TExp[A, V], e2: TExp[A, V]): TExp[A, V] = (e1, e2) match {
-    case (CError(), _) => e1
-    case (_, CError()) => e2
+    case (TmError(), _) => e1
+    case (_, TmError()) => e2
     case _ => super.tmApp(e1, e2)
   }
 }
@@ -31,7 +33,7 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
 trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V]
   with bot.IsVal[A, V] with typedbool.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
-  override def TmError(): Boolean = true
+  override def tmError(): Boolean = true
 }
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]

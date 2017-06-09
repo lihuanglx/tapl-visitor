@@ -1,20 +1,15 @@
 package tapl.language.fullequirec
 
+import macros.Visitor
 import tapl.common._
 import tapl.component.{rectype, typevar}
 import tapl.language.fullsimple
 
+@Visitor
 trait Alg[-R, E, -F] extends fullsimple.Alg[R, E, F]
 
-trait Factory extends fullsimple.Alg.Factory
-
-object Factory extends Factory
-
+@Visitor
 trait TAlg[-F, T] extends fullsimple.TAlg[F, T] with typevar.TAlg[F, T] with rectype.TAlg[F, T]
-
-trait TFactory extends fullsimple.TAlg.Factory with typevar.TAlg.Factory with rectype.TAlg.Factory
-
-object TFactory extends TFactory
 
 trait Impl[T] extends Alg[TExp[Alg, Exp[TAlg]], T, Exp[TAlg]] {
   override def apply(e: TExp[Alg, Exp[TAlg]]): T = e(this)

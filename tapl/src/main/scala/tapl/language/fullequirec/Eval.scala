@@ -2,6 +2,7 @@ package tapl.language.fullequirec
 
 import tapl.common._
 import tapl.language.fullsimple
+import tapl.language.fullequirec.Alg._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V] with fullsimple.Eval[A, V]
 

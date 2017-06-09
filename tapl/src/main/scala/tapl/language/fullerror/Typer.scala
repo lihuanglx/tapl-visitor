@@ -3,15 +3,15 @@ package tapl.language.fullerror
 import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
-import tapl.language.fullerror.TFactory._
+import tapl.language.fullerror.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with bot.Typer[A, B]
     with typedbool.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
 
-  override def TmError(): Type[B] = TyBot[B]()
+  override def tmError(): Type[B] = TyBot[B]()
 
-  override def TmTry(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
+  override def tmTry(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
     val t1 = apply(e1)(c)
     val t2 = apply(e2)(c)
     t1(join)(t2)

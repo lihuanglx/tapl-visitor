@@ -2,17 +2,19 @@ package tapl.language.fullisorec
 
 import tapl.common._
 import tapl.language.fullsimple
+import tapl.language.fullisorec.Alg.{Query, Transform}
+import tapl.language.fullisorec.Alg.Factory._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V] with fullsimple.Eval[A, V] {
-  override def TmFold(e: TExp[A, V], t: V): TExp[A, V] =
-    CFold[A, V](if (e(isVal)) e else apply(e), t)
+  override def tmFold(e: TExp[A, V], t: V): TExp[A, V] =
+    TmFold[A, V](if (e(isVal)) e else apply(e), t)
 
-  override def TmUnfold(e: TExp[A, V], t: V): TExp[A, V] =
+  override def tmUnfold(e: TExp[A, V], t: V): TExp[A, V] =
     if (e(isVal)) e match {
-      case CFold(v, _) => v
+      case TmFold(v, _) => v
       case _ => typeError()
     } else {
-      CUnFold[A, V](apply(e), t)
+      TmUnfold[A, V](apply(e), t)
     }
 }
 
@@ -24,7 +26,7 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V] with fullsimple.IsVal[A, V] {
-  override def TmFold(e: TExp[A, V], t: V): Boolean = apply(e)
+  override def tmFold(e: TExp[A, V], t: V): Boolean = apply(e)
 }
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]

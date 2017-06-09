@@ -2,7 +2,7 @@ package tapl.language.fullequirec
 
 import tapl.common._
 import tapl.component.{rectype, typed, typevar}
-import tapl.language.fullequirec.TFactory._
+import tapl.language.fullequirec.TAlg.Factory._
 import tapl.language.fullsimple
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
@@ -115,7 +115,7 @@ object RecEq extends RecEq[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[T
     (x, e) => new TSubstImpl(x, e)
 }
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TTransform[A] with rectype.TSubst[A] with typevar.TSubst[A]
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A] with typevar.TSubst[A]
 
 class TSubstImpl(_x: String, _e: Exp[TAlg]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
   override val x: String = _x
