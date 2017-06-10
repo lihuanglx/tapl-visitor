@@ -1,14 +1,14 @@
 package tapl.language.fullsub
 
 import tapl.common._
-import tapl.component.{simple, top}
+import tapl.component.{typed, extension, top}
 import tapl.language.fullsub.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with simple.Typer2[A, B]
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with typed.Typer2[A, B] with extension.Typer2[A, B]
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = TEquals
+  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _(TEquals)
 
   override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
 
@@ -16,17 +16,17 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with simple.TEquals[A] with top.TEquals[A]
+  with typed.TEquals[A] with extension.TEquals[A] with top.TEquals[A]
 
 object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with simple.SubtypeOf[A] with top.SubtypeOf[A]
+  with typed.SubtypeOf[A] with extension.SubtypeOf[A] with top.SubtypeOf[A]
 
 object SubtypeOf extends SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
 trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with simple.Join[A] with top.Join[A]
+  with typed.Join[A] with extension.Join[A] with top.Join[A]
 
 object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
   override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf

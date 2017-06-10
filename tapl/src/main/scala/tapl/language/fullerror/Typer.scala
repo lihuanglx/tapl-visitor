@@ -19,8 +19,8 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 }
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] =
-    new TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
+  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean =
+    _(new TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean])
 
   override val subtypeOf: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] = SubtypeOf
 

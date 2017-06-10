@@ -1,10 +1,11 @@
 package tapl.language.fullsub
 
 import tapl.common._
-import tapl.component.simple
+import tapl.component.{typed, extension}
 import tapl.language.fullsub.Alg._
 
-trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V] with simple.Eval[A, V]
+trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], V]
+  with typed.Eval[A, V] with extension.Eval[A, V]
 
 object Eval extends Eval[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
   override val isVal: Alg[TExp[Alg, Exp[TAlg]], Boolean, Exp[TAlg]] = IsVal
@@ -13,11 +14,13 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
     (x, e) => new SubstImpl(x, e)
 }
 
-trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V] with simple.IsVal[A, V]
+trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V]
+  with typed.IsVal[A, V] with extension.IsVal[A, V]
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 
-trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V] with simple.Subst[A, V]
+trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
+  with typed.Subst[A, V] with extension.Subst[A, V]
 
 class SubstImpl(_x: String, _e: TExp[Alg, Exp[TAlg]]) extends Subst[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
   override val x: String = _x

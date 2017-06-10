@@ -52,7 +52,7 @@ package object common {
   }
 
   trait ITEq[A[-X, Y]] {
-    val tEquals: A[Exp[A], Exp[A] => Boolean]
+    val tEquals: Exp[A] => Exp[A] => Boolean
   }
 
   trait ISubtypeOf[A[-X, Y]] {

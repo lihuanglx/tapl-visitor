@@ -10,7 +10,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     t match {
       case TyVariant(l) =>
         val t2 = l.find(_._1 == x).getOrElse(typeError())._2
-        if (apply(e)(c)(tEquals)(t2)) t else typeError()
+        if (tEquals(apply(e)(c))(t2)) t else typeError()
       case _ => typeError()
     }
 
@@ -20,7 +20,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
         l.map({ case (n, v, b) =>
           val t = l2.find(_._1 == n).getOrElse(typeError())._2
           apply(b)(c + (v, t))
-        }).reduce((x, y) => if (x(tEquals)(y)) x else typeError())
+        }).reduce((x, y) => if (tEquals(x)(y)) x else typeError())
       case _ => typeError()
     }
 }

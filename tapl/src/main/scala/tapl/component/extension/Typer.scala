@@ -1,13 +1,14 @@
-package tapl.component.simple
+package tapl.component.extension
 
 import tapl.common._
 import tapl.component._
-import tapl.component.simple.TAlg.Factory._
-import tapl.component.top.TAlg.Factory._
 import tapl.language.tyarith
+import tapl.component.extension.TAlg.Factory._
+import tapl.component.typed.TAlg.Factory.TyArr
+import tapl.component.top.TAlg.Factory.TyTop
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with typed.Typer[A, B]
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]]
     with tyarith.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
     with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
     with let.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
@@ -15,17 +16,14 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   override def tmUnit(): Type[B] = TyUnit[B]()
 
   override def tmAscribe(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = c =>
-    if (apply(e)(c)(tEquals)(t)) t else typeError()
+    if (tEquals(apply(e)(c))(t)) t else typeError()
 
   override def tmFix(e: TExp[A, Exp[B]]): Type[B] = c => {
     apply(e)(c) match {
-      case TyArr(t1, t2) if t1(tEquals)(t2) => t1
+      case TyArr(t1, t2) if tEquals(t1)(t2) => t1
       case _ => typeError()
     }
   }
-
-  // todo
-  override def tmInert(t: Exp[B]): Type[B] = ???
 
   override def tmFloat(d: Double): Type[B] = TyFloat[B]()
 
@@ -40,7 +38,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with typed.TEquals[A] with tyarith.TEquals[A] with typedrecord.TEquals[A] {
+  with tyarith.TEquals[A] with typedrecord.TEquals[A] {
 
   override def tyUnit(): (Exp[A]) => Boolean = {
     case TyUnit() => true
@@ -59,7 +57,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 }
 
 trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B]
-  with typed.Typer2[A, B] with tyarith.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+  with tyarith.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] with ISubtypeOf[B] {
 
   override def tmAscribe(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = c =>
     if (apply(e)(c)(subtypeOf)(t)) t else typeError()
@@ -73,7 +71,7 @@ trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Typer
 }
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with typed.SubtypeOf[A] with tyarith.SubtypeOf[A] with typedrecord.SubtypeOf[A] {
+  with tyarith.SubtypeOf[A] with typedrecord.SubtypeOf[A] {
 
   override def tyFloat(): Exp[A] => Boolean = {
     case TyTop() => true
@@ -95,7 +93,7 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 }
 
 trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with typed.Join[A] with tyarith.Join[A] with typedrecord.Join[A] {
+  with tyarith.Join[A] with typedrecord.Join[A] {
 
   override def tyUnit(): Exp[A] => Exp[A] = directJoin(TyUnit[A](), _).getOrElse(TyTop[A]())
 
@@ -103,3 +101,4 @@ trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[
 
   override def tyString(): Exp[A] => Exp[A] = directJoin(TyString[A](), _).getOrElse(TyTop[A]())
 }
+

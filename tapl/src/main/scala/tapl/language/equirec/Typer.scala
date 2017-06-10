@@ -1,7 +1,7 @@
 package tapl.language.equirec
 
 import tapl.common._
-import tapl.component.{rectype, typed, typevar}
+import tapl.component.{rectype, typed}
 import tapl.language.equirec.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
@@ -10,7 +10,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
     def go(t: Exp[B]): Exp[B] = t match {
       case TyRec(x, r) => go(r(subst(x, t)))
-      case TyArr(t1, t2) if t1(tEquals)(apply(e2)(c)) => t2
+      case TyArr(t1, t2) if tEquals(t1)(apply(e2)(c)) => t2
       case _ => typeError()
     }
 
@@ -19,34 +19,51 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 }
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = TEquals
+  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _(TEquals)(Set.empty)
 
   override val subst: (String, Exp[TAlg]) => TAlg[Exp[TAlg], Exp[TAlg]] =
     (x, e) => new TSubstImpl(x, e)
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with typed.TEquals2[A] with rectype.TEquals[A] {
+trait TEquals[A[-X, Y] <: TAlg[X, Y]]
+  extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean] with ISubst[A] {
 
-  override def tyVar(x: String): Exp[A] => Boolean = _ => false
+  override def tyId(x: String): (Set[(Exp[A], Exp[A])]) => Exp[A] => Boolean = c => u => {
+    val p = (TyId[A](x), u)
+    c(p) || (u match {
+      case TyId(y) => x == y
+      case TyRec(_, _) => apply(u)(c)(p._1)
+      case _ => false
+    })
+  }
+
+  override def tyArr(t1: Exp[A], t2: Exp[A]): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = c => u => {
+    val p = (TyArr(t1, t2), u)
+    c(p) || (u match {
+      case TyArr(t3, t4) => apply(t1)(c)(t3) && apply(t2)(c)(t4)
+      case TyRec(_, _) => apply(u)(c)(p._1)
+      case _ => apply(u)(c)(p._1)
+    })
+  }
+
+  override def tyRec(x: String, t: Exp[A]): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean =
+    c => u => {
+      val p = (TyRec(x, t), u)
+      c(p) || {
+        val s = t(subst(x, p._1))
+        apply(s)(c + p)(u)
+      }
+    }
+
+  override def tyVar(x: String): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = _ => _ => sys.error("impossible")
 }
 
-trait RecEq[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
-  with typed.RecEq[A] with rectype.RecEq[A] {
-
-  override def tyVar(x: String): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = _ => _ => false
-}
-
-object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean] {
-  override val recEq = RecEq
-}
-
-object RecEq extends RecEq[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
+object TEquals extends TEquals[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
   override val subst: (String, Exp[TAlg]) => TAlg[Exp[TAlg], Exp[TAlg]] =
     (x, e) => new TSubstImpl(x, e)
 }
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A] with typevar.TSubst[A]
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A]
 
 class TSubstImpl(_x: String, _e: Exp[TAlg]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
   override val x: String = _x

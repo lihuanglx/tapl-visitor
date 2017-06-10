@@ -16,7 +16,7 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], T
       case TyBool() =>
         val t2 = apply(e2)(c)
         val t3 = apply(e3)(c)
-        if (t2(tEquals)(t3)) t2 else typeError()
+        if (tEquals(t2)(t3)) t2 else typeError()
       case _ => typeError()
     }
 }
