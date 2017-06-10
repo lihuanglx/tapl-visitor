@@ -19,7 +19,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 }
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _(TEquals)(Set.empty)
+  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _ (TEquals)(Set.empty)
 
   override val subst: (String, Exp[TAlg]) => TAlg[Exp[TAlg], Exp[TAlg]] =
     (x, e) => new TSubstImpl(x, e)
