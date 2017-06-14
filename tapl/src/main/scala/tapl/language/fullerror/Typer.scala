@@ -7,7 +7,17 @@ import tapl.language.fullerror.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with bot.Typer[A, B]
-    with typedbool.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+    with typedbool.Alg.Lifter[TExp[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]] with IJoin[B] {
+
+  override def go(c: Ctx[String, Exp[B]]): typedbool.Alg[TExp[A, Exp[B]], Exp[B]] =
+    new typedbool.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+      override def apply(e: Exp[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]): Exp[B] =
+        Typer.this.apply(e)(c)
+
+      override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer.this.tEquals
+
+      override val join: B[Exp[B], (Exp[B]) => Exp[B]] = Typer.this.join
+    }
 
   override def tmError(): Type[B] = TyBot[B]()
 

@@ -34,20 +34,22 @@ object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
   override val meet: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Meet
 }
 
-trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with top.Meet[A] {
-  override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(typeError())
+trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with top.Meet[A] with Default[Exp[A]] {
+  override lazy val default: Exp[A] = typeError()
+
+  override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(default)
 
   override def tyArr(t1: Exp[A], t2: Exp[A]): Exp[A] => Exp[A] = u =>
     directMeet(TyArr[A](t1, t2), u).getOrElse(u match {
       case TyArr(t3, t4) => TyArr[A](t1(join)(t3), apply(t2)(t4))
-      case _ => typeError()
+      case _ => default
     })
 
-  override def tyUnit(): Exp[A] => Exp[A] = directMeet(TyUnit[A](), _).getOrElse(typeError())
+  override def tyUnit(): Exp[A] => Exp[A] = directMeet(TyUnit[A](), _).getOrElse(default)
 
-  override def tyFloat(): Exp[A] => Exp[A] = directMeet(TyFloat[A](), _).getOrElse(typeError())
+  override def tyFloat(): Exp[A] => Exp[A] = directMeet(TyFloat[A](), _).getOrElse(default)
 
-  override def tyNat(): Exp[A] => Exp[A] = directMeet(TyNat[A](), _).getOrElse(typeError())
+  override def tyNat(): Exp[A] => Exp[A] = directMeet(TyNat[A](), _).getOrElse(default)
 
   override def tyRecord(l: List[(String, Exp[A])]): Exp[A] => Exp[A] = u =>
     directMeet(TyRecord[A](l), u).getOrElse(u match {
@@ -60,12 +62,12 @@ trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with t
           if p.nonEmpty
         } yield (n, apply(t)(p.get._2))
         TyRecord[A](o1 ++ o2 ++ i)
-      case _ => typeError()
+      case _ => default
     })
 
-  override def tyString(): Exp[A] => Exp[A] = directMeet(TyString[A](), _).getOrElse(typeError())
+  override def tyString(): Exp[A] => Exp[A] = directMeet(TyString[A](), _).getOrElse(default)
 
-  override def tyId(x: String): Exp[A] => Exp[A] = directMeet(TyId[A](x), _).getOrElse(typeError())
+  override def tyId(x: String): Exp[A] => Exp[A] = directMeet(TyId[A](x), _).getOrElse(default)
 }
 
 object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {

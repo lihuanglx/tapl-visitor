@@ -1,6 +1,6 @@
 package tapl.language.tyarith
 
-import tapl.common.{Context, Exp}
+import tapl.common.{Ctx, Exp}
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}
@@ -14,7 +14,7 @@ object Test {
   def go(e: Exp[Alg], step: Int): Unit = {
     println("Step " + step.toString + ": ")
     println("  Term: " + e(Print))
-    println("  Type: " + e(Typer)(Context.empty())(TPrint))
+    println("  Type: " + e(Typer)(TPrint))
     if (e(IsVal)) {
       println("Value")
     } else {

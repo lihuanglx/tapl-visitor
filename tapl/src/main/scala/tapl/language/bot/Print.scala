@@ -1,11 +1,11 @@
 package tapl.language.bot
 
 import tapl.common._
-import tapl.component.{topbot, typed}
+import tapl.component.{top, bottom, typed}
 
 trait Print[A[-R, E, -F], V] extends Alg[TExp[A, V], String, V] with typed.Print[A, V]
 
-trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed.TPrint[A] with topbot.TPrint[A]
+trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with typed.TPrint[A] with top.TPrint[A] with bottom.TPrint[A]
 
 object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
   override def printT(t: Exp[TAlg]): String = t(TPrint)

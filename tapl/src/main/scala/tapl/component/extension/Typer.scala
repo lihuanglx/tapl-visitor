@@ -8,10 +8,21 @@ import tapl.component.typed.TAlg.Factory.TyArr
 import tapl.component.top.TAlg.Factory.TyTop
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]]
-    with tyarith.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-    with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
+  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with ITEq[B]
+    with tyarith.Alg.Lifter[TExp[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]]
+    with typedrecord.Alg.Lifter[TExp[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]]
     with let.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+
+  override def go(c: Ctx[String, Exp[B]]): tyarith.Alg[TExp[A, Exp[B]], Exp[B]]
+    with typedrecord.Alg[TExp[A, Exp[B]], Exp[B]] =
+    new tyarith.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
+      with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+
+      override def apply(e: Exp[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]): Exp[B] =
+        Typer.this.apply(e)(c)
+
+      override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer.this.tEquals
+    }
 
   override def tmUnit(): Type[B] = TyUnit[B]()
 
@@ -56,8 +67,20 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
   }
 }
 
-trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B]
-  with tyarith.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] with ISubtypeOf[B] {
+trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
+  extends Typer[A, B] with IJoin[B] with ISubtypeOf[B] {
+
+  override def go(c: Ctx[String, Exp[B]]) =
+    new tyarith.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
+      with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+
+      override def apply(e: Exp[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]): Exp[B] =
+        Typer2.this.apply(e)(c)
+
+      override val join: B[Exp[B], (Exp[B]) => Exp[B]] = Typer2.this.join
+
+      override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer2.this.tEquals
+    }
 
   override def tmAscribe(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = c =>
     if (apply(e)(c)(subtypeOf)(t)) t else typeError()

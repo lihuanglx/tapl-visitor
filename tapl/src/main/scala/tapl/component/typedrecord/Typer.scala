@@ -1,16 +1,17 @@
 package tapl.component.typedrecord
 
 import tapl.common._
-import tapl.component.topbot.TAlg.Factory._
-import tapl.component.{top, topbot}
+import tapl.component.top.TAlg.Factory._
+import tapl.component.bottom.TAlg.Factory._
+import tapl.component.{top, bottom}
 import tapl.component.typedrecord.TAlg.Factory._
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] {
-  override def tmRecord(l: List[(String, Exp[A])]): Type[B] = c =>
-    TyRecord[B](l.map(x => (x._1, apply(x._2)(c))))
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Exp[B]] {
+  override def tmRecord(l: List[(String, Exp[A])]): Exp[B] =
+    TyRecord[B](l.map(x => (x._1, apply(x._2))))
 
-  override def tmProj(e: Exp[A], x: String): Type[B] = c =>
-    apply(e)(c) match {
+  override def tmProj(e: Exp[A], x: String): Exp[B] =
+    apply(e) match {
       case TyRecord(l) => l.find(_._1 == x).getOrElse(typeError())._2
       case _ => typeError()
     }
@@ -41,11 +42,11 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
   }
 }
 
-trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with topbot.TAlg[X, Y]] extends Typer[A, B] {
-  override def tmProj(e: Exp[A], x: String): Type[B] = c =>
-    apply(e)(c) match {
+trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with bottom.TAlg[X, Y]] extends Typer[A, B] {
+  override def tmProj(e: Exp[A], x: String): Exp[B] =
+    apply(e) match {
       case TyBot() => TyBot[B]()
-      case _ => super.tmProj(e, x)(c)
+      case _ => super.tmProj(e, x)
     }
 }
 

@@ -14,7 +14,7 @@ object Test {
   def go(e: TExp[Alg, Exp[TAlg]], step: Int): Unit = {
     println("Step " + step.toString + ": ")
     println("  Term: " + e(Print))
-    println("  Type: " + e(Typer)(Context.empty())(TPrint))
+    println("  Type: " + e(Typer)(Ctx.empty())(TPrint))
     if (e(IsVal)) {
       println("Value")
     } else {

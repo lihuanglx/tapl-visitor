@@ -5,17 +5,17 @@ import tapl.component.top
 import tapl.component.top.TAlg.Factory._
 import tapl.component.typedbool.TAlg.Factory._
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Type[B]] with ITEq[B] {
+trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Exp[B]] with ITEq[B] {
 
-  override def tmTrue(): Type[B] = TyBool[B]()
+  override def tmTrue(): Exp[B] = TyBool[B]()
 
-  override def tmFalse(): Type[B] = TyBool[B]()
+  override def tmFalse(): Exp[B] = TyBool[B]()
 
-  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Type[B] = c =>
-    apply(e1)(c) match {
+  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[B] =
+    apply(e1) match {
       case TyBool() =>
-        val t2 = apply(e2)(c)
-        val t3 = apply(e3)(c)
+        val t2 = apply(e2)
+        val t3 = apply(e3)
         if (tEquals(t2)(t3)) t2 else typeError()
       case _ => typeError()
     }
@@ -28,12 +28,13 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   }
 }
 
+// subtyping
 trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] with IJoin[B] {
-  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Type[B] = c => {
-    apply(e1)(c) match {
+  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[B] = {
+    apply(e1) match {
       case TyBool() =>
-        val t2 = apply(e2)(c)
-        val t3 = apply(e3)(c)
+        val t2 = apply(e2)
+        val t3 = apply(e3)
         t2(join)(t3)
       case _ => typeError()
     }

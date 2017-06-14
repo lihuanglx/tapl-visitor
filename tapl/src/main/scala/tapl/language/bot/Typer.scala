@@ -1,7 +1,7 @@
 package tapl.language.bot
 
 import tapl.common._
-import tapl.component.{topbot, typed}
+import tapl.component.{top, bottom, typed}
 import tapl.language.bot.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
@@ -23,15 +23,17 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with typed.TEquals[A] with topbot.TEquals[A]
+  with typed.TEquals[A] with top.TEquals[A] with bottom.TEquals[A]
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with topbot.SubtypeOf[A] with typed.SubtypeOf[A]
+  with top.SubtypeOf[A] with bottom.SubtypeOf[A] with typed.SubtypeOf[A]
 
 trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with typed.Join[A] with topbot.Join[A]
+  with typed.Join[A] with top.Join[A] with bottom.Join[A]
 
-trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with topbot.Meet[A] {
+trait Meet[A[-X, Y] <: TAlg[X, Y]]
+  extends TAlg[Exp[A], Exp[A] => Exp[A]] with top.Meet[A] with bottom.Meet[A] {
+
   override def tyArr(t1: Exp[A], t2: Exp[A]): (Exp[A]) => Exp[A] = u =>
     directMeet(TyArr[A](t1, t2), u).getOrElse(u match {
       case TyArr(t3, t4) => TyArr[A](t1(join)(t3), apply(t2)(t4))
