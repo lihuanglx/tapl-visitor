@@ -190,27 +190,26 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     query
   }
 
+  def addApply(tm: Term, ty: Type, nm: String, func: Term.Name): Term = ty match {
+    case t"${x: Type.Name}" => if (x.value == nm) q"$func($tm)" else tm
+    case t"(..$tpesnel)" =>
+      val exprsnel = tpesnel zip (Stream from 1) map {
+        case (t, i) =>
+          val id = Term.Name("_" + i.toString)
+          addApply(q"$tm.$id", t, nm, func)
+      }
+      q"(..$exprsnel)"
+    case t"List[$t]" => q"$tm.map(x => ${addApply(Term.Name("x"), t, nm, func)})"
+  }
+
   def genTransform(): Defn.Trait = {
-
-    def addApply(tm: Term, ty: Type, nm: String): Term = ty match {
-      case t"${x: Type.Name}" => if (x.value == nm) q"apply($tm)" else tm
-      case t"(..$tpesnel)" =>
-        val exprsnel = tpesnel zip (Stream from 1) map {
-          case (t, i) =>
-            val id = Term.Name("_" + i.toString)
-            addApply(q"$tm.$id", t, nm)
-        }
-        q"(..$exprsnel)"
-      case t"List[$t]" => q"$tm.map(x => ${addApply(Term.Name("x"), t, nm)})"
-    }
-
     val ctor = Ctor.Ref.Name(alg.name.value)
 
     val stats: Seq[Defn.Def] = cases.map(d => {
       val re = alg.tparams.head.name.value
 
       val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t =>
-        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], re)
+        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], re, q"apply")
       ))
 
       val capName = Term.Name(d.name.value.capitalize)
@@ -254,6 +253,63 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
               extends $ctor[TExp[A, T], TExp[A, T], T] with ..$pTrans { ..$stats }"""
     }
     transform
+  }
+
+  def genMapSnd(): Defn.Trait = {
+    val ctor = Ctor.Ref.Name(alg.name.value)
+
+    val stats0: Seq[Defn.Def] = cases.map(d => {
+      val re = alg.tparams.head.name.value
+
+      val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => {
+        val tp = t.decltpe.get.asInstanceOf[Type]
+        val r = addApply(Term.Name(t.name.value), tp, re, q"apply")
+        if (numOfSorts == 2) r else addApply(r, tp, alg.tparams(2).name.value, q"mp")
+      }))
+
+      val capName = Term.Name(d.name.value.capitalize)
+
+      val paramss = numOfSorts match {
+        case 2 => d.paramss.map(_.map(t =>
+          t.transform({ case Type.Name(`re`) => t"Exp[A]" }).asInstanceOf[Term.Param]
+        ))
+        case 3 =>
+          val rt = alg.tparams(2).name.value
+          d.paramss.map(_.map(t =>
+            t.transform({
+              case Type.Name(`re`) => t"TExp[A, T]"
+              case Type.Name(`rt`) => t"T"
+            }).asInstanceOf[Term.Param]
+          ))
+      }
+
+      numOfSorts match {
+        case 2 => q"override def ${d.name}(...$paramss): Exp[A] = $capName[A](...$args)"
+        case 3 => q"override def ${d.name}(...$paramss): TExp[A, T] = $capName[A, T](...$args)"
+      }
+    })
+
+    val pTrans = numOfSorts match {
+      case 2 => parents.map(x => (x._1 + s".MapSnd[A]").parse[Ctor.Call].get)
+      case 3 => parents.map({ case (nm, ts) =>
+        ts.length match {
+          case 2 => (nm + s".MapSnd[({type l[-X, Y] = A[X, Y, T]})#l]").parse[Ctor.Call].get
+          case 3 => (nm + s".MapSnd[A, T]").parse[Ctor.Call].get
+        }
+      })
+    }
+
+    val stats = if (numOfSorts == 3) q"def mp(t: T): T" +: stats0 else stats0
+
+    val mapSnd = numOfSorts match {
+      case 2 =>
+        q"""trait MapSnd[A[-X, Y] <: ${alg.name}[X, Y]]
+              extends $ctor[Exp[A], Exp[A]] with ..$pTrans { ..$stats }"""
+      case 3 =>
+        q"""trait MapSnd[A[-X, Y, -Z] <: ${alg.name}[X, Y, Z], T]
+              extends $ctor[TExp[A, T], TExp[A, T], T] with ..$pTrans { ..$stats }"""
+    }
+    mapSnd
   }
 
   def genLifter(): Defn.Trait = {
@@ -304,7 +360,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val transform = genTransform()
     val lifter = genLifter()
 
-    classes :+ factory :+ q"object Factory extends Factory" :+ query :+ transform :+ lifter
+    classes :+ factory :+ q"object Factory extends Factory" :+ query :+ transform :+ lifter :+ genMapSnd()
   }
 
   def makeCompanion(): Defn.Object = {
