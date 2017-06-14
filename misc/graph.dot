@@ -45,7 +45,7 @@ digraph G {
     Typed, Extension, Variant -> FullSimple;
     Typed, Top, Bottom -> Bot;
 
-    FullSub, Variant, Bottom, Ref -> FullRef;
+    FullSub, Variant, Ref -> FullRef;
 
     Bot, TypedBool -> FullError;
     Bot, TypedRecord -> RcdSubBot;
