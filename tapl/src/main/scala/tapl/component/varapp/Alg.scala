@@ -9,5 +9,7 @@ trait Alg[-R, E] {
 
   def tmApp(e1: R, e2: R): E
 
+  def tmSeq(es: List[R]): E
+
   def apply(e: R): E
 }

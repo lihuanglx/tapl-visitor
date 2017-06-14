@@ -9,7 +9,7 @@ trait Print[A[-R, E], V] extends Alg[Exp[A], String] {
 
   override def tmAssign(l: Exp[A], r: Exp[A]): String = apply(l) + " := " + apply(r)
 
-  override def tmLoc(x: String): String = "@" + x
+  override def tmLoc(i: Int): String = "@" + i.toString
 }
 
 trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] {

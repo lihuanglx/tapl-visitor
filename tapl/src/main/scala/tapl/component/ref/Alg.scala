@@ -11,7 +11,7 @@ trait Alg[-R, E] {
 
   def tmAssign(l: R, r: R): E
 
-  def tmLoc(x: String): E
+  def tmLoc(i: Int): E
 
   def apply(e: R): E
 }

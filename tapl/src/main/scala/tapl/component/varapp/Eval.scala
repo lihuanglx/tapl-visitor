@@ -5,6 +5,11 @@ import tapl.component.varapp.Alg._
 
 trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
   override def tmVar(x: String): Exp[A] = TmVar[A](x)
+
+  override def tmSeq(es: List[Exp[A]]): Exp[A] = es match {
+    case a :: as => as.foldLeft(apply(a))((r, e) => apply(e))
+    case _ => sys.error("Empty sequence")
+  }
 }
 
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {

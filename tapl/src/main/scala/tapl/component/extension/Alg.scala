@@ -7,9 +7,7 @@ import tapl.language.tyarith
 
 @Visitor
 trait Alg[-R, E, -F] extends tyarith.Alg[R, E] with floatstring.Alg[R, E]
-  with let.Alg[R, E] with typedrecord.Alg[R, E] {
-
-  def tmUnit(): E
+  with let.Alg[R, E] with typedrecord.Alg[R, E] with unit.Alg[R, E] {
 
   def tmAscribe(e: R, t: F): E
 
@@ -17,9 +15,7 @@ trait Alg[-R, E, -F] extends tyarith.Alg[R, E] with floatstring.Alg[R, E]
 }
 
 @Visitor
-trait TAlg[-F, T] extends tyarith.TAlg[F, T] with typedrecord.TAlg[F, T] {
-  def tyUnit(): T
-
+trait TAlg[-F, T] extends tyarith.TAlg[F, T] with typedrecord.TAlg[F, T] with unit.TAlg[F, T] {
   def tyString(): T
 
   def tyFloat(): T

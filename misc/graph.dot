@@ -34,6 +34,7 @@ digraph G {
     VarApp -> Typed;
     TyArith, FloatString, Let, TypedRecord -> Extension;
     TypeVar -> RecType;
+    Unit -> Extension;
 
     // calculi
     Bool, Nat -> Arith;

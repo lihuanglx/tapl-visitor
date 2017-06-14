@@ -11,9 +11,8 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[TExp[A, V], TExp[A, V], 
   with tyarith.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with floatstring.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with let.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with typedrecord.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
-
-  override def tmUnit(): TExp[A, V] = TmUnit[A, V]()
+  with typedrecord.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with unit.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
   override def tmAscribe(e: TExp[A, V], t: V): TExp[A, V] = e
 
@@ -30,10 +29,8 @@ trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V]
   with tyarith.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with floatstring.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
   with typed.IsVal[A, V]
-  with typedrecord.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] {
-
-  override def tmUnit(): Boolean = true
-}
+  with typedrecord.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with unit.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
 
 trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
   with let.Subst[({type lam[-X, Y] = A[X, Y, V]})#lam]

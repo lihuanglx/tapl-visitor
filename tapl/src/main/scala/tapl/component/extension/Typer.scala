@@ -49,12 +49,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with tyarith.TEquals[A] with typedrecord.TEquals[A] {
-
-  override def tyUnit(): (Exp[A]) => Boolean = {
-    case TyUnit() => true
-    case _ => false
-  }
+  with tyarith.TEquals[A] with typedrecord.TEquals[A] with unit.TEquals[A] {
 
   override def tyString(): (Exp[A]) => Boolean = {
     case TyString() => true
@@ -94,17 +89,11 @@ trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 }
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with tyarith.SubtypeOf[A] with typedrecord.SubtypeOf[A] {
+  with tyarith.SubtypeOf[A] with typedrecord.SubtypeOf[A] with unit.SubtypeOf[A] {
 
   override def tyFloat(): Exp[A] => Boolean = {
     case TyTop() => true
     case TyFloat() => true
-    case _ => false
-  }
-
-  override def tyUnit(): Exp[A] => Boolean = {
-    case TyTop() => true
-    case TyUnit() => true
     case _ => false
   }
 
@@ -116,9 +105,7 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 }
 
 trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with tyarith.Join[A] with typedrecord.Join[A] {
-
-  override def tyUnit(): Exp[A] => Exp[A] = directJoin(TyUnit[A](), _).getOrElse(TyTop[A]())
+  with tyarith.Join[A] with typedrecord.Join[A] with unit.Join[A] {
 
   override def tyFloat(): Exp[A] => Exp[A] = directJoin(TyFloat[A](), _).getOrElse(TyTop[A]())
 

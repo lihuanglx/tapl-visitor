@@ -6,13 +6,13 @@ import tapl.language.fullsub
 import tapl.language.fullref.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] 
-  extends Alg[TExp[A, Exp[B]], Ctx[String, Exp[B]] => Ctx[String, Exp[B]] => Exp[B], Exp[B]]
+  extends Alg[TExp[A, Exp[B]], Ctx[Int, Exp[B]] => Ctx[String, Exp[B]] => Exp[B], Exp[B]]
     with IJoin[B] with ISubtypeOf[B] with ITEq[B]
-    with fullsub.Alg.Lifter[TExp[A, Exp[B]], Type[B], Exp[B], Ctx[String, Exp[B]]]
-    with variant.Alg.Lifter[TExp[A, Exp[B]], Type[B], Exp[B], Ctx[String, Exp[B]]]
+    with fullsub.Alg.Lifter[TExp[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
+    with variant.Alg.Lifter[TExp[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
     with ref.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
 
-  override def go(c: Ctx[String, Exp[B]]) = new fullsub.Typer[A, B] with variant.Typer[A, B] {
+  override def go(c: Ctx[Int, Exp[B]]) = new fullsub.Typer[A, B] with variant.Typer[A, B] {
     override def apply(e: TExp[A, Exp[B]]): Type[B] = Typer.this.apply(e)(c)
 
     override val join: B[Exp[B], Exp[B] => Exp[B]] = Typer.this.join
@@ -22,7 +22,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     override val tEquals: Exp[B] => Exp[B] => Boolean = Typer.this.tEquals
   }
 
-  override def tmAssign(l: TExp[A, Exp[B]], r: TExp[A, Exp[B]]): (Ctx[String, Exp[B]]) => Type[B] =
+  override def tmAssign(l: TExp[A, Exp[B]], r: TExp[A, Exp[B]]): (Ctx[Int, Exp[B]]) => Type[B] =
     c1 => c2 => {
       val tl = apply(l)(c1)(c2)
       val tr = apply(r)(c1)(c2)
@@ -30,7 +30,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     }
 }
 
-object Typer extends Typer[Alg, TAlg] with Impl[Ctx[String, Exp[TAlg]] => Type[TAlg]] {
+object Typer extends Typer[Alg, TAlg] with Impl[Ctx[Int, Exp[TAlg]] => Type[TAlg]] {
   override val tEquals: (Exp[TAlg]) => (Exp[TAlg]) => Boolean = _ (TEquals)
 
   override val join: TAlg[Exp[TAlg], (Exp[TAlg]) => Exp[TAlg]] = Join
