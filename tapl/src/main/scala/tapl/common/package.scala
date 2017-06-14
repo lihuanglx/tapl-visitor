@@ -24,18 +24,18 @@ package object common {
   // type checker and evaluation
   def typeError(msg: String = "Type error!"): Nothing = sys.error(msg)
 
-  type Type[A[-X, Y]] = Context[String, Exp[A]] => Exp[A]
+  type Type[A[-X, Y]] = Ctx[String, Exp[A]] => Exp[A]
 
   implicit def constType[A[-X, Y]](t: Exp[A]): Type[A] = _ => t
 
-  class Context[K, V](m: Map[K, V]) {
-    def +(b: (K, V)): Context[K, V] = new Context(m + b)
+  class Ctx[K, V](m: Map[K, V]) {
+    def +(b: (K, V)): Ctx[K, V] = new Ctx(m + b)
 
     def apply(k: K): V = m(k)
   }
 
-  object Context {
-    def empty[K, V](): Context[K, V] = new Context[K, V](Map())
+  object Ctx {
+    def empty[K, V](): Ctx[K, V] = new Ctx[K, V](Map())
   }
 
   trait IIsVal[A[-X, Y]] {
