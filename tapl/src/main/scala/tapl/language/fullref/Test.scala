@@ -9,7 +9,8 @@ object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\r:(Ref Bool). if !r then 1 else {r := false; 2}) (ref false)"
+    val input = "(\\r:(Source Bool). if !r then 1 else 2) (ref false)"
+    //val input = "(\\r:(Ref Bool). if !r then 1 else {r := false; 2}) (ref false)"
     val ast: TExp[Alg, Exp[TAlg]] = parser.parse(input).get
     println("Type: " + ast(Typer)(Ctx.empty())(Ctx.empty())(TPrint))
     go(ast, 1, mutable.MutableList())

@@ -1,11 +1,11 @@
 package tapl.language.fullref
 
 import tapl.common._
-import tapl.component.{bottom, ref, variant}
+import tapl.component.{ref, variant}
 import tapl.language.fullsub
 import tapl.language.fullref.TAlg.Factory._
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] 
+trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[TExp[A, Exp[B]], Ctx[Int, Exp[B]] => Ctx[String, Exp[B]] => Exp[B], Exp[B]]
     with IJoin[B] with ISubtypeOf[B] with ITEq[B]
     with fullsub.Alg.Lifter[TExp[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
@@ -21,6 +21,15 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 
     override val tEquals: Exp[B] => Exp[B] => Boolean = Typer.this.tEquals
   }
+
+  override def tmDeRef(e: TExp[A, Exp[B]]): (Ctx[Int, Exp[B]]) => Type[B] =
+    c1 => c2 => {
+      apply(e)(c1)(c2) match {
+        case TyRef(t) => t
+        case TySource(t) => t
+        case _ => typeError()
+      }
+    }
 
   override def tmAssign(l: TExp[A, Exp[B]], r: TExp[A, Exp[B]]): (Ctx[Int, Exp[B]]) => Type[B] =
     c1 => c2 => {
@@ -39,7 +48,7 @@ object Typer extends Typer[Alg, TAlg] with Impl[Ctx[Int, Exp[TAlg]] => Type[TAlg
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with fullsub.TEquals[A] with variant.TEquals[A] with bottom.TEquals[A] with ref.TEquals[A] {
+  with fullsub.TEquals[A] with variant.TEquals[A] with ref.TEquals[A] {
 
   override def tySource(t: Exp[A]): Exp[A] => Boolean = {
     case TySource(t2) if apply(t)(t2) => true
@@ -55,7 +64,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
-  with fullsub.SubtypeOf[A] with variant.SubtypeOf[A] with bottom.SubtypeOf[A] {
+  with fullsub.SubtypeOf[A] with variant.SubtypeOf[A] {
 
   override def tySource(t: Exp[A]): Exp[A] => Boolean = {
     case TySource(t2) => apply(t)(t2)
@@ -81,7 +90,7 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 object SubtypeOf extends SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
 trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with fullsub.Join[A] with variant.Join[A] with bottom.Join[A] {
+  with fullsub.Join[A] with variant.Join[A] {
 
   override def tySource(t: Exp[A]): (Exp[A]) => Exp[A] = {
     case TySource(t2) => TySource(apply(t)(t2))
@@ -92,14 +101,14 @@ trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
   override def tySink(t: Exp[A]): (Exp[A]) => Exp[A] = {
     case TySink(t2) => TySink(t(meet)(t2))
     case TyRef(t2) => TySink(t(meet)(t2))
-    case _ => TyBot()
+    case _ => TyTop()
   }
 
   override def tyRef(t: Exp[A]): (Exp[A]) => Exp[A] = {
     case TySource(t2) => TySource(apply(t)(t2))
     case TySink(t2) => TySink(t(meet)(t2))
     case TyRef(t2) => if (t(subtypeOf)(t2) && t2(subtypeOf)(t)) TyRef(t) else TySource(apply(t)(t2))
-    case _ => TyBot()
+    case _ => TyTop()
   }
 }
 
@@ -109,11 +118,7 @@ object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
   override val meet: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Meet
 }
 
-trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
-  with fullsub.Meet[A] with bottom.Meet[A] {
-
-  override lazy val default: Exp[A] = TyBot()
-
+trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with fullsub.Meet[A] {
   override def tyVariant(l: List[(String, Exp[A])]): Exp[A] => Exp[A] = u =>
     directMeet(TyVariant[A](l), u).getOrElse(u match {
       case TyVariant(l2) =>
@@ -125,26 +130,26 @@ trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
           if p.nonEmpty
         } yield (n, apply(t)(p.get._2))
         TyVariant[A](o1 ++ o2 ++ i)
-      case _ => TyBot()
+      case _ => default
     })
 
   override def tySource(t: Exp[A]): (Exp[A]) => Exp[A] = {
     case TySource(t2) => TySource(apply(t)(t2))
     case TyRef(t2) => TySource(apply(t)(t2))
-    case _ => TyBot()
+    case _ => default
   }
 
   override def tySink(t: Exp[A]): (Exp[A]) => Exp[A] = {
     case TySink(t2) => TySink(t(join)(t2))
     case TySource(t2) => TySink(t(join)(t2))
-    case _ => TyBot()
+    case _ => default
   }
 
   override def tyRef(t: Exp[A]): (Exp[A]) => Exp[A] = {
     case TySource(t2) => TySource(apply(t)(t2))
     case TySink(t2) => TySink(t(join)(t2))
     case TyRef(t2) => if (t(subtypeOf)(t2) && t2(subtypeOf)(t)) TyRef(t) else TySource(apply(t)(t2))
-    case _ => TyBot()
+    case _ => default
   }
 }
 

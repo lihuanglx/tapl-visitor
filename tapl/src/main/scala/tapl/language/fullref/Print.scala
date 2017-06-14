@@ -1,7 +1,7 @@
 package tapl.language.fullref
 
 import tapl.common._
-import tapl.component.{variant, bottom, ref}
+import tapl.component.{variant, ref}
 import tapl.language.fullsub
 
 trait Print[A[-R, E, -F], V] extends Alg[TExp[A, V], String, V]
@@ -12,7 +12,7 @@ object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
 }
 
 trait TPrint[A[-F, T]] extends TAlg[Exp[A], String]
-  with fullsub.TPrint[A] with variant.TPrint[A] with bottom.TPrint[A] with ref.TPrint[A] {
+  with fullsub.TPrint[A] with variant.TPrint[A] with ref.TPrint[A] {
 
   override def tySource(t: Exp[A]): String = "Source " + apply(t)
 
