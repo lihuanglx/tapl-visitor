@@ -6,7 +6,9 @@ import tapl.component.let
 import tapl.language.recon
 
 @Visitor
-trait Alg[-R, E, -F] extends recon.Alg[R, E, F] with let.Alg[R, E]
+trait Alg[-R, E, -F] extends recon.Alg[R, E, F] with let.Alg[R, E] {
+  def tmUAbs(x: String, e: R): E
+}
 
 @Visitor
 trait TAlg[-F, T] extends recon.TAlg[F, T]

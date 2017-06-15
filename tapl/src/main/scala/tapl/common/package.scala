@@ -31,7 +31,7 @@ package object common {
   class Ctx[K, V](m: Map[K, V]) {
     def +(b: (K, V)): Ctx[K, V] = new Ctx(m + b)
 
-    def apply(k: K): V = m(k)
+    def apply(k: K): V = m.getOrElse(k, typeError())
   }
 
   object Ctx {
