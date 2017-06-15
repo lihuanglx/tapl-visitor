@@ -34,5 +34,6 @@ trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V]
 trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
   with varapp.Subst[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
-  override def tmAbs(x: String, t: V, e: TExp[A, V]): TExp[A, V] = TmAbs[A, V](x, t, if (this.x == x) e else apply(e))
+  override def tmAbs(x: String, t: V, e: TExp[A, V]): TExp[A, V] =
+    TmAbs[A, V](x, t, if (m.contains(x)) e else apply(e))
 }

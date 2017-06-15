@@ -43,12 +43,13 @@ package object common {
   }
 
   trait ISubst[A[-R, _]] {
-    val subst: (String, Exp[A]) => A[Exp[A], Exp[A]]
+    def subst(x: String, e: Exp[A]): A[Exp[A], Exp[A]] = subst(Map(x -> e))
+
+    def subst(m: Map[String, Exp[A]]): A[Exp[A], Exp[A]]
   }
 
   trait SubstAux[A[-R, _]] {
-    val x: String
-    val e: Exp[A]
+    val m: Map[String, Exp[A]]
   }
 
   trait ITEq[A[-X, Y]] {

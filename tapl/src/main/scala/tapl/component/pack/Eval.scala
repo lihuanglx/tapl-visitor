@@ -27,5 +27,5 @@ trait Subst[A[-R, E, -F] <: Alg[R, E, F], V]
   extends Transform[A, V] with SubstAux[({type lam[-X, Y] = A[X, Y, V]})#lam] {
 
   override def tmUnpack(tx: String, x: String, e1: TExp[A, V], e2: TExp[A, V]): TExp[A, V] =
-    if (this.x == x) TmUnpack(tx, x, apply(e1), e2) else TmUnpack(tx, x, apply(e1), apply(e2))
+    if (m.contains(x)) TmUnpack(tx, x, apply(e1), e2) else TmUnpack(tx, x, apply(e1), apply(e2))
 }

@@ -20,5 +20,6 @@ trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
 }
 
 trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with SubstAux[A] {
-  override def tmVar(x: String): Exp[A] = if (x == this.x) e else TmVar[A](x)
+  override def tmVar(x: String): Exp[A] =
+    if (m.contains(x)) m(x) else TmVar[A](x)
 }

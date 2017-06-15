@@ -30,5 +30,5 @@ trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V] {
 
 trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V] with SubstAux[({type lam[-X, Y] = A[X, Y, V]})#lam] {
   override def tmCase(e: TExp[A, V], l: List[(String, String, TExp[A, V])]): TExp[A, V] =
-    TmCase[A, V](apply(e), l.map({ case (a, b, c) => (a, b, if (b == this.x) c else apply(c)) }))
+    TmCase[A, V](apply(e), l.map({ case (a, b, c) => (a, b, if (m.contains(b)) c else apply(c)) }))
 }

@@ -6,7 +6,7 @@ object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "(\\X.\\x:X.x) [Nat]"
+    val input = "(\\f:Nat->Nat. f 2) ((\\X.\\x:X.x) [Nat])"
     val ast: TExp[Alg, Exp[TAlg]] = parser.parse(input).get
     println("Type: " + ast(Typer)(Ctx.empty())(TPrint))
     go(ast, 1)

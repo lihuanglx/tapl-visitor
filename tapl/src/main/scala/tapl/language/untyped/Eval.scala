@@ -26,7 +26,7 @@ trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]]
 object Eval extends Eval[Alg] with Impl[Exp[Alg]] {
   override val isVal: Alg[Exp[Alg], Boolean] = IsVal
 
-  override val subst: (String, Exp[Alg]) => Alg[Exp[Alg], Exp[Alg]] = (x, e) => new SubstImpl(x, e)
+  override def subst(m: Map[String, Exp[Alg]]): Alg[Exp[Alg], Exp[Alg]] = new SubstImpl(m)
 }
 
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with varapp.IsVal[A] {
@@ -36,10 +36,9 @@ trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with varapp.IsVal[A] {
 object IsVal extends IsVal[Alg] with Impl[Boolean]
 
 trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with varapp.Subst[A] {
-  override def tmAbs(x: String, e: Exp[A]): Exp[A] = TmAbs[A](x, if (this.x == x) e else apply(e))
+  override def tmAbs(x: String, e: Exp[A]): Exp[A] = TmAbs[A](x, if (m.contains(x)) e else apply(e))
 }
 
-class SubstImpl(_x: String, _e: Exp[Alg]) extends Subst[Alg] with Impl[Exp[Alg]] {
-  override val x: String = _x
-  override val e: Exp[Alg] = _e
+class SubstImpl(mp: Map[String, Exp[Alg]]) extends Subst[Alg] with Impl[Exp[Alg]] {
+  override val m: Map[String, Exp[Alg]] = mp
 }

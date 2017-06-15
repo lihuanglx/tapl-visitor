@@ -29,7 +29,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[TE
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
   override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _ (TEquals)(Set.empty)
 
-  override val subst: (String, Exp[TAlg]) => TAlg[Exp[TAlg], Exp[TAlg]] = (x, e) => new TSubstImpl(x, e)
+  override def subst(m: Map[String, Exp[TAlg]]): TAlg[Exp[TAlg], Exp[TAlg]] = new TSubstImpl(m)
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)] => Exp[A] => Boolean]
@@ -59,12 +59,11 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)]
 object TEquals extends TEquals[TAlg] with TImpl[Set[(String, String)] => Exp[TAlg] => Boolean]
 
 trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with typevar.TSubst[A] {
-  override def tyAll(x: String, t: Exp[A]): Exp[A] = TyAll(x, if (this.x == x) t else apply(t))
+  override def tyAll(x: String, t: Exp[A]): Exp[A] = TyAll(x, if (m.contains(x)) t else apply(t))
 
-  override def tySome(x: String, t: Exp[A]): Exp[A] = TySome(x, if (this.x == x) t else apply(t))
+  override def tySome(x: String, t: Exp[A]): Exp[A] = TySome(x, if (m.contains(x)) t else apply(t))
 }
 
-class TSubstImpl(_x: String, _e: Exp[TAlg]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
-  override val x: String = _x
-  override val e: Exp[TAlg] = _e
+class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
+  override val m: Map[String, Exp[TAlg]] = mp
 }

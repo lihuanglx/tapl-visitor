@@ -18,7 +18,7 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V]
     new fullsub.Eval[A, V] with variant.Eval[A, V] {
       override def apply(e: TExp[A, V]): TExp[A, V] = Eval.this.apply(e)(c)
 
-      override val subst: (String, TExp[A, V]) => A[TExp[A, V], TExp[A, V], V] = Eval.this.subst
+      override def subst(m: Map[String, TExp[A, V]]): A[TExp[A, V], TExp[A, V], V] = Eval.this.subst(m)
 
       override val isVal: A[TExp[A, V], Boolean, V] = Eval.this.isVal
     }
@@ -27,8 +27,7 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V]
 object Eval extends Eval[Alg, Exp[TAlg]] with Impl[mutable.MutableList[TExp[Alg, Exp[TAlg]]] => TExp[Alg, Exp[TAlg]]] {
   override val isVal: Alg[TExp[Alg, Exp[TAlg]], Boolean, Exp[TAlg]] = IsVal
 
-  override val subst: (String, TExp[Alg, Exp[TAlg]]) => Alg[TExp[Alg, Exp[TAlg]], TExp[Alg, Exp[TAlg]], Exp[TAlg]] =
-    (x, e) => new SubstImpl(x, e)
+  override def subst(m: Map[String, TExp[Alg, Exp[TAlg]]]) = new SubstImpl(m)
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[TExp[A, V], Boolean, V]
@@ -39,8 +38,6 @@ object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
   with fullsub.Subst[A, V] with variant.Subst[A, V]
 
-class SubstImpl(_x: String, _e: TExp[Alg, Exp[TAlg]]) extends Subst[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
-  override val x: String = _x
-  override val e: TExp[Alg, Exp[TAlg]] = _e
+class SubstImpl(mp: Map[String, TExp[Alg, Exp[TAlg]]]) extends Subst[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
+  override val m: Map[String, TExp[Alg, Exp[TAlg]]] = mp
 }
-
