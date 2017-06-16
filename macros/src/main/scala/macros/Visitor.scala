@@ -170,6 +170,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
   def genQuery(): Defn.Trait = {
     val ctor = Ctor.Ref.Name(alg.name.value)
+
     val stats: Seq[Defn.Def] = cases.map(
       d => q"override def ${d.name}(...${d.paramss}): E = default"
     )
@@ -177,32 +178,29 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val recTp = alg.tparams.head
     val recTy = Type.Name(recTp.name.value)
 
-    // todo
     val pQueries =
-      if (parents.isEmpty) Seq(ctor"Default[E]")
-      else parents.map({ case (nm, ts) =>
-        ts.length match {
-          case 2 => (nm + s".Query[$recTy, E]").parse[Ctor.Call].get
-          case 3 =>
-            val rt2 = Type.Name(alg.tparams(2).name.value)
-            (nm + s".Query[$recTy, E, $rt2]").parse[Ctor.Call].get
-        }
-      })
+      if (parents.isEmpty)
+        Seq(ctor"Default[E]")
+      else
+        parents.map({ case (nm, ts) =>
+          val str = ts.updated(1, t"E").map(_.syntax).mkString(", ")
+          (nm + s".Query[$str]").parse[Ctor.Call].get
+        })
 
     val query = q"trait Query[$recTp, E, ..$secTParams] extends $ctor[$recTy, E, ..$secTypes] with ..$pQueries { ..$stats }"
     query
   }
 
-  def addApply(tm: Term, ty: Type, nm: String, func: Term.Name): Term = ty match {
-    case t"${x: Type.Name}" => if (x.value == nm) q"$func($tm)" else tm
+  def addApply(tm: Term, ty: Type, nMap: Map[String, Term.Name]): Term = ty match {
+    case t"${x: Type.Name}" => if (nMap.contains(x.value)) q"${nMap(x.value)}($tm)" else tm
     case t"(..$tpesnel)" =>
       val exprsnel = tpesnel zip (Stream from 1) map {
         case (t, i) =>
           val id = Term.Name("_" + i.toString)
-          addApply(q"$tm.$id", t, nm, func)
+          addApply(q"$tm.$id", t, nMap)
       }
       q"(..$exprsnel)"
-    case t"List[$t]" => q"$tm.map(x => ${addApply(Term.Name("x"), t, nm, func)})"
+    case t"List[$t]" => q"$tm.map(x => ${addApply(Term.Name("x"), t, nMap)})"
   }
 
   def genTransform(): Defn.Trait = {
@@ -210,7 +208,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
     val stats: Seq[Defn.Def] = cases.map(d => {
       val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t =>
-        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], rec, q"apply")
+        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], Map(rec -> q"apply"))
       ))
       val capName = Term.Name(d.name.value.capitalize)
       val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
@@ -218,17 +216,16 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
       q"override def ${d.name}(...$paramss): $expTy = $capName[A, ..$secTypes](...$args)"
     })
 
-    // todo
-    val pTrans = numOfSorts match {
-      case 1 => parents.map(x => (x._1 + s".Transform[A]").parse[Ctor.Call].get)
-      case 2 => parents.map({ case (nm, ts) =>
-        val secTypesStr = secTypes.map(_.syntax).mkString(", ")
-        ts.length match {
-          case 2 => (nm + s".Transform[({type l[-X, Y] = A[X, Y, $secTypesStr]})#l]").parse[Ctor.Call].get
-          case 3 => (nm + s".Transform[A, $secTypesStr]").parse[Ctor.Call].get
+    val pTrans = parents.map({ case (nm, ts) =>
+      val typeA =
+        if (ts.length == alg.tparams.length) s"A"
+        else {
+          val xys: String = (Seq("X", "Y") ++ secTypes.map(_.syntax)).mkString(", ")
+          s"({type l[-X, Y] = A[$xys]})#l"
         }
-      })
-    }
+      val str = (typeA +: ts.drop(2).map(_.syntax)).mkString(", ")
+      (nm + s".Transform[$str]").parse[Ctor.Call].get
+    })
 
     val transform =
       q""" trait Transform[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams]
@@ -245,8 +242,8 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
       val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => {
         val tp = t.decltpe.get.asInstanceOf[Type]
-        val r = addApply(Term.Name(t.name.value), tp, re, q"apply")
-        if (numOfSorts == 1) r else addApply(r, tp, alg.tparams(2).name.value, q"mp")
+        val r = addApply(Term.Name(t.name.value), tp, Map(rec -> q"apply"))
+        if (numOfSorts == 1) r else addApply(r, tp, Map(alg.tparams(2).name.value -> q"mp"))
       }))
 
       val capName = Term.Name(d.name.value.capitalize)
