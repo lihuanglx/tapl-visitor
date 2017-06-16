@@ -115,6 +115,12 @@ package object common {
     def parseT(inp: String): Option[Exp[A]] = parseBy(pT)(inp)
   }
 
+  trait KParser[A[-X, Y]] extends CommonParser {
+    val pK: Parser[Exp[A]]
+
+    def parseK(inp: String): Option[Exp[A]] = parseBy(pK)(inp)
+  }
+
   trait ETParser[A[-R, E, -F], B[-F, T]] extends EParser[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] with TParser[B]
 
 }

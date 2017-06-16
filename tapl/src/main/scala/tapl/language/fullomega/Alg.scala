@@ -34,3 +34,15 @@ trait KAlg[-K, Y] {
 
   def apply(k: K): Y
 }
+
+trait Impl[T] extends Alg[Exp3[Alg, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]], T, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]] {
+  override def apply(e: Exp3[Alg, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]]): T = e(this)
+}
+
+trait TImpl[T] extends TAlg[Exp2[TAlg, Exp[KAlg]], T, Exp[KAlg]] {
+  override def apply(t: Exp2[TAlg, Exp[KAlg]]): T = t(this)
+}
+
+trait KImpl[T] extends KAlg[Exp[KAlg], T] {
+  override def apply(k: Exp[KAlg]): T = k(this)
+}
