@@ -220,8 +220,8 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
       val typeA =
         if (ts.length == alg.tparams.length) s"A"
         else {
-          val xys: String = (Seq("X", "Y") ++ secTypes.map(_.syntax)).mkString(", ")
-          s"({type l[-X, Y] = A[$xys]})#l"
+          val tss = ts.zipWithIndex map { case (x, i) => if (i == 1) x.syntax else "-" + x.syntax }
+          s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
         }
       val str = (typeA +: ts.drop(2).map(_.syntax)).mkString(", ")
       (nm + s".Transform[$str]").parse[Ctor.Call].get
