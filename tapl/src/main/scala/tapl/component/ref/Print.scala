@@ -2,7 +2,7 @@ package tapl.component.ref
 
 import tapl.common._
 
-trait Print[A[-R, E], V] extends Alg[Exp[A], String] {
+trait Print[A[-R, E]] extends Alg[Exp[A], String] {
   override def tmRef(e: Exp[A]): String = "ref " + apply(e)
 
   override def tmDeRef(e: Exp[A]): String = "!" + apply(e)
