@@ -12,20 +12,20 @@ object Test {
         | let b = (double (\x:Bool. x)) true in
         | if b then a else 0
       """.stripMargin
-    val ast: TExp[Alg, Exp[TAlg]] = parser.parse(input).get
+    val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
 
     val (ty, _, cs) = ast(Typer)(Ctx.empty(), 0)
     val solution = Unify.unify(cs)
 
     println("Type: " + Unify(ty, cs)(TPrint))
 
-    val ast2 = ast(new Alg.MapSnd[Alg, Exp[TAlg]] with Impl[TExp[Alg, Exp[TAlg]]] {
+    val ast2 = ast(new Alg.MapSnd[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
       override def mp(t: Exp[TAlg]): Exp[TAlg] = t(new TSubstImpl(solution))
     })
     go(ast2, 1)
   }
 
-  def go(e: TExp[Alg, Exp[TAlg]], step: Int): Unit = {
+  def go(e: Exp2[Alg, Exp[TAlg]], step: Int): Unit = {
     println("Step " + step.toString + ": ")
     println("  Term: " + e(Print))
     if (e(IsVal)) {

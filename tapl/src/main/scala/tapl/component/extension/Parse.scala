@@ -16,7 +16,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   lexical.reserved += ("as", "fix", "String", "Float", "inert")
   lexical.delimiters += ("(", ")", "[", "]")
 
-  private lazy val pExtE: Parser[TExp[A, Exp[B]]] =
+  private lazy val pExtE: Parser[Exp2[A, Exp[B]]] =
     pE ~ ("as" ~> pT) ^^ { case e0 ~ t0 => TmAscribe[A, Exp[B]](e0, t0) } |||
       "fix" ~> pE ^^ TmFix[A, Exp[B]]
 
@@ -24,7 +24,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     "String" ^^^ TyString[B]() |||
       "Float" ^^^ TyFloat[B]()
 
-  lazy val pExtensionE: Parser[TExp[A, Exp[B]]] =
+  lazy val pExtensionE: Parser[Exp2[A, Exp[B]]] =
     pTyArithE ||| pTypedRecordE ||| pFloatStringE ||| pLetE ||| pExtE ||| pUnitE
 
   lazy val pExtensionT: Parser[Exp[B]] =

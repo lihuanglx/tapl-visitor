@@ -5,12 +5,12 @@ import tapl.common._
 import tapl.component._
 
 @Visitor
-trait Alg[-R, E, -F] extends typed.Alg[R, E, F] with extension.Alg[R, E, F]
-  with pack.Alg[R, E, F] with ref.Alg[R, E] {
-  // todo
-  //def TmTAbs(x: String, k: K, e: E): E
+trait Alg[-R, E, -T, -K] extends typed.Alg[R, E, T] with extension.Alg[R, E, T]
+  with pack.Alg[R, E, T] with ref.Alg[R, E] {
 
-  def tmTApp(e: R, t: F): E
+  def tmTAbs(x: String, k: K, e: R): E
+
+  def tmTApp(e: R, t: T): E
 }
 
 @Visitor

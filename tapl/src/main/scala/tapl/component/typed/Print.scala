@@ -3,10 +3,10 @@ package tapl.component.typed
 import tapl.common._
 import tapl.component.varapp
 
-trait Print[A[-R, E, -F], V] extends Alg[TExp[A, V], String, V]
+trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
   with varapp.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] with PrintT[V] {
 
-  override def tmAbs(x: String, t: V, e: TExp[A, V]): String = "\\(" + x + ":" + printT(t) + ")." + apply(e)
+  override def tmAbs(x: String, t: V, e: Exp2[A, V]): String = "\\(" + x + ":" + printT(t) + ")." + apply(e)
 }
 
 trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] {

@@ -7,12 +7,12 @@ object Test {
 
   def main(args: Array[String]): Unit = {
     val input = "(\\f:Nat->Nat. f 2) ((\\X.\\x:X.x) [Nat])"
-    val ast: TExp[Alg, Exp[TAlg]] = parser.parse(input).get
+    val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
     println("Type: " + ast(Typer)(Ctx.empty())(TPrint))
     go(ast, 1)
   }
 
-  def go(e: TExp[Alg, Exp[TAlg]], step: Int): Unit = {
+  def go(e: Exp2[Alg, Exp[TAlg]], step: Int): Unit = {
     println("Step " + step.toString + ": ")
     println("  Term: " + e(Print))
     if (e(IsVal)) {

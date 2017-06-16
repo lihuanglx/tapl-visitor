@@ -11,7 +11,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   lexical.reserved += ("All", "Some")
   lexical.delimiters += (".", ",", "{", "}", "[", "]")
 
-  lazy val pPolyE: Parser[TExp[A, Exp[B]]] =
+  lazy val pPolyE: Parser[Exp2[A, Exp[B]]] =
     "\\" ~> ucid ~ ("." ~> pE) ^^ { case x ~ ex => TmTAbs(x, ex) } |||
       pE ~ ("[" ~> pT <~ "]") ^^ { case ex ~ ty => TmTApp(ex, ty) }
 
@@ -19,9 +19,9 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     "All" ~> ucid ~ ("." ~> pT) ^^ { case x ~ ty => TyAll(x, ty) } |||
       ("{" ~> "Some" ~> ucid ~ ("," ~> pT) <~ "}") ^^ { case x ~ ty => TySome(x, ty) }
 
-  lazy val pFullPolyE: Parser[TExp[A, Exp[B]]] = pTypedE ||| pExtensionE ||| pPolyE ||| pPackE
+  lazy val pFullPolyE: Parser[Exp2[A, Exp[B]]] = pTypedE ||| pExtensionE ||| pPolyE ||| pPackE
   lazy val pFullPolyT: Parser[Exp[B]] = pTypedT ||| pExtensionT ||| pPolyT ||| pTypeVarT
 
-  override lazy val pE: Parser[TExp[A, Exp[B]]] = pFullPolyE
+  override lazy val pE: Parser[Exp2[A, Exp[B]]] = pFullPolyE
   override lazy val pT: Parser[Exp[B]] = pFullPolyT
 }

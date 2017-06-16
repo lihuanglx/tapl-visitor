@@ -6,18 +6,18 @@ import tapl.language.tyarith
 import tapl.language.recon.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]] {
+  extends Alg[Exp2[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]] {
 
   type T = (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])])
 
   override def tmVar(x: String): T = (c, i) => (c(x), i, Set())
 
-  override def tmAbs(x: String, t: Exp[B], e: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmAbs(x: String, t: Exp[B], e: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t2, n, cs) = apply(e)(c + (x -> t), i)
     (TyArr(t, t2), n, cs)
   }
 
-  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmApp(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t1, n1, cs1) = apply(e1)(c, i)
     val (t2, n2, cs2) = apply(e2)(c, n1)
     val x = TyId[B]("X" + n2.toString)
@@ -26,17 +26,17 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 
   override def tmZero(): T = (c, i) => (TyNat(), i, Set())
 
-  override def tmSucc(e: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmSucc(e: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t, n, cs) = apply(e)(c, i)
     (TyNat[B](), n, cs + (t -> TyNat[B]()))
   }
 
-  override def tmPred(e: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmPred(e: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t, n, cs) = apply(e)(c, i)
     (TyNat[B](), n, cs + (t -> TyNat[B]()))
   }
 
-  override def tmIsZero(e: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmIsZero(e: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t, n, cs) = apply(e)(c, i)
     (TyBool[B](), n, cs + (t -> TyNat[B]()))
   }
@@ -45,14 +45,14 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 
   override def tmFalse(): T = (c, i) => (TyBool(), i, Set())
 
-  override def tmIf(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]], e3: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmIf(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]], e3: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t1, n1, cs1) = apply(e1)(c, i)
     val (t2, n2, cs2) = apply(e2)(c, n1)
     val (t3, n3, cs3) = apply(e3)(c, n2)
     (t2, n3, cs1 ++ cs2 ++ cs3 ++ Set(t1 -> TyBool[B](), t2 -> t3))
   }
 
-  override def tmSeq(es: List[TExp[A, Exp[B]]]): T = (c, i) => es match {
+  override def tmSeq(es: List[Exp2[A, Exp[B]]]): T = (c, i) => es match {
     case a :: as => as.foldLeft(apply(a)(c, i))({
       case ((_, n1, cs1), e) =>
         val (t, n2, cs2) = apply(e)(c, n1)

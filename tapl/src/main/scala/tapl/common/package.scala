@@ -10,7 +10,7 @@ package object common {
     def apply[E](alg: A[Exp[A], E]): E
   }
 
-  type TExp[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  type Exp2[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
 
   type Exp3[-A[-R, E, -T, -K], +V1, +V2] = Exp[({type lam[-X, Y] = A[X, Y, V1, V2]})#lam]
 

@@ -88,7 +88,6 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
   def expNames(i: Int): String = {
     if (i < 1) sys.error("")
     else if (i == 1) "Exp"
-    else if (i == 2) "TExp"
     else "Exp" + i.toString
   }
 
@@ -103,7 +102,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
   val rec: String = alg.tparams.head.name.value
 
-  // Exp[A], TExp[A, T] ...
+  // Exp[A], Exp2[A, T] ...
   val expTy: Type = t"${Type.Name(exp)}[A, ..$secTypes]"
 
   // -X, Y, -Z1, -Z2 ...
@@ -235,6 +234,8 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
   }
 
   def genMapSnd(): Defn.Trait = {
+    if (alg.tparams.length > 3) return q"trait MapSnd"
+
     val ctor = Ctor.Ref.Name(alg.name.value)
 
     val stats0: Seq[Defn.Def] = cases.map(d => {
@@ -256,7 +257,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
           val rt = alg.tparams(2).name.value
           d.paramss.map(_.map(t =>
             t.transform({
-              case Type.Name(`re`) => t"TExp[A, T]"
+              case Type.Name(`re`) => t"Exp2[A, T]"
               case Type.Name(`rt`) => t"T"
             }).asInstanceOf[Term.Param]
           ))
@@ -264,7 +265,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
       numOfSorts match {
         case 1 => q"override def ${d.name}(...$paramss): Exp[A] = $capName[A](...$args)"
-        case 2 => q"override def ${d.name}(...$paramss): TExp[A, T] = $capName[A, T](...$args)"
+        case 2 => q"override def ${d.name}(...$paramss): Exp2[A, T] = $capName[A, T](...$args)"
       }
     })
 
@@ -286,7 +287,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
               extends $ctor[Exp[A], Exp[A]] with ..$pTrans { ..$stats }"""
       case 2 =>
         q"""trait MapSnd[A[-X, Y, -Z] <: ${alg.name}[X, Y, Z], T]
-              extends $ctor[TExp[A, T], TExp[A, T], T] with ..$pTrans { ..$stats }"""
+              extends $ctor[Exp2[A, T], Exp2[A, T], T] with ..$pTrans { ..$stats }"""
     }
     mapSnd
   }

@@ -6,13 +6,13 @@ import tapl.component.typed.TAlg.Factory._
 import tapl.component.{top, varapp}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]]
+  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
     with varapp.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] with ITEq[B] {
 
-  override def tmAbs(x: String, t: Exp[B], e: TExp[A, Exp[B]]): Type[B] =
+  override def tmAbs(x: String, t: Exp[B], e: Exp2[A, Exp[B]]): Type[B] =
     c => TyArr(t, apply(e)(c + (x, t)))
 
-  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c =>
+  override def tmApp(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): Type[B] = c =>
     apply(e1)(c) match {
       case TyArr(t1, t2) if tEquals(t1)(apply(e2)(c)) => t2
       case _ => typeError()
@@ -48,7 +48,7 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
 trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Typer[A, B] with ISubtypeOf[B] {
 
-  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c =>
+  override def tmApp(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): Type[B] = c =>
     apply(e1)(c) match {
       case TyArr(t1, t2) => if (apply(e2)(c)(subtypeOf)(t1)) t2 else typeError()
       case _ => typeError()

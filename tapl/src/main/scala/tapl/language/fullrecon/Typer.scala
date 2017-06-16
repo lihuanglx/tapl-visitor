@@ -5,16 +5,16 @@ import tapl.language.recon
 import tapl.language.fullrecon.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]]
+  extends Alg[Exp2[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]]
     with recon.Typer[A, B] with ISubst[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
 
-  override def tmUAbs(x: String, e: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmUAbs(x: String, e: Exp2[A, Exp[B]]): T = (c, i) => {
     val ty = TyId[B]("X" + i.toString)
     val (t, n, cs) = apply(e)(c + (x -> ty), i + 1)
     (TyArr(ty, t), n, cs)
   }
 
-  override def tmLet(x: String, e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): T = (c, i) => {
+  override def tmLet(x: String, e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): T = (c, i) => {
     val _ = apply(e1)(c, i)
     val e = e2(subst(x, e1))
     apply(e)(c, i)
@@ -24,7 +24,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
 object Typer extends Typer[Alg, TAlg]
   with Impl[(Ctx[String, Exp[TAlg]], Int) => (Exp[TAlg], Int, Set[(Exp[TAlg], Exp[TAlg])])] {
 
-  override def subst(m: Map[String, TExp[Alg, Exp[TAlg]]]) = new SubstImpl(m)
+  override def subst(m: Map[String, Exp2[Alg, Exp[TAlg]]]) = new SubstImpl(m)
 }
 
 object Unify extends recon.Unify[TAlg] {

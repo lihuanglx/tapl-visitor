@@ -3,7 +3,7 @@ package tapl.language.fullsub
 import tapl.common._
 import tapl.component.{typed, extension, top}
 
-trait Print[A[-R, E, -F], V] extends Alg[TExp[A, V], String, V]
+trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
   with typed.Print[A, V] with extension.Print[A, V]
 
 object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {

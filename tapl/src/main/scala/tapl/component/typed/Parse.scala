@@ -10,10 +10,10 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETPars
 
   lexical.delimiters += ("\\", ".", "(", ")", ":", "->", "$")
 
-  private lazy val pAbsE: Parser[TExp[A, Exp[B]]] =
+  private lazy val pAbsE: Parser[Exp2[A, Exp[B]]] =
     ("\\" ~> lcid) ~ (":" ~> pT) ~ ("." ~> pE) ^^ { case x ~ t0 ~ e0 => TmAbs[A, Exp[B]](x, t0, e0) }
 
-  lazy val pTypedE: Parser[TExp[A, Exp[B]]] = pVarAppE ||| pAbsE
+  lazy val pTypedE: Parser[Exp2[A, Exp[B]]] = pVarAppE ||| pAbsE
 
   lazy val pTypedT: Parser[Exp[B]] =
     pT ~ ("->" ~> pT) ^^ { case t1 ~ t2 => TyArr(t1, t2) } |||

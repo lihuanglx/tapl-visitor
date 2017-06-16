@@ -5,9 +5,9 @@ import tapl.component.{rectype, typed}
 import tapl.language.equirec.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with typed.Typer[A, B] with ISubst[B] {
+  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with typed.Typer[A, B] with ISubst[B] {
 
-  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c => {
+  override def tmApp(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): Type[B] = c => {
     def go(t: Exp[B]): Exp[B] = t match {
       case TyRec(x, r) => go(r(subst(x, t)))
       case TyArr(t1, t2) if tEquals(t1)(apply(e2)(c)) => t2

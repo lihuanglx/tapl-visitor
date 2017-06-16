@@ -5,9 +5,9 @@ import tapl.component.{top, bottom, typed}
 import tapl.language.bot.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with typed.Typer2[A, B] {
+  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with typed.Typer2[A, B] {
 
-  override def tmApp(e1: TExp[A, Exp[B]], e2: TExp[A, Exp[B]]): Type[B] = c =>
+  override def tmApp(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): Type[B] = c =>
     apply(e1)(c) match {
       case TyBot() => TyBot[B]()
       case _ => super.tmApp(e1, e2)(c)

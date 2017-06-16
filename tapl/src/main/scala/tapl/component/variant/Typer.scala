@@ -6,9 +6,9 @@ import tapl.component.top.TAlg.Factory._
 import tapl.component.top
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with ITEq[B] {
+  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with ITEq[B] {
 
-  override def tmTag(x: String, e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = c =>
+  override def tmTag(x: String, e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = c =>
     t match {
       case TyVariant(l) =>
         val t2 = l.find(_._1 == x).getOrElse(typeError())._2
@@ -16,7 +16,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       case _ => typeError()
     }
 
-  override def tmCase(e: TExp[A, Exp[B]], l: List[(String, String, TExp[A, Exp[B]])]): Type[B] = c =>
+  override def tmCase(e: Exp2[A, Exp[B]], l: List[(String, String, Exp2[A, Exp[B]])]): Type[B] = c =>
     apply(e)(c) match {
       case TyVariant(l2) =>
         l.map({ case (n, v, b) =>

@@ -6,14 +6,14 @@ import tapl.language.fullsimple
 import tapl.language.fullisorec.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] with ISubst[B] {
+  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with fullsimple.Typer[A, B] with ISubst[B] {
 
-  override def tmFold(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = c => t match {
+  override def tmFold(e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = c => t match {
     case TyRec(x, u) if tEquals(apply(e)(c))(subst(x, t)(u)) => t
     case _ => typeError()
   }
 
-  override def tmUnfold(e: TExp[A, Exp[B]], t: Exp[B]): Type[B] = c => t match {
+  override def tmUnfold(e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = c => t match {
     case TyRec(x, u) if tEquals(apply(e)(c))(t) => subst(x, t)(u)
     case _ => typeError()
   }

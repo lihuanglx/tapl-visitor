@@ -4,7 +4,7 @@ import tapl.common._
 import tapl.component.{extension, variant}
 import tapl.language.equirec
 
-trait Print[A[-R, E, -F], V] extends Alg[TExp[A, V], String, V]
+trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
   with equirec.Print[A, V] with extension.Print[A, V] with variant.Print[A, V]
 
 object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {

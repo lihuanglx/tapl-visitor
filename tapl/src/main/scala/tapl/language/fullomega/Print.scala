@@ -1,19 +1,22 @@
-package tapl.language.fullpoly
+package tapl.language.fullomega
 
 import tapl.common._
 import tapl.component._
 
-trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
-  with typed.Print[A, V] with extension.Print[A, V] with pack.Print[A, V] {
+trait Print[A[-R, E, -T, -K], V1, V2] extends Alg[Exp3[A, V1, V2], String, V1, V2]
+  with typed.Print[({type l[-X, Y, -Z] = A[X, Y, Z, V2]})#l, V1]
+  with extension.Print[({type l[-X, Y, -Z] = A[X, Y, Z, V2]})#l, V1]
+  with pack.Print[({type l[-X, Y, -Z] = A[X, Y, Z, V2]})#l, V1]
+  with ref.Print[({type l[-X, Y] = A[X, Y, V1, V2]})#l] {
 
-  override def tmTAbs(x: String, e: Exp2[A, V]): String = "\\" + x + "." + apply(e)
 
-  override def tmTApp(e: Exp2[A, V], t: V): String = apply(e) + " [" + printT(t) + "]"
 }
 
+/*
 object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
   override def printT(t: Exp[TAlg]): String = t(TPrint)
 }
+
 
 trait TPrint[A[-F, T]] extends TAlg[Exp[A], String]
   with typed.TPrint[A] with extension.TPrint[A] with typevar.TPrint[A] {
@@ -24,3 +27,4 @@ trait TPrint[A[-F, T]] extends TAlg[Exp[A], String]
 }
 
 object TPrint extends TPrint[TAlg] with TImpl[String]
+*/

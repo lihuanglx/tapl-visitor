@@ -5,7 +5,7 @@ import tapl.language.fullequirec.TAlg.Factory._
 import tapl.component.{extension, variant}
 import tapl.language.equirec
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[TExp[A, Exp[B]], Type[B], Exp[B]]
+trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
   with equirec.Typer[A, B] with extension.Typer[A, B] with variant.Typer[A, B]
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {

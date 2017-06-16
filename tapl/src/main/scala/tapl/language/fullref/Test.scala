@@ -11,12 +11,12 @@ object Test {
   def main(args: Array[String]): Unit = {
     val input = "(\\r:(Source Bool). if !r then 1 else 2) (ref false)"
     //val input = "(\\r:(Ref Bool). if !r then 1 else {r := false; 2}) (ref false)"
-    val ast: TExp[Alg, Exp[TAlg]] = parser.parse(input).get
+    val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
     println("Type: " + ast(Typer)(Ctx.empty())(Ctx.empty())(TPrint))
     go(ast, 1, mutable.MutableList())
   }
 
-  def go(e: TExp[Alg, Exp[TAlg]], step: Int, c: mutable.MutableList[TExp[Alg, Exp[TAlg]]]): Unit = {
+  def go(e: Exp2[Alg, Exp[TAlg]], step: Int, c: mutable.MutableList[Exp2[Alg, Exp[TAlg]]]): Unit = {
     println("Step " + step.toString + ": ")
     println("  Term: " + e(Print))
 

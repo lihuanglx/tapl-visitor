@@ -10,5 +10,5 @@ object Common {
     val default: T
   }
 
-  type TExp[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  type Exp2[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
 }

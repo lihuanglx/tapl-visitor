@@ -8,7 +8,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETPars
   lexical.reserved += ("as", "case", "of")
   lexical.delimiters += ("<", ">", "=", ":", ",", "|", "=>")
 
-  lazy val pVariantE: Parser[TExp[A, Exp[B]]] =
+  lazy val pVariantE: Parser[Exp2[A, Exp[B]]] =
     ("<" ~> lcid) ~ ("=" ~> pE <~ ">") ~ ("as" ~> pT) ^^ { case x ~ e0 ~ t0 => TmTag[A, Exp[B]](x, e0, t0) } |||
       ("case" ~> pE <~ "of") ~ repsep(("<" ~> lcid) ~ ("=" ~> lcid) ~ ((">" ~ "=>") ~> pE) ^^ {
         case x1 ~ x2 ~ e0 => (x1, x2, e0)

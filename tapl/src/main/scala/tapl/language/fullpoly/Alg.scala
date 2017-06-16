@@ -18,8 +18,8 @@ trait TAlg[-F, T] extends typed.TAlg[F, T] with extension.TAlg[F, T] with typeva
   def tySome(x: String, t: F): T
 }
 
-trait Impl[T] extends Alg[TExp[Alg, Exp[TAlg]], T, Exp[TAlg]] {
-  override def apply(e: TExp[Alg, Exp[TAlg]]): T = e(this)
+trait Impl[T] extends Alg[Exp2[Alg, Exp[TAlg]], T, Exp[TAlg]] {
+  override def apply(e: Exp2[Alg, Exp[TAlg]]): T = e(this)
 }
 
 trait TImpl[T] extends TAlg[Exp[TAlg], T] {

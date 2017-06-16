@@ -19,6 +19,6 @@ trait TAlg[-F, T] {
 }
 */
 
-case class CAbs[A[-R, E, -F] <: Alg[R, E, F], V](x: String, t: V, e: TExp[A, V]) extends TExp[A, V] {
+case class CAbs[A[-R, E, -F] <: Alg[R, E, F], V](x: String, t: V, e: Exp2[A, V]) extends Exp2[A, V] {
   override def apply[E](alg: A[Exp[({type lam[-X, Y] = A[X, Y, V]})#lam], E, V]): E = alg.abs(x, t, e)
 }
