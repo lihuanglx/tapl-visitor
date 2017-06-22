@@ -51,7 +51,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)]
   }
 
   override def tyVar(x: String): Set[(String, String)] => (Exp[A]) => Boolean = c => {
-    case TyVar(y) => c((x, y))
+    case TyVar(y) => (y == x) || c((x, y))
     case _ => false
   }
 }

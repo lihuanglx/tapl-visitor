@@ -12,7 +12,11 @@ package object common {
 
   type Exp2[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
 
+  type _Exp2[-A[-R, E, -F], -B[-X, Y]] = Exp2[A, Exp[B]]
+
   type Exp3[-A[-R, E, -T, -K], +V1, +V2] = Exp[({type lam[-X, Y] = A[X, Y, V1, V2]})#lam]
+
+  type _Exp3[-A[-R, E, -T, -K], -B[-X, Y, -Z], -C[-X, Y]] = Exp3[A, _Exp2[B, C], Exp[C]]
 
   //
   trait Default[T] {
@@ -34,6 +38,8 @@ package object common {
     def +(b: (K, V)): Ctx[K, V] = new Ctx(m + b)
 
     def apply(k: K): V = m.getOrElse(k, typeError())
+
+    override def toString: String = m.toString
   }
 
   object Ctx {

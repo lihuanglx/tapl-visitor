@@ -36,7 +36,7 @@ object Eval extends Eval[Alg, TAlg] with Impl[Exp2[Alg, Exp[TAlg]]] {
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V]
-  with typed.IsVal[A, V] with extension.IsVal[A, V] {
+  with typed.IsVal[A, V] with extension.IsVal[A, V] with pack.IsVal[A, V] {
 
   override def tmTAbs(x: String, e: Exp2[A, V]): Boolean = true
 }
