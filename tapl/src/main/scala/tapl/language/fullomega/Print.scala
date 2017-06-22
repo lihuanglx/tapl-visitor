@@ -27,8 +27,7 @@ object Print extends Print[Alg, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]] with Impl[Stri
 trait TPrint[A[-F, T, -K], V] extends TAlg[Exp2[A, V], String, V]
   with typed.TPrint[({type l[-X, Y] = A[X, Y, V]})#l]
   with extension.TPrint[({type l[-X, Y] = A[X, Y, V]})#l]
-  with ref.TPrint[({type l[-X, Y] = A[X, Y, V]})#l]
-  with typevar.TPrint[({type l[-X, Y] = A[X, Y, V]})#l] {
+  with ref.TPrint[({type l[-X, Y] = A[X, Y, V]})#l] {
 
   def printK(t: V): String
 

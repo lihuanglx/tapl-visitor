@@ -38,7 +38,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)]
   }
 
   override def tyVar(x: String): Set[(String, String)] => Exp[A] => Boolean = c => {
-    case TyVar(y) => c((x, y))
+    case TyVar(y) => (y == x) || c((x, y))
     case _ => false
   }
 }
@@ -47,7 +47,7 @@ object TEquals extends TEquals[TAlg] with TImpl[Set[(String, String)] => Exp[TAl
   override def subst(m: Map[String, Exp[TAlg]]): TAlg[Exp[TAlg], Exp[TAlg]] = new TSubstImpl(m)
 }
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A]
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A] with fullsimple.TSubst[A]
 
 class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
   override val m: Map[String, Exp[TAlg]] = mp

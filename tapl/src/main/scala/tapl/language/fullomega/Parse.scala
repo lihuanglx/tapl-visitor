@@ -11,7 +11,6 @@ trait Parse[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-F, T, -K] <: TAlg[F, T, K], 
     with extension.Parse[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
     with pack.Parse[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
     with ref.Parse[({type l[-X, Y] = A[X, Y, Exp2[B, Exp[C]], Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
-    with typevar.Parse[({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
     with KParser[C] {
 
   lexical.reserved += ("Star", "All", "Some")
@@ -35,7 +34,7 @@ trait Parse[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-F, T, -K] <: TAlg[F, T, K], 
   lazy val pFullOmegaE: Parser[Exp3[A, Exp2[B, Exp[C]], Exp[C]]] =
     pTypedE ||| pExtensionE ||| pPackE ||| pRefE ||| pOmegaE
   lazy val pFullOmegaT: Parser[Exp2[B, Exp[C]]] =
-    pTypedT ||| pExtensionT ||| pRefT ||| pOmegaT ||| pTypeVarT
+    pTypedT ||| pExtensionT ||| pRefT ||| pOmegaT
   lazy val pFullOmegaK: Parser[Exp[C]] = pOmegaK
 
   override lazy val pE: Parser[Exp3[A, Exp2[B, Exp[C]], Exp[C]]] = pFullOmegaE

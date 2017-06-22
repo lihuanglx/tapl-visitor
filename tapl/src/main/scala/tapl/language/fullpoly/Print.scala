@@ -16,7 +16,7 @@ object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
 }
 
 trait TPrint[A[-F, T]] extends TAlg[Exp[A], String]
-  with typed.TPrint[A] with extension.TPrint[A] with typevar.TPrint[A] {
+  with typed.TPrint[A] with extension.TPrint[A] {
 
   override def tyAll(x: String, t: Exp[A]): String = "All " + x + "." + apply(t)
 

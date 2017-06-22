@@ -1,7 +1,7 @@
 package tapl.language.fullerror
 
 import tapl.common._
-import tapl.component.{typedbool, typevar}
+import tapl.component.typedbool
 import tapl.language.bot
 
 trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V] with bot.Print[A, V]
@@ -16,7 +16,6 @@ object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
   override def printT(t: Exp[TAlg]): String = t(TPrint)
 }
 
-trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with bot.TPrint[A]
-  with typevar.TPrint[A] with typedbool.TPrint[A]
+trait TPrint[A[-R, _]] extends TAlg[Exp[A], String] with bot.TPrint[A] with typedbool.TPrint[A]
 
 object TPrint extends TPrint[TAlg] with TImpl[String]

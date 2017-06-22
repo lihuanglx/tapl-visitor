@@ -6,7 +6,7 @@ import tapl.language.fullpoly.Alg.Factory._
 import tapl.language.fullpoly.TAlg.Factory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends typed.Parse[A, B] with extension.Parse[A, B] with pack.Parse[A, B] with typevar.Parse[B] {
+  extends typed.Parse[A, B] with extension.Parse[A, B] with pack.Parse[A, B] {
 
   lexical.reserved += ("All", "Some")
   lexical.delimiters += (".", ",", "{", "}", "[", "]")
@@ -20,7 +20,7 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       ("{" ~> "Some" ~> ucid ~ ("," ~> pT) <~ "}") ^^ { case x ~ ty => TySome(x, ty) }
 
   lazy val pFullPolyE: Parser[Exp2[A, Exp[B]]] = pTypedE ||| pExtensionE ||| pPolyE ||| pPackE
-  lazy val pFullPolyT: Parser[Exp[B]] = pTypedT ||| pExtensionT ||| pPolyT ||| pTypeVarT
+  lazy val pFullPolyT: Parser[Exp[B]] = pTypedT ||| pExtensionT ||| pPolyT
 
   override lazy val pE: Parser[Exp2[A, Exp[B]]] = pFullPolyE
   override lazy val pT: Parser[Exp[B]] = pFullPolyT

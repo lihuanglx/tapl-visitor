@@ -20,7 +20,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   override def tmApp(e1: Exp2[A, Exp[B]], e2: Exp2[A, Exp[B]]): T = (c, i) => {
     val (t1, n1, cs1) = apply(e1)(c, i)
     val (t2, n2, cs2) = apply(e2)(c, n1)
-    val x = TyId[B]("X" + n2.toString)
+    val x = TyVar[B]("X" + n2.toString)
     (x, n2 + 1, cs1 ++ cs2 ++ Set(t1 -> TyArr(t2, x)))
   }
 
@@ -75,9 +75,9 @@ trait Unify[B[-X, Y] <: TAlg[X, Y]] extends ITEq[B] with ISubst[B] {
       val (s, t) = cs.head
       if (tEquals(s)(t)) unify(cs.tail)
       else (s, t) match {
-        case (TyId(x), _) if !t(freeVars).contains(x) =>
+        case (TyVar(x), _) if !t(freeVars).contains(x) =>
           compose(unify(cs.tail map { case (a, b) => (a(subst(x, t)), b(subst(x, t))) }), Map(x -> t))
-        case (_, TyId(x)) if !s(freeVars).contains(x) =>
+        case (_, TyVar(x)) if !s(freeVars).contains(x) =>
           compose(unify(cs.tail map { case (a, b) => (a(subst(x, s)), b(subst(x, s))) }), Map(x -> s))
         case (TyArr(s1, s2), TyArr(t1, t2)) => unify(cs.tail ++ Set(s1 -> t1, s2 -> t2))
         case _ => typeError()
@@ -105,9 +105,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]]
 
 object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with SubstAux[A] {
-  override def tyId(x: String): Exp[A] = if (m.contains(x)) m(x) else TyId(x)
-}
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with typed.TSubst[A]
 
 class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
   override val m: Map[String, Exp[TAlg]] = mp
@@ -115,7 +113,7 @@ class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp
 
 // todo
 trait FreeVars[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[String]] {
-  override def tyId(x: String): Set[String] = Set(x)
+  override def tyVar(x: String): Set[String] = Set(x)
 
   override def tyArr(t1: Exp[A], t2: Exp[A]): Set[String] = apply(t1) ++ apply(t2)
 

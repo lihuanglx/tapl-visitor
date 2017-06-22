@@ -13,7 +13,7 @@ trait Alg[-R, E, -F] extends varapp.Alg[R, E] {
 trait TAlg[-F, T] {
   def tyArr(t1: F, t2: F): T
 
-  def tyId(x: String): T
+  def tyVar(x: String): T
 
   def apply(t: F): T
 }

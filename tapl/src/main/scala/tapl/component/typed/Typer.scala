@@ -25,8 +25,8 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
     case _ => false
   }
 
-  override def tyId(x: String): Exp[A] => Boolean = {
-    case TyId(y) => x == y
+  override def tyVar(x: String): Exp[A] => Boolean = {
+    case TyVar(y) => x == y
     case _ => false
   }
 }
@@ -38,9 +38,9 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
     case _ => false
   }
 
-  override def tyId(x: String): Exp[A] => Boolean = {
+  override def tyVar(x: String): Exp[A] => Boolean = {
     case TyTop() => true
-    case TyId(y) => x == y
+    case TyVar(y) => x == y
     case _ => false
   }
 }
@@ -64,6 +64,10 @@ trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]]
       case _ => TyTop[A]()
     })
 
-  override def tyId(x: String): Exp[A] => Exp[A] =
-    directJoin(TyId[A](x), _).getOrElse(TyTop[A]())
+  override def tyVar(x: String): Exp[A] => Exp[A] =
+    directJoin(TyVar[A](x), _).getOrElse(TyTop[A]())
+}
+
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with SubstAux[A] {
+  override def tyVar(x: String): Exp[A] = if (m.contains(x)) m(x) else TyVar[A](x)
 }

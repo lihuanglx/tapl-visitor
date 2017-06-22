@@ -12,7 +12,7 @@ trait Alg[-R, E, -F] extends typed.Alg[R, E, F] with extension.Alg[R, E, F] with
 }
 
 @Visitor
-trait TAlg[-F, T] extends typed.TAlg[F, T] with extension.TAlg[F, T] with typevar.TAlg[F, T] {
+trait TAlg[-F, T] extends typed.TAlg[F, T] with extension.TAlg[F, T] {
   def tyAll(x: String, t: F): T
 
   def tySome(x: String, t: F): T

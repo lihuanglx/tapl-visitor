@@ -1,6 +1,6 @@
 digraph G {
     ratio=0.6;
-    //splines=polyline;
+    splines=polyline;
 
     node[fontsize=26, shape=box];
 
@@ -33,7 +33,7 @@ digraph G {
     Record -> TypedRecord;
     VarApp -> Typed;
     TyArith, FloatString, Let, TypedRecord -> Extension;
-    TypeVar -> RecType;
+    //TypeVar -> RecType;
     Unit -> Extension;
 
     // calculi
@@ -54,6 +54,6 @@ digraph G {
     Typed, TyArith -> Recon;
     Recon, Let -> FullRecon;
 
-    Typed, Extension, Pack, TypeVar -> FullPoly;
-    Typed, Extension, Pack, Ref, TypeVar -> FullOmega;
+    Typed, Extension, Pack -> FullPoly;
+    Typed, Extension, Pack, Ref -> FullOmega;
 }

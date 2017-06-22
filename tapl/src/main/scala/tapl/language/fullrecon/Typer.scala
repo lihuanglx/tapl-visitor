@@ -9,7 +9,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with recon.Typer[A, B] with ISubst[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
 
   override def tmUAbs(x: String, e: Exp2[A, Exp[B]]): T = (c, i) => {
-    val ty = TyId[B]("X" + i.toString)
+    val ty = TyVar[B]("X" + i.toString)
     val (t, n, cs) = apply(e)(c + (x -> ty), i + 1)
     (TyArr(ty, t), n, cs)
   }

@@ -6,7 +6,7 @@ object Test {
   val parser = new Parse[Alg, TAlg] {}
 
   def main(args: Array[String]): Unit = {
-    val input = "\\f:((((Rec X.X->$A)->$A)->$A)->$A)->$T. (\\x:(Rec X.X->$A). f x)"
+    val input = "\\f:((((Rec X.X->A)->A)->A)->A)->T. (\\x:(Rec X.X->A). f x)"
     val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
     go(ast, 1)
   }

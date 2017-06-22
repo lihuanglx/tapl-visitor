@@ -8,7 +8,7 @@ import tapl.component.typed.TAlg.Factory._
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B]
   with varapp.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
 
-  lexical.delimiters += ("\\", ".", "(", ")", ":", "->", "$")
+  lexical.delimiters += ("\\", ".", "(", ")", ":", "->")
 
   private lazy val pAbsE: Parser[Exp2[A, Exp[B]]] =
     ("\\" ~> lcid) ~ (":" ~> pT) ~ ("." ~> pE) ^^ { case x ~ t0 ~ e0 => TmAbs[A, Exp[B]](x, t0, e0) }
@@ -17,6 +17,6 @@ trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETPars
 
   lazy val pTypedT: Parser[Exp[B]] =
     pT ~ ("->" ~> pT) ^^ { case t1 ~ t2 => TyArr(t1, t2) } |||
-      ("$" ~> ucid) ^^ TyId[B] |||
+      ucid ^^ TyVar[B] |||
       "(" ~> pT <~ ")"
 }

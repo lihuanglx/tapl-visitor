@@ -187,8 +187,6 @@ trait Kinding[B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
 
   override def tyNat(): (KC[C]) => Exp[C] = _ => KnStar()
 
-  override def tyId(x: String): (KC[C]) => Exp[C] = _ => KnStar()
-
   override def tyString(): (KC[C]) => Exp[C] = _ => KnStar()
 
   override def tyUnit(): (KC[C]) => Exp[C] = _ => KnStar()
@@ -237,7 +235,7 @@ object Kinding extends Kinding[TAlg, KAlg] with TImpl[(KC[KAlg]) => Exp[KAlg]] {
 }
 
 trait TSubst[B[-X, Y, -Z] <: TAlg[X, Y, Z], C] extends TAlg.Transform[B, C]
-  with typevar.TSubst[({type l[-X, Y] = B[X, Y, C]})#l] {
+  with typed.TSubst[({type l[-X, Y] = B[X, Y, C]})#l] {
 
   override def tyAbs(x: String, k: C, t: Exp2[B, C]): Exp2[B, C] =
     TyAbs(x, k, if (m.contains(x)) t else apply(t))

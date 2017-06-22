@@ -27,10 +27,10 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 trait TEquals[A[-X, Y] <: TAlg[X, Y]]
   extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean] with ISubst[A] {
 
-  override def tyId(x: String): (Set[(Exp[A], Exp[A])]) => Exp[A] => Boolean = c => u => {
-    val p = (TyId[A](x), u)
+  override def tyVar(x: String): (Set[(Exp[A], Exp[A])]) => Exp[A] => Boolean = c => u => {
+    val p = (TyVar[A](x), u)
     c(p) || (u match {
-      case TyId(y) => x == y
+      case TyVar(y) => x == y
       case TyRec(_, _) => apply(u)(c)(p._1)
       case _ => false
     })
@@ -53,15 +53,13 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]]
         apply(s)(c + p)(u)
       }
     }
-
-  override def tyVar(x: String): Set[(Exp[A], Exp[A])] => Exp[A] => Boolean = _ => _ => sys.error("impossible")
 }
 
 object TEquals extends TEquals[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
   override def subst(m: Map[String, Exp[TAlg]]): TAlg[Exp[TAlg], Exp[TAlg]] = new TSubstImpl(m)
 }
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A]
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with rectype.TSubst[A] with typed.TSubst[A]
 
 class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
   override val m: Map[String, Exp[TAlg]] = mp

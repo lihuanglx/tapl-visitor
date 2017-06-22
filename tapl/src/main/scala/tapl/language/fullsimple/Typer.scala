@@ -13,3 +13,5 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
   with typed.TEquals[A] with extension.TEquals[A] with variant.TEquals[A]
+
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with typed.TSubst[A]

@@ -58,7 +58,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)]
 
 object TEquals extends TEquals[TAlg] with TImpl[Set[(String, String)] => Exp[TAlg] => Boolean]
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with typevar.TSubst[A] {
+trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with typed.TSubst[A] {
   override def tyAll(x: String, t: Exp[A]): Exp[A] = TyAll(x, if (m.contains(x)) t else apply(t))
 
   override def tySome(x: String, t: Exp[A]): Exp[A] = TySome(x, if (m.contains(x)) t else apply(t))

@@ -57,7 +57,7 @@ object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
 trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with bot.Meet[A] {
   override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(TyBot[A]())
 
-  override def tyId(x: String): Exp[A] => Exp[A] = directMeet(TyId[A](x), _).getOrElse(TyBot[A]())
+  override def tyVar(x: String): Exp[A] => Exp[A] = directMeet(TyVar[A](x), _).getOrElse(TyBot[A]())
 }
 
 object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
