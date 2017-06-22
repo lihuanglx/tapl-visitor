@@ -7,7 +7,7 @@ object Test {
 
   def main(args: Array[String]): Unit = {
     //λf:Y. λa:X. f (f a)
-    val input = "(\\f:$Y. \\a:$X. f (f a)) (\\b:Bool. if b then false else true)"
+    val input = "(\\f:Y. \\a:X. f (f a)) (\\b:Bool. if b then false else true)"
     val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
 
     val (ty, _, cs) = ast(Typer)(Ctx.empty(), 0)
