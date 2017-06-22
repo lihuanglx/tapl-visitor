@@ -233,6 +233,35 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     transform
   }
 
+  def genId(): Defn.Trait = {
+    val ctor = Ctor.Ref.Name(alg.name.value)
+
+    val stats: Seq[Defn.Def] = cases.map(d => {
+      val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => Term.Name(t.name.value)))
+      val capName = Term.Name(d.name.value.capitalize)
+      val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
+
+      q"override def ${d.name}(...$paramss): $expTy = $capName[A, ..$secTypes](...$args)"
+    })
+
+    val ps = parents.map({ case (nm, ts) =>
+      val typeA =
+        if (ts.length == alg.tparams.length) s"A"
+        else {
+          val tss = ts.zipWithIndex map { case (x, i) => if (i == 1) x.syntax else "-" + x.syntax }
+          s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
+        }
+      val str = (typeA +: ts.drop(2).map(_.syntax)).mkString(", ")
+      (nm + s".Id[$str]").parse[Ctor.Call].get
+    })
+
+    val id =
+      q""" trait Id[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams]
+             extends $ctor[$expTy, $expTy, ..$secTypes] with ..$ps { ..$stats }
+        """
+    id
+  }
+
   def genMapSnd(): Defn.Trait = {
     if (alg.tparams.length > 3) return q"trait MapSnd"
 
@@ -328,9 +357,10 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val factory = genFactory()
     val query = genQuery()
     val transform = genTransform()
+    val id = genId()
     val lifter = genLifter()
 
-    classes :+ factory :+ q"object Factory extends Factory" :+ query :+ transform :+ lifter :+ genMapSnd()
+    classes :+ factory :+ q"object Factory extends Factory" :+ query :+ transform :+ id :+ lifter :+ genMapSnd()
   }
 
   def makeCompanion(): Defn.Object = {
