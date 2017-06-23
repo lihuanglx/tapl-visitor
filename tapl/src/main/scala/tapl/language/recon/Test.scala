@@ -7,7 +7,7 @@ object Test {
 
   def main(args: Array[String]): Unit = {
     //λf:Y. λa:X. f (f a)
-    val input = "(\\f:Y. \\a:X. f (f a)) (\\b:Bool. if b then false else true)"
+    val input = "((\\f:Y. \\a:X. f (f a)) (\\b:Bool. if b then false else true)) true"
     val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
 
     val (ty, _, cs) = ast(Typer)(Ctx.empty(), 0)
@@ -15,9 +15,9 @@ object Test {
 
     println("Type: " + Unify(ty, cs)(TPrint))
 
-    val ast2 = ast(new Alg.MapSnd[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
-      override def mp(t: Exp[TAlg]): Exp[TAlg] = t(new TSubstImpl(solution))
-    })
+    val map2 = new Alg.Map2[Alg, Exp[TAlg]] with Impl[(Exp[TAlg] => Exp[TAlg]) => Exp2[Alg, Exp[TAlg]]]
+
+    val ast2 = ast(map2)(_ (new TSubstImpl(solution)))
     go(ast2, 1)
   }
 

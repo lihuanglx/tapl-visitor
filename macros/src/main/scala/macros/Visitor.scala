@@ -190,8 +190,8 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     query
   }
 
-  def addApply(tm: Term, ty: Type, nMap: Map[String, Term.Name]): Term = ty match {
-    case t"${x: Type.Name}" => if (nMap.contains(x.value)) q"${nMap(x.value)}($tm)" else tm
+  def addApply(tm: Term, ty: Type, nMap: Map[String, Term => Term]): Term = ty match {
+    case t"${x: Type.Name}" => if (nMap.contains(x.value)) nMap(x.value)(tm) else tm
     case t"(..$tpesnel)" =>
       val exprsnel = tpesnel zip (Stream from 1) map {
         case (t, i) =>
@@ -207,7 +207,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
     val stats: Seq[Defn.Def] = cases.map(d => {
       val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t =>
-        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], Map(rec -> q"apply"))
+        addApply(Term.Name(t.name.value), t.decltpe.get.asInstanceOf[Type], Map(rec -> (x => q"apply($x)")))
       ))
       val capName = Term.Name(d.name.value.capitalize)
       val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
@@ -262,63 +262,71 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     id
   }
 
-  def genMapSnd(): Defn.Trait = {
-    if (alg.tparams.length > 3) return q"trait MapSnd"
-
+  def genMaps(): Seq[Defn.Trait] = {
     val ctor = Ctor.Ref.Name(alg.name.value)
 
-    val stats0: Seq[Defn.Def] = cases.map(d => {
-      val re = alg.tparams.head.name.value
+    val map0 = {
+      val stats: Seq[Defn.Def] = cases.map(d => {
+        val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => {
+          val tp = t.decltpe.get.asInstanceOf[Type]
+          addApply(Term.Name(t.name.value), tp, Map(rec -> (x => q"apply($x)(f)")))
+        }))
+        val capName = Term.Name(d.name.value.capitalize)
+        val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
 
-      val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => {
-        val tp = t.decltpe.get.asInstanceOf[Type]
-        val r = addApply(Term.Name(t.name.value), tp, Map(rec -> q"apply"))
-        if (numOfSorts == 1) r else addApply(r, tp, Map(alg.tparams(2).name.value -> q"mp"))
-      }))
+        q"override def ${d.name}(...$paramss): (D => D) => $expTy = f => $capName[A, ..$secTypes](...$args)"
+      })
 
-      val capName = Term.Name(d.name.value.capitalize)
+      val ps = parents.map({ case (nm, ts) =>
+        val typeA =
+          if (ts.length == alg.tparams.length) s"A"
+          else {
+            val tss = ts.zipWithIndex map { case (x, i) => if (i == 1) x.syntax else "-" + x.syntax }
+            s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
+          }
+        val str = (typeA +: ts.drop(2).map(_.syntax)).:+("D").mkString(", ")
+        (nm + s".Map0[$str]").parse[Ctor.Call].get
+      })
 
-      val paramss = numOfSorts match {
-        case 1 => d.paramss.map(_.map(t =>
-          t.transform({ case Type.Name(`re`) => t"Exp[A]" }).asInstanceOf[Term.Param]
-        ))
-        case 2 =>
-          val rt = alg.tparams(2).name.value
-          d.paramss.map(_.map(t =>
-            t.transform({
-              case Type.Name(`re`) => t"Exp2[A, T]"
-              case Type.Name(`rt`) => t"T"
-            }).asInstanceOf[Term.Param]
-          ))
-      }
+      q"""trait Map0[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams, D]
+            extends $ctor[$expTy, (D => D) => $expTy, ..$secTypes] with ..$ps { ..$stats }"""
+    }
 
-      numOfSorts match {
-        case 1 => q"override def ${d.name}(...$paramss): Exp[A] = $capName[A](...$args)"
-        case 2 => q"override def ${d.name}(...$paramss): Exp2[A, T] = $capName[A, T](...$args)"
-      }
-    })
+    map0 +: secTParams.zip(Stream from 2).map({ case (tp, id) =>
+      val ty = Type.Name(tp.name.value)
+      val stats: Seq[Defn.Def] = cases.map(d => {
+        val args: Seq[Seq[Term.Arg]] = d.paramss.map(_.map(t => {
+          val tp = t.decltpe.get.asInstanceOf[Type]
+          addApply(Term.Name(t.name.value), tp,
+            Map(rec -> (x => q"apply($x)(f)"), ty.value -> (x => q"f($x)")))
+        }))
+        val capName = Term.Name(d.name.value.capitalize)
+        val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
 
-    val pTrans = numOfSorts match {
-      case 1 => parents.map(x => (x._1 + s".MapSnd[A]").parse[Ctor.Call].get)
-      case 2 => parents.map({ case (nm, ts) =>
-        ts.length match {
-          case 2 => (nm + s".MapSnd[({type l[-X, Y] = A[X, Y, T]})#l]").parse[Ctor.Call].get
-          case 3 => (nm + s".MapSnd[A, T]").parse[Ctor.Call].get
+        q"override def ${d.name}(...$paramss): (($ty) => $ty) => $expTy = f => $capName[A, ..$secTypes](...$args)"
+      })
+      val ps = parents.map({ case (nm, ts) =>
+        val typeA =
+          if (ts.length == alg.tparams.length) s"A"
+          else {
+            val tss = ts.zipWithIndex map { case (x, i) => if (i == 1) x.syntax else "-" + x.syntax }
+            s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
+          }
+        val idx = ts.indexOf(ty)
+        if (idx == -1) {
+          val str = (typeA +: ts.drop(2).map(_.syntax)).:+(ty.value).mkString(", ")
+          (nm + s".Map0[$str]").parse[Ctor.Call].get
+        } else {
+          val str = (typeA +: ts.drop(2).map(_.syntax)).mkString(", ")
+          (nm + s".Map${idx.toString}[$str]").parse[Ctor.Call].get
         }
       })
-    }
-
-    val stats = if (numOfSorts == 2) q"def mp(t: T): T" +: stats0 else stats0
-
-    val mapSnd = numOfSorts match {
-      case 1 =>
-        q"""trait MapSnd[A[-X, Y] <: ${alg.name}[X, Y]]
-              extends $ctor[Exp[A], Exp[A]] with ..$pTrans { ..$stats }"""
-      case 2 =>
-        q"""trait MapSnd[A[-X, Y, -Z] <: ${alg.name}[X, Y, Z], T]
-              extends $ctor[Exp2[A, T], Exp2[A, T], T] with ..$pTrans { ..$stats }"""
-    }
-    mapSnd
+      val tName = Type.Name("Map" + id.toString)
+      val mp =
+        q"""trait $tName[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams]
+              extends $ctor[$expTy, (($ty) => $ty) => $expTy, ..$secTypes] with ..$ps { ..$stats }"""
+      mp
+    })
   }
 
   def genLifter(): Defn.Trait = {
@@ -360,7 +368,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val id = genId()
     val lifter = genLifter()
 
-    classes :+ factory :+ q"object Factory extends Factory" :+ query :+ transform :+ id :+ lifter :+ genMapSnd()
+    classes ++ Seq(factory, q"object Factory extends Factory", query, transform, id, lifter) ++ genMaps()
   }
 
   def makeCompanion(): Defn.Object = {

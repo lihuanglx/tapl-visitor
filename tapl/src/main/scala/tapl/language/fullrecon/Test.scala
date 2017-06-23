@@ -19,9 +19,9 @@ object Test {
 
     println("Type: " + Unify(ty, cs)(TPrint))
 
-    val ast2 = ast(new Alg.MapSnd[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
-      override def mp(t: Exp[TAlg]): Exp[TAlg] = t(new TSubstImpl(solution))
-    })
+    val map2 = new Alg.Map2[Alg, Exp[TAlg]] with Impl[(Exp[TAlg] => Exp[TAlg]) => Exp2[Alg, Exp[TAlg]]]
+
+    val ast2 = ast(map2)(_ (new TSubstImpl(solution)))
     go(ast2, 1)
   }
 

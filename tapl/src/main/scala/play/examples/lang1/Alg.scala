@@ -8,9 +8,3 @@ import play.examples._
 trait Alg[-N, E] extends lang0.Alg[N, E] {
   def vr(x: String): E
 }
-
-object Test {
-  def main(args: Array[String]): Unit = {
-
-  }
-}
