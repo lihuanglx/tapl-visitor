@@ -1,7 +1,6 @@
 import org.scalatest._
 import tapl.common._
 import tapl.language.arith._
-import tapl.language.arith.Alg.Factory._
 
 class Arith extends FreeSpec with Matchers {
   type E = Exp[Alg]
