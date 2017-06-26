@@ -312,7 +312,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
             val tss = ts.zipWithIndex map { case (x, i) => if (i == 1) x.syntax else "-" + x.syntax }
             s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
           }
-        val idx = ts.indexOf(ty)
+        val idx = ts.indexWhere(_.syntax == ty.syntax)
         if (idx == -1) {
           val str = (typeA +: ts.drop(2).map(_.syntax)).:+(ty.value).mkString(", ")
           (nm + s".Map0[$str]").parse[Ctor.Call].get
