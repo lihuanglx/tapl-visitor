@@ -1,0 +1,5 @@
+if false then true else false
+succ (if false then 0 else 0)
+(pred (if (iszero 2) then (pred 2) else (succ 1)))
+iszero (pred (succ (succ 0)))
+if true then (if false then 2 else 4) else 3

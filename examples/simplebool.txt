@@ -1,0 +1,5 @@
+(\x: Bool. x) true
+(\f: Bool->Bool. f true) (\x: Bool. if x then false else true)
+(\x: Bool->Bool. if x false then true else false) (\x: Bool. if x then false else true)
+(((\b: Bool. \x: Bool. \y: Bool. if b then x else y) true) false) true
+((\f: Bool-> Bool. \x: Bool. f x) (\x:Bool. x)) true

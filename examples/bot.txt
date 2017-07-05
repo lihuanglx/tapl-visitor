@@ -1,0 +1,5 @@
+(\x:Top. x) (\x:Bot. x)
+(\x:Bot->Top. x) (\x:Top. x)
+(\x:Top. x) (\x:Top. x)
+(\x:Top->Top. x x) (\y:Top. y)
+\x:Bot. x x

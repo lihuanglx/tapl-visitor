@@ -1,20 +1,31 @@
 package tapl.language.tyarith
 
-import tapl.common.{Ctx, Exp}
+import tapl.common._
+
+import scala.io.Source
 
 object Test {
   val parser = new Parse[Alg, TAlg] {}
 
+  val name = "tyarith"
+
   def main(args: Array[String]): Unit = {
-    val input = "if true then (if false then 2 else 4) else 3"
+    val inputFile = "examples/" + name + ".txt"
+    val lines: List[String] = Source.fromFile(inputFile).getLines().toList
+    lines.foreach(process)
+  }
+
+  def process(input: String): Unit = {
+    println(input)
     val ast: Exp[Alg] = parser.parse(input).get
+    println("Type: " + ast(Typer)(TPrint))
     go(ast, 1)
+    println("-" * 80)
   }
 
   def go(e: Exp[Alg], step: Int): Unit = {
-    println("Step " + step.toString + ": ")
-    println("  Term: " + e(Print))
-    println("  Type: " + e(Typer)(TPrint))
+    print("Step " + step.toString + ": ")
+    println(e(Print))
     if (e(IsVal)) {
       println("Value")
     } else {

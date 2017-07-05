@@ -1,0 +1,5 @@
+let x = true in x
+{x = \x.x, y = (\x.x)(\x.x)}.x
+(\x.\x.x) 3
+let two = 2 in ((\b. if b then 1 else two) true)
+(\x. x.l x.r) {l = \x. pred x, r = 9}
