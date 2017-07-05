@@ -4,7 +4,10 @@ import tapl.common._
 import tapl.component.top.TAlg.Factory._
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
-  override def tyTop(): Exp[A] => Boolean = _ => false
+  override def tyTop(): Exp[A] => Boolean = {
+    case TyTop() => true
+    case _ => false
+  }
 }
 
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
