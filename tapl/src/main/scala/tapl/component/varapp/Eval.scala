@@ -3,12 +3,14 @@ package tapl.component.varapp
 import tapl.common._
 import tapl.component.varapp.Alg._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] {
+trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
   override def tmVar(x: String): Exp[A] = TmVar[A](x)
 
   override def tmSeq(es: List[Exp[A]]): Exp[A] = es match {
-    case a :: as => as.foldLeft(apply(a))((r, e) => apply(e))
-    case _ => sys.error("Empty sequence")
+    case a :: as =>
+      if (a(isVal)) if (as.isEmpty) a else TmSeq[A](as)
+      else TmSeq[A](apply(a) :: as)
+    case Nil => sys.error("Empty sequence")
   }
 }
 
