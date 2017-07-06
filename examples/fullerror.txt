@@ -1,0 +1,5 @@
+if error then true else false
+error true
+(\x:Bool. x) error
+try (if true then false else error) with true
+(\f:Bool->Bool. try (f true) with (error false)) (\x:Bool. if x then error else true)

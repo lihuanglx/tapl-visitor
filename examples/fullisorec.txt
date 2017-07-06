@@ -1,0 +1,5 @@
+(\f: Rec X.Nat->Nat. (unfold [Rec X.Nat->Nat] f) 0) (fold [Rec X.Nat->Nat] \x:Nat.succ x)
+\x: (Rec A.A->T). unfold [Rec A.A->T] x
+(\f: Nat->(Rec X.Nat->X). (unfold [Rec X.Nat->X] (f 1)) 2)
+let h = fix (\f: Rec A. Nat->A. fold [Rec A. Nat->A] (\n:Nat. f)) in (unfold [Rec A. Nat->A] h) 0
+(fix (\cr: {x:Nat}->(Rec P. {get:Nat, inc:Unit->P}). \s: {x:Nat}. fold [Rec P. {get:Nat, inc:Unit->P}] {get = s.x, inc = \u:Unit. cr {x=succ(s.x)}})) {x=0}

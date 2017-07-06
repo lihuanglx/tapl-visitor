@@ -1,0 +1,5 @@
+(\r: {f:Top->Top}. r.f r.f) {f = \x: Top. 3}
+(\r: {x: Nat}. r.x) if true then {x = 3, y = true} else {x = 5, y = false, z = 1}
+(\x: {a: Nat, b: Nat}. x.a) (if true then {a=0, b=1, c=2} else {a=3, b=4})
+(\f: {a:Nat}->Nat. f {a=1, b=2}) (\r:{a:Nat}. pred r.a)
+(\f: Nat->{a:Nat}. f 0) (\x:Nat. {a=x, b=x})

@@ -1,0 +1,5 @@
+(\f:(All X.X->X). f [Nat] 0) \T.\x:T.x
+let snd = \A.\B.\a:A.\b:B.b in (snd [Nat] [Bool] 0) true
+(\f:Nat->Nat. f 2) ((\X.\x:X.x) [Nat])
+{*All Y.Y, \x:(All Y.Y). x} as {Some X,X->X}
+let {X,ops} = {*Nat, {c=0, f=\x:Nat.succ (x)}} as {Some X, {c:X, f:X->Nat}} in (ops.f ops.c)

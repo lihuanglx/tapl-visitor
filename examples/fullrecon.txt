@@ -1,0 +1,5 @@
+((\f. \x. f x) \x. succ x) 2
+let f = \x. x in (f f) (f 0)
+let g = \x. 1 in g (g g)
+let fst = (\x. \y. x) in if true then (fst 2) 3 else (fst 0) false
+let double = \f.\a.f(f(a)) in let a = (double (\x:Nat. succ (succ x))) 1 in let b = (double (\x:Bool. x)) true in if b then a else 0

@@ -1,0 +1,5 @@
+(\r:(Source Bool). if !r then 1 else 2) (ref false)
+let write = (\x:(Sink Bool). x := true) in (\r:(Ref Bool). {write r; !r}) (ref false)
+(\r:(Ref Bool). if !r then 1 else {r := false; 2}) (ref false)
+(\a:Ref (Nat->Nat). (!a) 0) (ref (\x:Nat. succ x))
+(\r:{get:Unit->Nat, inc:Unit->Unit}. {r.inc unit; r.inc unit; r.get unit}) (let x = ref 1 in {get = \u:Unit. !x, inc = \u:Unit. x := succ (!x)})

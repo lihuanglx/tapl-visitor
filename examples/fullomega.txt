@@ -1,0 +1,5 @@
+(\f:Nat->Nat. f 1) ((\T:Star.\x:T.x) [Nat])
+(\x:(\T:Star. T) Nat. x) 0
+(\F:Star=>Star.\x:(F Nat). x) [\T:Star. T]
+let fst = \X:Star.\Y:Star.\p:All R:Star.(X->Y->R)->R.p [X] (\x:X.\y:Y.x) in let pair = \X:Star.\Y:Star.\x:X.\y:Y.\R:Star.\p:X->Y->R.(p x) y in fst [Nat] [Bool] ((pair [Nat] [Bool] 1) false)
+let {X,ops} = {*Nat, {c=0, f=\x:Nat.succ (x)}} as {Some X:Star, {c:X, f:X->Nat}} in (ops.f ops.c)

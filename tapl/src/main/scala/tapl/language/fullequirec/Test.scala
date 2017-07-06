@@ -2,19 +2,30 @@ package tapl.language.fullequirec
 
 import tapl.common._
 
+import scala.io.Source
+
 object Test {
   val parser = new Parse[Alg, TAlg] {}
 
+  val name = "fullequirec"
+
   def main(args: Array[String]): Unit = {
-    val input = "\\f:T->T.((\\x:(Rec A.A->T). f (x x)) (\\x:(Rec A.A->T). f (x x)))"
+    val inputFile = "examples/" + name + ".txt"
+    val lines: List[String] = Source.fromFile(inputFile).getLines().toList
+    lines.foreach(process)
+  }
+
+  def process(input: String): Unit = {
+    println(input)
     val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
+    println("Type: " + ast(Typer)(Ctx.empty())(TPrint))
     go(ast, 1)
+    println("-" * 80)
   }
 
   def go(e: Exp2[Alg, Exp[TAlg]], step: Int): Unit = {
-    println("Step " + step.toString + ": ")
-    println("  Term: " + e(Print))
-    println("  Type: " + e(Typer)(Ctx.empty())(TPrint))
+    print("Step " + step.toString + ": ")
+    println(e(Print))
     if (e(IsVal)) {
       println("Value")
     } else {

@@ -1,0 +1,5 @@
+(\x:Top. x) {a = (\x:Bot. x)}.a
+(\f:Bot->Top. f) (\x: Top. x)
+(\x:Top. \y:Top. y) (\x: Bot. x)
+(\f:{x:Top->Top}. f.x f.x) {x = (\x:Top.x), y = (\x:Top.x)}
+(\r:{x:Top, y:Top}. r.x) {x = (\x:Top.x), y = (\y:Bot.y), z = (\z:Top.z)}

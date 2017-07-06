@@ -1,0 +1,5 @@
+((\f:Y. \a:X. f (f a)) (\b:Bool. if b then false else true)) true
+((\a:A. \b:B. a) 1) 2
+(\k: T. if k then 1 else 2) false
+((\f: F. \x: Nat. succ (f x)) (\x: X. pred x)) 2
+((\f: F. \x: Nat->F->F. (x 0) f) true) (\x:X.\y:Y. if y then false else true)

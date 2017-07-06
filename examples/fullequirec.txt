@@ -1,0 +1,5 @@
+let h = fix (\f: Rec A. Nat->A. \n:Nat. f) in ((h 0) 1) 2
+\f:T->T.((\x:(Rec A.A->T). f (x x)) (\x:(Rec A.A->T). f (x x)))
+(fix (\cr: {x:Nat}->(Rec P. {get:Nat, inc:Unit->P}). \s: {x:Nat}. {get = s.x, inc = \u:Unit. cr {x=succ(s.x)}})) {x=0}
+let e = (<nil = unit> as Rec X. <nil:Unit, cons:{hd:Nat, tl:X}>) in (\l:Rec X. <nil:Unit, cons:{hd:Nat, tl:X}>. case l of <nil=u> => true | <cons=p> => false) e
+let e = (<nil = unit> as Rec X. <nil:Unit, cons:{hd:Nat, tl:X}>) in ((\n:Nat. \l:Rec X. <nil:Unit, cons:{hd:Nat, tl:X}>. <cons={hd=n,tl=l}> as Rec X. <nil:Unit, cons:{hd:Nat, tl:X}>) 1) e
