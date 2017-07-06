@@ -6,7 +6,25 @@ import tapl.component.{extension, variant}
 import tapl.language.equirec
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
-  with equirec.Typer[A, B] with extension.Typer[A, B] with variant.Typer[A, B]
+  with equirec.Typer[A, B] with extension.Typer[A, B] with variant.Typer[A, B] {
+
+  private def unwrap(t: Exp[B]): Exp[B] = t match {
+    case TyRec(x, r) => unwrap(r(subst(x, t)))
+    case _ => t
+  }
+
+  override def tmTag(x: String, e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = super.tmTag(x, e, unwrap(t))
+
+  override def tmCase(e: Exp2[A, Exp[B]], l: List[(String, String, Exp2[A, Exp[B]])]): Type[B] = c =>
+    unwrap(apply(e)(c)) match {
+      case TyVariant(l2) =>
+        l.map({ case (n, v, b) =>
+          val t = l2.find(_._1 == n).getOrElse(typeError())._2
+          apply(b)(c + (v, t))
+        }).reduce((x, y) => if (tEquals(x)(y)) x else typeError())
+      case _ => typeError()
+    }
+}
 
 object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
   override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _ (TEquals)(Set.empty)

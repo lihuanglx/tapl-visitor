@@ -21,6 +21,11 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], 
     case (_, TmError()) => e2
     case _ => super.tmApp(e1, e2)
   }
+
+  override def tmIf(e1: Exp2[A, V], e2: Exp2[A, V], e3: Exp2[A, V]): Exp2[A, V] = e1 match {
+    case TmError() => TmError[A, V]()
+    case _ => super.tmIf(e1, e2, e3)
+  }
 }
 
 object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {

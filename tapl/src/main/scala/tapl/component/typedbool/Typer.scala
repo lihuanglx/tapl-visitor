@@ -29,16 +29,13 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
 }
 
 // subtyping
-trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] with IJoin[B] {
-  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[B] = {
-    apply(e1) match {
-      case TyBool() =>
-        val t2 = apply(e2)
-        val t3 = apply(e3)
-        t2(join)(t3)
-      case _ => typeError()
-    }
-  }
+trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] with IJoin[B] with ISubtypeOf[B] {
+  override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[B] =
+    if (apply(e1)(subtypeOf)(TyBool())) {
+      val t2 = apply(e2)
+      val t3 = apply(e3)
+      t2(join)(t3)
+    } else typeError()
 }
 
 trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {

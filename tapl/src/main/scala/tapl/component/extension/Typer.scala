@@ -75,6 +75,8 @@ trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       override val join: B[Exp[B], (Exp[B]) => Exp[B]] = Typer2.this.join
 
       override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer2.this.tEquals
+
+      override val subtypeOf: B[Exp[B], (Exp[B]) => Boolean] = Typer2.this.subtypeOf
     }
 
   override def tmAscribe(e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = c =>

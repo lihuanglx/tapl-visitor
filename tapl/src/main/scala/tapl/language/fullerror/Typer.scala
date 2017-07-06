@@ -17,6 +17,8 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer.this.tEquals
 
       override val join: B[Exp[B], (Exp[B]) => Exp[B]] = Typer.this.join
+
+      override val subtypeOf: B[Exp[B], (Exp[B]) => Boolean] = Typer.this.subtypeOf
     }
 
   override def tmError(): Type[B] = TyBot[B]()
