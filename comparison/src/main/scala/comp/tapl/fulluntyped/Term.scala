@@ -1,33 +1,48 @@
 package comp.tapl.fulluntyped
 
 sealed trait Term
+
 case object TmTrue extends Term
+
 case object TmFalse extends Term
+
 case class TmIf(cond: Term, t1: Term, t2: Term) extends Term
+
 case class TmVar(i: Int, cl: Int) extends Term
+
 case class TmAbs(v: String, t: Term) extends Term
+
 case class TmApp(t1: Term, t2: Term) extends Term
+
 case class TmRecord(fields: List[(String, Term)]) extends Term
+
 case class TmProj(t: Term, proj: String) extends Term
+
 case class TmString(s: String) extends Term
+
 case object TmZero extends Term
+
 case class TmSucc(t: Term) extends Term
+
 case class TmPred(t: Term) extends Term
+
 case class TmIsZero(t: Term) extends Term
+
 case class TmLet(l: String, t1: Term, t2: Term) extends Term
 
 sealed trait Binding
-case object NameBind extends Binding
-case class TmAbbBind(t: Term) extends Binding
 
-sealed trait Command
-case class Eval(t: Term) extends Command
-case class Bind(n: String, b: Binding) extends Command
+case object NameBind extends Binding
+
+case class TmAbbBind(t: Term) extends Binding
 
 case class Context(l: List[(String, Binding)] = List()) {
   val length: Int = l.length
+
   def addBinding(s: String, bind: Binding): Context = Context((s, bind) :: l)
+
   def addName(s: String): Context = addBinding(s, NameBind)
+
   def index2Name(i: Int): String = l(i)._1
 
   def getBinding(i: Int): Binding = {
@@ -35,12 +50,16 @@ case class Context(l: List[(String, Binding)] = List()) {
     Syntax.bindingShift(i + 1, bind)
   }
 
-  def name2index(s: String): Int = l.indexWhere { _._1 == s } match {
+  def name2index(s: String): Int = l.indexWhere {
+    _._1 == s
+  } match {
     case -1 => throw new Exception("identifier " + s + " is unbound")
-    case i  => i
+    case i => i
   }
 
-  def isNameBound(s: String): Boolean = l.exists { _._1 == s }
+  def isNameBound(s: String): Boolean = l.exists {
+    _._1 == s
+  }
 
   def pickFreshName(n: String): (Context, String) =
     if (isNameBound(n))
@@ -53,21 +72,22 @@ object Syntax {
 
   private def tmMap(onVar: (Int, TmVar) => Term, c: Int, t: Term): Term = {
     def walk(c: Int, t: Term): Term = t match {
-      case v: TmVar         => onVar(c, v)
-      case TmAbs(x, t2)     => TmAbs(x, walk(c + 1, t2))
-      case TmApp(t1, t2)    => TmApp(walk(c, t1), walk(c, t2))
+      case v: TmVar => onVar(c, v)
+      case TmAbs(x, t2) => TmAbs(x, walk(c + 1, t2))
+      case TmApp(t1, t2) => TmApp(walk(c, t1), walk(c, t2))
       case TmLet(x, t1, t2) => TmLet(x, walk(c, t1), walk(c + 1, t2))
-      case TmTrue           => TmTrue
-      case TmFalse          => TmFalse
+      case TmTrue => TmTrue
+      case TmFalse => TmFalse
       case TmIf(t1, t2, t3) => TmIf(walk(c, t1), walk(c, t2), walk(c, t3))
-      case t: TmString      => t
-      case TmProj(t1, l)    => TmProj(walk(c, t1), l)
+      case t: TmString => t
+      case TmProj(t1, l) => TmProj(walk(c, t1), l)
       case TmRecord(fields) => TmRecord(fields.map { case (l, t) => (l, walk(c, t)) })
-      case TmZero           => TmZero
-      case TmSucc(t1)       => TmSucc(walk(c, t1))
-      case TmPred(t1)       => TmPred(walk(c, t1))
-      case TmIsZero(t1)     => TmIsZero(walk(c, t1))
+      case TmZero => TmZero
+      case TmSucc(t1) => TmSucc(walk(c, t1))
+      case TmPred(t1) => TmPred(walk(c, t1))
+      case TmIsZero(t1) => TmIsZero(walk(c, t1))
     }
+
     walk(c, t)
   }
 
@@ -106,6 +126,7 @@ import comp.util.Document._
 
 // outer means that the term is the top-level term
 object PrettyPrinter {
+
   import comp.util.Print._
 
   def ptmTerm(outer: Boolean, ctx: Context, t: Term): Document = t match {
@@ -161,6 +182,7 @@ object PrettyPrinter {
         } else {
           li :: "=" :: ptmTerm(false, ctx, t)
         }
+
       "{" :: fields.zipWithIndex.map { case ((li, tyTi), i) => pf(i + 1, li, tyTi) }.
         reduceLeftOption(_ :: "," :/: _).getOrElse(empty) :: "}"
     case TmZero =>
@@ -174,6 +196,7 @@ object PrettyPrinter {
         case _ =>
           "(succ " :: ptmATerm(false, ctx, t1) :: ")"
       }
+
       pf(1, t1)
     case t =>
       "(" :: ptmTerm(outer, ctx, t) :: ")"

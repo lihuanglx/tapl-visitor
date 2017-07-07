@@ -32,4 +32,11 @@ object Test {
     }
   }
 
+  def eval(e: Exp[Alg]): Exp[Alg] = if (e(IsVal)) e else eval(e(Eval))
+
+  def benchmark(input: String): Unit = {
+    val e: Exp[Alg] = parser.parse(input).get
+    val _ = eval(e)
+  }
+
 }

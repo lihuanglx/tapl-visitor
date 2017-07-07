@@ -19,7 +19,6 @@ object Parser extends StandardTokenParsers with PackratParsers with ImplicitConv
   lazy val ucid: PackratParser[String] = ident ^? { case id if id.charAt(0).isUpper => id }
 
   type Res[A] = Context => A
-  type Res1[A] = Context => (A, Context)
 
   lazy val term: PackratParser[Res[Term]] =
     appTerm |
@@ -35,7 +34,7 @@ object Parser extends StandardTokenParsers with PackratParsers with ImplicitConv
 
   def input(s: String) = phrase(term)(new lexical.Scanner(s)) match {
     case t if t.successful => t.get
-    case t                 => sys.error(t.toString)
+    case t => sys.error(t.toString)
   }
 
 }

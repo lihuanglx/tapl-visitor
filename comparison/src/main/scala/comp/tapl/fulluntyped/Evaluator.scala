@@ -3,23 +3,24 @@ package comp.tapl.fulluntyped
 object Util {
 
   def isNumericVal(ctx: Context, t: Term): Boolean = t match {
-    case TmZero     => true
+    case TmZero => true
     case TmSucc(t1) => isNumericVal(ctx, t1)
-    case _          => false
+    case _ => false
   }
 
   def isVal(ctx: Context, t: Term): Boolean = t match {
-    case TmTrue                      => true
-    case TmFalse                     => true
-    case TmString(_)                 => true
+    case TmTrue => true
+    case TmFalse => true
+    case TmString(_) => true
     case t1 if isNumericVal(ctx, t1) => true
-    case TmAbs(_, _)              => true
-    case TmRecord(fields)            => fields.forall { case (_, ti) => isVal(ctx, ti) }
-    case _                           => false
+    case TmAbs(_, _) => true
+    case TmRecord(fields) => fields.forall { case (_, ti) => isVal(ctx, ti) }
+    case _ => false
   }
 }
 
 object Evaluator {
+
   import Util._
   import Syntax._
 
@@ -46,19 +47,22 @@ object Evaluator {
     case TmVar(n, _) =>
       ctx.getBinding(n) match {
         case TmAbbBind(t1) => t1
-        case _               => throw new NoRuleApplies(t)
+        case _ => throw new NoRuleApplies(t)
       }
     case TmRecord(fields) =>
       def evalAField(l: List[(String, Term)]): List[(String, Term)] = l match {
-        case Nil                               => throw new NoRuleApplies(t)
+        case Nil => throw new NoRuleApplies(t)
         case (l, v1) :: rest if isVal(ctx, v1) => (l, v1) :: evalAField(rest)
-        case (l, t1) :: rest                   => (l, eval1(ctx, t1)) :: rest
+        case (l, t1) :: rest => (l, eval1(ctx, t1)) :: rest
       }
+
       TmRecord(evalAField(fields))
-    case TmProj(v1 @ TmRecord(fields), l) if isVal(ctx, v1) =>
-      fields.find { _._1 == l } match {
+    case TmProj(v1@TmRecord(fields), l) if isVal(ctx, v1) =>
+      fields.find {
+        _._1 == l
+      } match {
         case Some((_, ti)) => ti
-        case None          => throw new NoRuleApplies(t)
+        case None => throw new NoRuleApplies(t)
       }
     case TmProj(t1, l) =>
       TmProj(eval1(ctx, t1), l)

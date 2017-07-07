@@ -4,36 +4,18 @@ import scala.util.parsing.combinator.ImplicitConversions
 import scala.util.parsing.combinator.PackratParsers
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
-object FullUntypedParsers extends StandardTokenParsers with PackratParsers with ImplicitConversions {
-  lexical.reserved += ("lambda", "Bool", "true", "false", "if", "then", "else", 
-      "Nat", "String", "Unit", "Float", "unit", "case", "let", "in", "succ", "pred", 
-      "as", "of", "iszero", "letrec", "_")
+object Parser extends StandardTokenParsers with PackratParsers with ImplicitConversions {
+  lexical.reserved += ("lambda", "Bool", "true", "false", "if", "then", "else",
+    "Nat", "String", "Unit", "Float", "unit", "case", "let", "in", "succ", "pred",
+    "as", "of", "iszero", "letrec", "_")
   lexical.delimiters += ("(", ")", ";", "/", ".", ":", "->", "=", "<", ">", "{", "}", "=>", "==>", ",", "|", "\\")
 
   // lower-case identifier
   lazy val lcid: PackratParser[String] = ident ^? { case id if id.charAt(0).isLower => id }
   // upper-case identifier
   lazy val ucid: PackratParser[String] = ident ^? { case id if id.charAt(0).isUpper => id }
-  lazy val eof: PackratParser[String] = elem("<eof>", _ == lexical.EOF) ^^ { _.chars }
 
   type Res[A] = Context => A
-  type Res1[A] = Context => (A, Context)
-
-  lazy val topLevel: PackratParser[Res1[List[Command]]] =
-    ((command <~ ";") ~ topLevel) ^^ {
-      case f ~ g => ctx: Context =>
-        val (cmd1, ctx1) = f(ctx)
-        val (cmds, ctx2) = g(ctx1)
-        (cmd1 :: cmds, ctx2)
-    } | success{ctx: Context => (List(), ctx)}
-
-  lazy val command: PackratParser[Res1[Command]] =
-    lcid ~ binder ^^ { case id ~ bind => ctx: Context => (Bind(id, bind(ctx)), ctx.addName(id)) } |
-      term ^^ { t => ctx: Context => val t1 = t(ctx); (Eval(t1), ctx) }
-
-  lazy val binder: Parser[Context => Binding] =
-    "/" ^^ { _ => ctx: Context => NameBind } |
-      "=" ~> term ^^ { t => ctx: Context => TmAbbBind(t(ctx)) }
 
   lazy val term: PackratParser[Res[Term]] =
     appTerm |
@@ -75,9 +57,9 @@ object FullUntypedParsers extends StandardTokenParsers with PackratParsers with 
     case _ => TmSucc(num(x - 1))
   }
 
-  def input(s: String) = phrase(topLevel)(new lexical.Scanner(s)) match {
+  def input(s: String) = phrase(term)(new lexical.Scanner(s)) match {
     case t if t.successful => t.get
-    case t                 => sys.error(t.toString)
+    case t => sys.error(t.toString)
   }
 
 }

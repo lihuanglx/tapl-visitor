@@ -44,4 +44,14 @@ class Test extends FunSuite {
     println(s"Visitor time: $t2")
   }
 
+  test("fulluntyped") {
+    val lines = readLines("fulluntyped")
+
+    val time = benchmark(lines, ordinary.fulluntyped.Demo.benchmark)
+    println(s"Time: $time")
+
+    val t2 = benchmark(lines, visitor.fulluntyped.Test.benchmark)
+    println(s"Visitor time: $t2")
+  }
+
 }
