@@ -31,5 +31,11 @@ lazy val tapl = project.settings(
 ).dependsOn(macros)
 
 lazy val comparison = project.settings(
-  libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6"
+  libraryDependencies ++= Seq(
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
+    "com.storm-enroute" %% "scalameter" % "0.8.2" % "test"
+  ),
+  testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+  parallelExecution in Test := false,
+  logBuffered := false
 )
