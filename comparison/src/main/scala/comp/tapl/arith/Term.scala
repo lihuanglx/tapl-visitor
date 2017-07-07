@@ -3,16 +3,23 @@ package comp.tapl.arith
 sealed trait Term
 
 case object TmTrue extends Term
+
 case object TmFalse extends Term
+
 case class TmIf(cond: Term, t1: Term, t2: Term) extends Term
+
 case object TmZero extends Term
+
 case class TmSucc(t: Term) extends Term
+
 case class TmPred(t: Term) extends Term
+
 case class TmIsZero(t: Term) extends Term
 
 import comp.util.Document
 
 object PrettyPrinter {
+
   import comp.util.Print._
 
   def ptmTerm(outer: Boolean, t: Term): Document = t match {
@@ -51,6 +58,7 @@ object PrettyPrinter {
         case _ =>
           "(succ " :: ptmATerm(false, t1) :: ")"
       }
+
       pf(1, t1)
     case t =>
       "(" :: ptmTerm(outer, t) :: ")"

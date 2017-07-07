@@ -1,6 +1,7 @@
 package comp.tapl.untyped
 
 object Evaluator {
+
   import Util._
   import Syntax._
 
@@ -29,7 +30,7 @@ object Evaluator {
 object Util {
   def isVal(ctx: Context, t: Term): Boolean = t match {
     case TmAbs(_, _) => true
-    case _           => false
+    case _ => false
   }
 }
 

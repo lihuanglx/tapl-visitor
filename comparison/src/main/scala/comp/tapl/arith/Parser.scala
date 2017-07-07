@@ -30,6 +30,6 @@ object Parser extends StandardTokenParsers with ImplicitConversions {
 
   def input(s: String): Term = phrase(term)(new lexical.Scanner(s)) match {
     case t if t.successful => t.get
-    case t                 => sys.error(t.toString)
+    case t => sys.error(t.toString)
   }
 }

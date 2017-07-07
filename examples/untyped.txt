@@ -1,6 +1,6 @@
-(\a. a) x
+(\a. a a) (\x. x)
 (\y. y) (\z. z)
 (\x. (\x. x)) (\y. y)
 (\a. \b. a b)
 (\a. \b. b) (\y. y)
-((\a. \b. b a) x) (\z. z)
+((\a. \b. b a) (\x. x)) (\z. z)

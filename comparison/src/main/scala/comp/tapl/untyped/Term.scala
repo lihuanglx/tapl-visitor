@@ -1,16 +1,16 @@
 package comp.tapl.untyped
 
 sealed trait Term
+
 // i - index, cl - context length
 case class TmVar(i: Int, cl: Int) extends Term
+
 case class TmAbs(v: String, t: Term) extends Term
+
 case class TmApp(t1: Term, t2: Term) extends Term
 
-sealed trait Command
-case class Eval(t: Term) extends Command
-case class Bind(n: String, b: Binding) extends Command
-
 sealed trait Binding
+
 case object NameBind extends Binding
 
 case class Context(l: List[(String, Binding)] = List()) {
@@ -24,7 +24,9 @@ case class Context(l: List[(String, Binding)] = List()) {
     addBinding(s, NameBind)
 
   def isNameBound(s: String): Boolean =
-    l.exists { _._1 == s }
+    l.exists {
+      _._1 == s
+    }
 
   def pickFreshName(n: String): (Context, String) =
     if (isNameBound(n))
@@ -36,9 +38,11 @@ case class Context(l: List[(String, Binding)] = List()) {
     l(i)._1
 
   def name2index(s: String): Int =
-    l.indexWhere { _._1 == s } match {
+    l.indexWhere {
+      _._1 == s
+    } match {
       case -1 => throw new Exception("identifier " + s + " is unbound")
-      case i  => i
+      case i => i
     }
 
   def getBinding(i: Int): Binding =
@@ -49,10 +53,11 @@ case class Context(l: List[(String, Binding)] = List()) {
 object Syntax {
   private def tmMap[A](onVar: (Int, TmVar) => Term, c: Int, t: Term): Term = {
     def walk(c: Int, t: Term): Term = t match {
-      case v: TmVar      => onVar(c, v)
-      case TmAbs(x, t2)  => TmAbs(x, walk(c + 1, t2))
+      case v: TmVar => onVar(c, v)
+      case TmAbs(x, t2) => TmAbs(x, walk(c + 1, t2))
       case TmApp(t1, t2) => TmApp(walk(c, t1), walk(c, t2))
     }
+
     walk(c, t)
   }
 
@@ -84,6 +89,7 @@ import comp.util.Document._
 
 // outer means that the term is the top-level term
 object PrettyPrinter {
+
   import comp.util.Print._
 
   def ptmTerm(outer: Boolean, ctx: Context, t: Term): Document = t match {

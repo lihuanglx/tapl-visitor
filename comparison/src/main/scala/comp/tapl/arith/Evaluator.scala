@@ -2,6 +2,7 @@ package comp.tapl.arith
 
 // Small-step semantics as described by Pierce
 object Evaluator {
+
   import Util._
 
   private def eval1(t: Term): Term = t match {
@@ -38,23 +39,23 @@ object Evaluator {
       eval(t1)
     } catch {
       case _: NoRuleApplies if isVal(t) => t
-      case _: NoRuleApplies             => throw new NoRuleApplies(t)
+      case _: NoRuleApplies => throw new NoRuleApplies(t)
     }
 
 }
 
 object Util {
   def isNumericVal(t: Term): Boolean = t match {
-    case TmZero     => true
+    case TmZero => true
     case TmSucc(t1) => isNumericVal(t1)
-    case _          => false
+    case _ => false
   }
 
   def isVal(t: Term): Boolean = t match {
-    case TmTrue               => true
-    case TmFalse              => true
+    case TmTrue => true
+    case TmFalse => true
     case t if isNumericVal(t) => true
-    case _                    => false
+    case _ => false
   }
 }
 
