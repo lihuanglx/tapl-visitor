@@ -29,4 +29,10 @@ object Demo {
     println("-" * 80)
   }
 
+  // process without output
+  def benchmark(i: String): Unit = {
+    val e = Parser.input(i)
+    val _ = eval(e)
+  }
+
 }
