@@ -43,48 +43,6 @@ object Evaluator {
 
 }
 
-// This is solution to the Exercise 3.5.17
-object BigStepEvaluator {
-  import Util._
-
-  def eval(t: Term): Term = t match {
-    case t if isVal(t) =>
-      t
-    case TmIf(t1, t2, t3) =>
-      eval(t1) match {
-        case TmTrue =>
-          eval(t2)
-        case TmFalse =>
-          eval(t3)
-        case _ => throw new NoRuleApplies(t)
-      }
-    case TmSucc(t1) =>
-      val t2 = eval(t1)
-      if (isNumericVal(t2)) {
-        TmSucc(t2)
-      } else {
-        throw new NoRuleApplies(t)
-      }
-    case TmPred(t1) =>
-      eval(t1) match {
-        case TmZero =>
-          TmZero
-        case TmSucc(t2) if isNumericVal(t2) =>
-          t2
-        case _ => throw new NoRuleApplies(t)
-      }
-    case TmIsZero(t1) =>
-      eval(t1) match {
-        case TmZero =>
-          TmTrue
-        case TmSucc(t2) if isNumericVal(t2) =>
-          TmFalse
-        case _ => throw new NoRuleApplies(t)
-      }
-    case _ => throw new NoRuleApplies(t)
-  }
-}
-
 object Util {
   def isNumericVal(t: Term): Boolean = t match {
     case TmZero     => true

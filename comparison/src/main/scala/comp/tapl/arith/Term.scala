@@ -10,11 +10,7 @@ case class TmSucc(t: Term) extends Term
 case class TmPred(t: Term) extends Term
 case class TmIsZero(t: Term) extends Term
 
-sealed trait Command
-case class Eval(t: Term) extends Command
-
 import comp.util.Document
-import comp.util.Document._
 
 object PrettyPrinter {
   import comp.util.Print._
