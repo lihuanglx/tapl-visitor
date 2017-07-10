@@ -35,4 +35,17 @@ object Test {
       go(e(Eval)(c), c, step + 1)
     }
   }
+
+  def eval(e: E, c: mutable.MutableList[E]): E =
+    if (e(IsVal)) e
+    else {
+      val nxt = e(Eval)(c)
+      eval(nxt, c)
+    }
+
+  def benchmark(input: String): Unit = {
+    val e: E = parser.parse(input).get
+    val t = e(Typer)(Ctx.empty())
+    val _ = eval(e, mutable.MutableList())
+  }
 }

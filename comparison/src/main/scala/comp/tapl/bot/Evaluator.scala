@@ -10,8 +10,8 @@ object Util {
 
 object Evaluator {
 
-  import Util._
   import Syntax._
+  import Util._
 
   private def eval1(ctx: Context, t: Term): Term = t match {
     case TmApp(TmAbs(x, ty, t), v2) if isVal(ctx, v2) =>

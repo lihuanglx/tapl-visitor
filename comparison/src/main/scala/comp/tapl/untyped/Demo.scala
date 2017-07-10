@@ -5,8 +5,8 @@ import scala.io.Source
 object Demo {
 
   import Evaluator._
-  import comp.util.Print._
   import PrettyPrinter._
+  import comp.util.Print._
 
   val width = 60
 

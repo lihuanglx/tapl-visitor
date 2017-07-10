@@ -23,7 +23,6 @@ case class TmPred(t: Term) extends Term
 case class TmIsZero(t: Term) extends Term
 
 import comp.util.Document
-import comp.util.Document._
 
 object PrettyPrinter {
 

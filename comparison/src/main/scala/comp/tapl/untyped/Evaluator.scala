@@ -2,8 +2,8 @@ package comp.tapl.untyped
 
 object Evaluator {
 
-  import Util._
   import Syntax._
+  import Util._
 
   def eval1(ctx: Context, t: Term): Term = t match {
     case TmApp(TmAbs(x, t1), v2) if isVal(ctx, v2) =>

@@ -21,8 +21,8 @@ object Util {
 
 object Evaluator {
 
-  import Util._
   import Syntax._
+  import Util._
 
   private def eval1(ctx: Context, t: Term): Term = t match {
     case TmIf(TmTrue, t2, t3) =>

@@ -34,4 +34,19 @@ object Test {
       go(nxt, step + 1, c)
     }
   }
+
+  def eval(e: Exp2[Alg, Exp[TAlg]], c: mutable.MutableList[Exp2[Alg, Exp[TAlg]]]): Exp2[Alg, Exp[TAlg]] =
+    if (e(IsVal))
+      e
+    else {
+      val nxt = e(Eval)(c)
+      eval(nxt, c)
+    }
+
+  def benchmark(input: String): Unit = {
+    val e: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
+    val t: Exp[TAlg] = e(Typer)(Ctx.empty())(Ctx.empty())
+    val _ = eval(e, mutable.MutableList())
+  }
+
 }

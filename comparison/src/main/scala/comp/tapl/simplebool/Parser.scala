@@ -1,7 +1,6 @@
 package comp.tapl.simplebool
 
-import scala.util.parsing.combinator.ImplicitConversions
-import scala.util.parsing.combinator.PackratParsers
+import scala.util.parsing.combinator.{ImplicitConversions, PackratParsers}
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 object Parser extends StandardTokenParsers with PackratParsers with ImplicitConversions {

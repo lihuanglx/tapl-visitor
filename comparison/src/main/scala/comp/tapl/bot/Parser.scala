@@ -1,7 +1,6 @@
 package comp.tapl.bot
 
-import scala.util.parsing.combinator.ImplicitConversions
-import scala.util.parsing.combinator.PackratParsers
+import scala.util.parsing.combinator.{ImplicitConversions, PackratParsers}
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 object Parser extends StandardTokenParsers with PackratParsers with ImplicitConversions {
@@ -49,7 +48,7 @@ object Parser extends StandardTokenParsers with PackratParsers with ImplicitConv
 
   def input(s: String) = phrase(term)(new lexical.Scanner(s)) match {
     case t if t.successful => t.get
-    case t                 => sys.error(t.toString)
+    case t => sys.error(t.toString)
   }
 
 }
