@@ -54,4 +54,34 @@ class Test extends FunSuite {
     println(s"Visitor time: $t2")
   }
 
+  test("tyarith") {
+    val lines = readLines("tyarith")
+
+    val time = benchmark(lines, ordinary.tyarith.Demo.benchmark)
+    println(s"Time: $time")
+
+    val t2 = benchmark(lines, visitor.tyarith.Test.benchmark)
+    println(s"Visitor time: $t2")
+  }
+
+  test("simplebool") {
+    val lines = readLines("simplebool")
+
+    val time = benchmark(lines, ordinary.simplebool.Demo.benchmark)
+    println(s"Time: $time")
+
+    val t2 = benchmark(lines, visitor.simplebool.Test.benchmark)
+    println(s"Visitor time: $t2")
+  }
+
+  test("bot") {
+    val lines = readLines("bot")
+
+    val time = benchmark(lines, ordinary.bot.Demo.benchmark)
+    println(s"Time: $time")
+
+    val t2 = benchmark(lines, visitor.bot.Test.benchmark)
+    println(s"Visitor time: $t2")
+  }
+
 }

@@ -4,11 +4,12 @@ object Util {
 
   def isVal(ctx: Context, t: Term): Boolean = t match {
     case TmAbs(_, _, _) => true
-    case _              => false
+    case _ => false
   }
 }
 
 object Evaluator {
+
   import Util._
   import Syntax._
 
@@ -35,7 +36,6 @@ object Evaluator {
 }
 
 object Typer {
-  import Syntax._
 
   def subtype(tyS: Ty, tyT: Ty): Boolean = tyS == tyT ||
     ((tyS, tyT) match {
@@ -61,7 +61,7 @@ object Typer {
           if (subtype(tyT2, tyT11)) tyT12
           else sys.error("parameter mismatch in " + t + " : " + tyT2 + " != " + tyT11)
         case TyBot => TyBot
-        case z     => sys.error("arrow type expected in " + t1)
+        case z => sys.error("arrow type expected in " + t1)
       }
   }
 }

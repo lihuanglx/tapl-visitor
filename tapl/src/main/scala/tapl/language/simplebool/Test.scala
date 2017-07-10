@@ -32,4 +32,12 @@ object Test {
       go(e(Eval), step + 1)
     }
   }
+
+  def eval(e: Exp2[Alg, Exp[TAlg]]): Exp2[Alg, Exp[TAlg]] = if (e(IsVal)) e else eval(e(Eval))
+
+  def benchmark(input: String): Unit = {
+    val e: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
+    val t: Exp[TAlg] = e(Typer)(Ctx.empty())
+    val _ = eval(e)
+  }
 }

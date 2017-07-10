@@ -4,7 +4,7 @@ import scala.util.parsing.combinator.ImplicitConversions
 import scala.util.parsing.combinator.PackratParsers
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
-object SimpleBoolParsers extends StandardTokenParsers with PackratParsers with ImplicitConversions {
+object Parser extends StandardTokenParsers with PackratParsers with ImplicitConversions {
   lexical.reserved += ("lambda", "Bool", "true", "false", "if", "then", "else", "_")
   lexical.delimiters += ("(", ")", ";", "/", ".", ":", "->", "\\")
 
@@ -14,23 +14,6 @@ object SimpleBoolParsers extends StandardTokenParsers with PackratParsers with I
   lazy val ucid: PackratParser[String] = ident ^? { case id if id.charAt(0).isUpper => id }
 
   type Res[A] = Context => A
-  type Res1[A] = Context => (A, Context)
-
-  lazy val topLevel: PackratParser[Res1[List[Command]]] =
-    ((command <~ ";") ~ topLevel) ^^ {
-      case f ~ g => ctx: Context =>
-        val (cmd1, ctx1) = f(ctx)
-        val (cmds, ctx2) = g(ctx1)
-        (cmd1 :: cmds, ctx2)
-    } | success{ctx: Context => (List(), ctx)}
-
-  lazy val command: PackratParser[Res1[Command]] =
-    lcid ~ binder ^^ { case id ~ bind => ctx: Context => (Bind(id, bind(ctx)), ctx.addName(id)) } |
-      term ^^ { t => ctx: Context => val t1 = t(ctx); (Eval(t1), ctx) }
-
-  lazy val eof: PackratParser[String] = elem("<eof>", _ == lexical.EOF) ^^ { _.chars }
-  lazy val binder: Parser[Context => Binding] =
-    ":" ~> `type` ^^ { ty => c => VarBind(ty(c)) }
 
   lazy val `type`: PackratParser[Res[Ty]] = arrowType
   lazy val arrowType: PackratParser[Res[Ty]] =
@@ -56,13 +39,9 @@ object SimpleBoolParsers extends StandardTokenParsers with PackratParsers with I
       "true" ^^ { _ => ctx: Context => TmTrue } |
       "false" ^^ { _ => ctx: Context => TmFalse }
 
-  def inputTerm(s: String) = phrase(term)(new lexical.Scanner(s)) match {
+  def input(s: String) = phrase(term)(new lexical.Scanner(s)) match {
     case t if t.successful => t.get
-    case t                 => sys.error(t.toString)
+    case t => sys.error(t.toString)
   }
 
-  def input(s: String) = phrase(topLevel)(new lexical.Scanner(s)) match {
-    case t if t.successful => t.get
-    case t                 => sys.error(t.toString)
-  }
 }

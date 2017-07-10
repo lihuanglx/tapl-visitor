@@ -1,25 +1,32 @@
 package comp.tapl.tyarith
 
 sealed trait Ty
+
 case object TyBool extends Ty
+
 case object TyNat extends Ty
 
 sealed trait Term
-case object TmTrue extends Term
-case object TmFalse extends Term
-case class TmIf(cond: Term, t1: Term, t2: Term) extends Term
-case object TmZero extends Term
-case class TmSucc(t: Term) extends Term
-case class TmPred(t: Term) extends Term
-case class TmIsZero(t: Term) extends Term
 
-sealed trait Command
-case class Eval(t: Term) extends Command
+case object TmTrue extends Term
+
+case object TmFalse extends Term
+
+case class TmIf(cond: Term, t1: Term, t2: Term) extends Term
+
+case object TmZero extends Term
+
+case class TmSucc(t: Term) extends Term
+
+case class TmPred(t: Term) extends Term
+
+case class TmIsZero(t: Term) extends Term
 
 import comp.util.Document
 import comp.util.Document._
 
 object PrettyPrinter {
+
   import comp.util.Print._
 
   def ptyType(outer: Boolean, ty: Ty): Document = ty match {
@@ -28,8 +35,8 @@ object PrettyPrinter {
 
   def ptyAType(outer: Boolean, ty: Ty): Document = ty match {
     case TyBool => "Bool"
-    case TyNat  => "Nat"
-    case ty1    => "(" :: ptyAType(outer, ty1) :: ")"
+    case TyNat => "Nat"
+    case ty1 => "(" :: ptyAType(outer, ty1) :: ")"
   }
 
   def ptyTy(ty: Ty) = ptyType(true, ty)
@@ -70,6 +77,7 @@ object PrettyPrinter {
         case _ =>
           "(succ " :: ptmATerm(false, t1) :: ")"
       }
+
       pf(1, t1)
     case t =>
       "(" :: ptmTerm(outer, t) :: ")"

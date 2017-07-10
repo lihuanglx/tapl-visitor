@@ -1,27 +1,25 @@
-package comp.tapl.simplebool
-
-sealed trait Term
-// i - index, cl - context length
-case class TmVar(i: Int, cl: Int) extends Term
-case class TmAbs(v: String, ty: Ty, t: Term) extends Term
-case class TmApp(t1: Term, t2: Term) extends Term
-case object TmTrue extends Term
-case object TmFalse extends Term
-case class TmIf(cond: Term, t1: Term, t2: Term) extends Term
+package comp.tapl.bot
 
 sealed trait Ty
-case class TyArr(t1: Ty, t2: Ty) extends Ty
-case object TyBool extends Ty
 
-sealed trait Command
-case class Eval(t: Term) extends Command
-case class Bind(n: String, b: Binding) extends Command
+case object TyTop extends Ty
+
+case object TyBot extends Ty
+
+case class TyArr(t1: Ty, t2: Ty) extends Ty
+
+sealed trait Term
+
+case class TmVar(i: Int, cl: Int) extends Term
+
+case class TmAbs(v: String, ty: Ty, t: Term) extends Term
+
+case class TmApp(t1: Term, t2: Term) extends Term
 
 sealed trait Binding
-// Binds variable and a name. Used during parsing
-// propagate names.
+
 case object NameBind extends Binding
-// Binds a variable to a type. Used during typechecking.
+
 case class VarBind(t: Ty) extends Binding
 
 case class Context(l: List[(String, Binding)] = List()) {
@@ -35,7 +33,9 @@ case class Context(l: List[(String, Binding)] = List()) {
     addBinding(s, NameBind)
 
   def isNameBound(s: String): Boolean =
-    l.exists { _._1 == s }
+    l.exists {
+      _._1 == s
+    }
 
   def pickFreshName(n: String): (Context, String) =
     if (isNameBound(n))
@@ -47,7 +47,9 @@ case class Context(l: List[(String, Binding)] = List()) {
     l(i)._1
 
   def name2index(s: String): Int =
-    l.indexWhere { _._1 == s } match {
+    l.indexWhere {
+      _._1 == s
+    } match {
       case -1 =>
         throw new Exception("identifier " + s + " is unbound")
       case i =>
@@ -66,15 +68,14 @@ case class Context(l: List[(String, Binding)] = List()) {
 }
 
 object Syntax {
-  private def tmMap[A](onVar: (Int, TmVar) => Term, c: Int, t: Term): Term = {
+
+  private def tmMap(onVar: (Int, TmVar) => Term, c: Int, t: Term): Term = {
     def walk(c: Int, t: Term): Term = t match {
-      case v: TmVar          => onVar(c, v)
+      case v: TmVar => onVar(c, v)
       case TmAbs(x, ty1, t2) => TmAbs(x, ty1, walk(c + 1, t2))
-      case TmApp(t1, t2)     => TmApp(walk(c, t1), walk(c, t2))
-      case TmTrue            => TmTrue
-      case TmFalse           => TmFalse
-      case TmIf(t1, t2, t3)  => TmIf(walk(c, t1), walk(c, t2), walk(c, t3))
+      case TmApp(t1, t2) => TmApp(walk(c, t1), walk(c, t2))
     }
+
     walk(c, t)
   }
 
@@ -89,13 +90,14 @@ object Syntax {
     termShiftAbove(d, 0, t)
 
   // usual substitution: [j -> s]
-  def termSubst(j: Int, s: Term, t: Term): Term = {
-    val f = { (c: Int, v: TmVar) =>
+  private def termSubst(j: Int, s: Term, t: Term): Term = {
+    val onVar = { (c: Int, v: TmVar) =>
       if (v.i == c) termShift(c, s) else v
     }
-    tmMap(f, j, t)
+    tmMap(onVar, j, t)
   }
 
+  // for beta-reduction
   def termSubstTop(s: Term, t: Term): Term =
     termShift(-1, termSubst(0, termShift(1, s), t))
 }
@@ -105,39 +107,38 @@ import comp.util.Document._
 
 // outer means that the term is the top-level term
 object PrettyPrinter {
+
   import comp.util.Print._
 
-  def ptyType(outer: Boolean, ty: Ty): Document = ty match {
-    case ty => ptyArrowType(outer, ty)
+  def ptyType(outer: Boolean, ctx: Context, ty: Ty): Document = ty match {
+    case ty => ptyArrowType(outer, ctx, ty)
   }
 
-  def ptyArrowType(outer: Boolean, tyT: Ty): Document = tyT match {
+  def ptyArrowType(outer: Boolean, ctx: Context, tyT: Ty): Document = tyT match {
     case TyArr(tyT1, tyT2) =>
-      g0(ptyAType(false, tyT1) :: " ->" :/: ptyArrowType(outer, tyT2))
+      g2(ptyAType(false, ctx, tyT1) :: " ->" :/: ptyArrowType(outer, ctx, tyT2))
     case tyT =>
-      ptyAType(outer, tyT)
+      ptyAType(outer, ctx, tyT)
   }
 
-  def ptyAType(outer: Boolean, tyT: Ty): Document = tyT match {
-    case TyBool => "Bool"
-    case tyT    => "(" :: ptyType(outer, tyT) :: ")"
+  def ptyAType(outer: Boolean, ctx: Context, tyT: Ty): Document = tyT match {
+    case TyBot =>
+      "Bot"
+    case TyTop =>
+      "Top"
+    case tyT =>
+      "(" :: ptyType(outer, ctx, tyT) :: ")"
   }
 
-  def ptyTy(ty: Ty) = ptyType(true, ty)
+  def ptyTy(ctx: Context, ty: Ty) = ptyType(true, ctx, ty)
 
   def ptmTerm(outer: Boolean, ctx: Context, t: Term): Document = t match {
     case TmAbs(x, tyT1, t2) =>
       val (ctx1, x1) = ctx.pickFreshName(x)
-      val abs = g0("\\" :: x1 :: ":" :: ptyType(false, tyT1) :: ".")
+      val abs = g0("lambda" :/: x1 :: ":" :/: ptyType(false, ctx, tyT1) :: ".")
       val body = ptmTerm(outer, ctx1, t2)
       g2(abs :/: body)
-    case TmIf(t1, t2, t3) =>
-      val ifB = g2("if" :/: ptmTerm(outer, ctx, t1))
-      val thenB = g2("then" :/: ptmTerm(outer, ctx, t2))
-      val elseB = g2("else" :/: ptmTerm(outer, ctx, t3))
-      g0(ifB :/: thenB :/: elseB)
     case t => ptmAppTerm(outer, ctx, t)
-
   }
 
   def ptmAppTerm(outer: Boolean, ctx: Context, t: Term): Document = t match {
@@ -147,22 +148,27 @@ object PrettyPrinter {
       ptmATerm(outer, ctx, t)
   }
 
-  def ptm(ctx: Context, t: Term) = ptmTerm(true, ctx, t)
-
   def ptmATerm(outer: Boolean, ctx: Context, t: Term): Document = t match {
     case TmVar(x, n) =>
       if (ctx.length == n) ctx.index2Name(x)
       else text("[bad index: " + x + "/" + n + " in {" + ctx.l.mkString(", ") + "}]")
-    case TmTrue =>
-      "true"
-    case TmFalse =>
-      "false"
     case t =>
       "(" :: ptmTerm(outer, ctx, t) :: ")"
   }
 
-  def pBinding(bind: Binding): Document = bind match {
-    case NameBind    => empty
-    case VarBind(ty) => ": " :: ptyTy(ty)
+  def ptm(ctx: Context, t: Term) = ptmTerm(true, ctx, t)
+
+  def pBinding(ctx: Context, bind: Binding): Document = bind match {
+    case NameBind =>
+      empty
+    case VarBind(ty) =>
+      ": " :: ptyTy(ctx, ty)
+  }
+
+  def pBindingTy(ctx: Context, b: Binding): Document = b match {
+    case NameBind =>
+      empty
+    case VarBind(ty) =>
+      ": " :: ptyTy(ctx, ty)
   }
 }
