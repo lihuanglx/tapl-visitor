@@ -5,7 +5,7 @@ import tapl.component.pack.Alg.{Query, Transform}
 import tapl.component.pack.Alg.Factory._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
-  with IIsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] with ISubst[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+  with IIsVal[A[-?, ?, V]] with ISubst[A[-?, ?, V]] {
 
   override def tmPack(t1: V, e: Exp2[A, V], t2: V): Exp2[A, V] = TmPack(t1, apply(e), t2)
 
@@ -23,9 +23,7 @@ trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V] {
   override def tmPack(t1: V, e: Exp2[A, V], t2: V): Boolean = apply(e)
 }
 
-trait Subst[A[-R, E, -F] <: Alg[R, E, F], V]
-  extends Transform[A, V] with SubstAux[({type lam[-X, Y] = A[X, Y, V]})#lam] {
-
+trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V] with SubstAux[A[-?, ?, V]] {
   override def tmUnpack(tx: String, x: String, e1: Exp2[A, V], e2: Exp2[A, V]): Exp2[A, V] =
     if (m.contains(x)) TmUnpack(tx, x, apply(e1), e2) else TmUnpack(tx, x, apply(e1), apply(e2))
 }

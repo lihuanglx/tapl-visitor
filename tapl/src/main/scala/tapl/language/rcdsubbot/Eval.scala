@@ -6,7 +6,7 @@ import tapl.language.bot
 import tapl.language.rcdsubbot.Alg._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
-  with typedrecord.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] with bot.Eval[A, V]
+  with typedrecord.Eval[A[-?, ?, V]] with bot.Eval[A, V]
 
 object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
   override val isVal: Alg[Exp2[Alg, Exp[TAlg]], Boolean, Exp[TAlg]] = IsVal
@@ -14,8 +14,8 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
   override def subst(m: Map[String, Exp2[Alg, Exp[TAlg]]]) = new SubstImpl(m)
 }
 
-trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V] with bot.IsVal[A, V]
-  with typedrecord.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V]
+  with bot.IsVal[A, V] with typedrecord.IsVal[A[-?, ?, V]]
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 

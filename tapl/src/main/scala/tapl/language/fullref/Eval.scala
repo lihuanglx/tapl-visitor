@@ -9,10 +9,10 @@ import scala.collection.mutable
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V]
   extends Alg[Exp2[A, V], mutable.MutableList[Exp2[A, V]] => Exp2[A, V], V]
-    with IIsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] with ISubst[({type lam[-X, Y] = A[X, Y, V]})#lam]
+    with IIsVal[A[-?, ?, V]] with ISubst[A[-?, ?, V]]
     with fullsub.Alg.Lifter[Exp2[A, V], Exp2[A, V], V, mutable.MutableList[Exp2[A, V]]]
     with variant.Alg.Lifter[Exp2[A, V], Exp2[A, V], V, mutable.MutableList[Exp2[A, V]]]
-    with ref.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+    with ref.Eval[A[-?, ?, V]] {
 
   override def go(c: mutable.MutableList[Exp2[A, V]]) =
     new fullsub.Eval[A, V] with variant.Eval[A, V] {
@@ -31,7 +31,7 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[mutable.MutableList[Exp2[Alg,
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V]
-  with fullsub.IsVal[A, V] with variant.IsVal[A, V] with ref.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with fullsub.IsVal[A, V] with variant.IsVal[A, V] with ref.IsVal[A[-?, ?, V]]
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 

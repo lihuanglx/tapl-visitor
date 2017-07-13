@@ -26,6 +26,9 @@ lazy val macros = project.settings(
 
 lazy val tapl = project.settings(
   metaMacroSettings,
+
+  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
+
   libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
   libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 ).dependsOn(macros)

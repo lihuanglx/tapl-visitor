@@ -10,9 +10,8 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with typedbool.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]] with IJoin[B] {
 
   override def go(c: Ctx[String, Exp[B]]): typedbool.Alg[Exp2[A, Exp[B]], Exp[B]] =
-    new typedbool.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
-      override def apply(e: Exp[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]): Exp[B] =
-        Typer.this.apply(e)(c)
+    new typedbool.Typer2[A[-?, ?, Exp[B]], B] {
+      override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] = Typer.this.apply(e)(c)
 
       override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer.this.tEquals
 

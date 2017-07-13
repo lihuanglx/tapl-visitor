@@ -6,8 +6,7 @@ import tapl.component.typed.TAlg.Factory._
 import tapl.component.{top, varapp}
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
-    with varapp.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] with ITEq[B] {
+  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with varapp.Typer[A[-?, ?, Exp[B]], B] with ITEq[B] {
 
   override def tmAbs(x: String, t: Exp[B], e: Exp2[A, Exp[B]]): Type[B] =
     c => TyArr(t, apply(e)(c + (x, t)))

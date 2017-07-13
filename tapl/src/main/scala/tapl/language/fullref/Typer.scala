@@ -10,7 +10,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with IJoin[B] with ISubtypeOf[B] with ITEq[B]
     with fullsub.Alg.Lifter[Exp2[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
     with variant.Alg.Lifter[Exp2[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
-    with ref.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+    with ref.Typer[A[-?, ?, Exp[B]], B] {
 
   override def go(c: Ctx[Int, Exp[B]]) = new fullsub.Typer[A, B] with variant.Typer[A, B] {
     override def apply(e: Exp2[A, Exp[B]]): Type[B] = Typer.this.apply(e)(c)

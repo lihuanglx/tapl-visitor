@@ -4,10 +4,8 @@ import tapl.common._
 import tapl.component._
 
 trait Print[A[-R, E, -T, -K], V1, V2] extends Alg[Exp3[A, V1, V2], String, V1, V2]
-  with typed.Print[({type l[-X, Y, -Z] = A[X, Y, Z, V2]})#l, V1]
-  with extension.Print[({type l[-X, Y, -Z] = A[X, Y, Z, V2]})#l, V1]
-  with pack.Print[({type l[-X, Y, -Z] = A[X, Y, Z, V2]})#l, V1]
-  with ref.Print[({type l[-X, Y] = A[X, Y, V1, V2]})#l] {
+  with typed.Print[A[-?, ?, -?, V2], V1] with extension.Print[A[-?, ?, -?, V2], V1]
+  with pack.Print[A[-?, ?, -?, V2], V1] with ref.Print[A[-?, ?, V1, V2]] {
 
   def printK(t: V2): String
 
@@ -24,10 +22,8 @@ object Print extends Print[Alg, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]] with Impl[Stri
   override def printK(t: Exp[KAlg]): String = t(KPrint)
 }
 
-trait TPrint[A[-F, T, -K], V] extends TAlg[Exp2[A, V], String, V]
-  with typed.TPrint[({type l[-X, Y] = A[X, Y, V]})#l]
-  with extension.TPrint[({type l[-X, Y] = A[X, Y, V]})#l]
-  with ref.TPrint[({type l[-X, Y] = A[X, Y, V]})#l] {
+trait TPrint[A[-F, T, -K], V] extends TAlg[Exp2[A, V], String, V] with typed.TPrint[A[-?, ?, V]]
+  with extension.TPrint[A[-?, ?, V]] with ref.TPrint[A[-?, ?, V]] {
 
   def printK(t: V): String
 

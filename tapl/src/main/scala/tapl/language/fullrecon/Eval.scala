@@ -7,7 +7,7 @@ import tapl.language.fullrecon.Alg.Factory._
 import tapl.language.fullrecon.Alg.{Query, Transform}
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
-  with recon.Eval[A, V] with let.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+  with recon.Eval[A, V] with let.Eval[A[-?, ?, V]] {
 
   override def tmUAbs(x: String, e: Exp2[A, V]): Exp2[A, V] = TmUAbs(x, e)
 
@@ -17,8 +17,8 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], 
         case TmAbs(x, _, body) => body(subst(x, e2))
         case TmUAbs(x, body) => body(subst(x, e2))
         case _ => typeError()
-      } else TmApp[({type lam[-X, Y] = A[X, Y, V]})#lam](e1, apply(e2))
-    else TmApp[({type lam[-X, Y] = A[X, Y, V]})#lam](apply(e1), e2)
+      } else TmApp[A[-?, ?, V]](e1, apply(e2))
+    else TmApp[A[-?, ?, V]](apply(e1), e2)
 }
 
 object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
@@ -33,8 +33,8 @@ trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V] with recon.Is
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 
-trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V] with recon.Subst[A, V]
-  with let.Subst[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
+  with recon.Subst[A, V] with let.Subst[A[-?, ?, V]] {
 
   override def tmUAbs(x: String, e: Exp2[A, V]): Exp2[A, V] = TmUAbs(x, if (m.contains(x)) e else apply(e))
 }

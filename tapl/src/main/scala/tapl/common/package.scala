@@ -10,11 +10,11 @@ package object common {
     def apply[E](alg: A[Exp[A], E]): E
   }
 
-  type Exp2[-A[-R, E, -F], +V] = Exp[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  type Exp2[-A[-R, E, -F], +V] = Exp[A[-?, ?, V]]
 
   type _Exp2[-A[-R, E, -F], -B[-X, Y]] = Exp2[A, Exp[B]]
 
-  type Exp3[-A[-R, E, -T, -K], +V1, +V2] = Exp[({type lam[-X, Y] = A[X, Y, V1, V2]})#lam]
+  type Exp3[-A[-R, E, -T, -K], +V1, +V2] = Exp[A[-?, ?, V1, V2]]
 
   type _Exp3[-A[-R, E, -T, -K], -B[-X, Y, -Z], -C[-X, Y]] = Exp3[A, _Exp2[B, C], Exp[C]]
 
@@ -127,6 +127,6 @@ package object common {
     def parseK(inp: String): Option[Exp[A]] = parseBy(pK)(inp)
   }
 
-  trait ETParser[A[-R, E, -F], B[-F, T]] extends EParser[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] with TParser[B]
+  trait ETParser[A[-R, E, -F], B[-F, T]] extends EParser[A[-?, ?, Exp[B]]] with TParser[B]
 
 }

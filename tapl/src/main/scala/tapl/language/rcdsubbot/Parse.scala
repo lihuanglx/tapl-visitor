@@ -5,7 +5,7 @@ import tapl.component.typedrecord
 import tapl.language.bot
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends typedrecord.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] with bot.Parse[A, B] {
+  extends typedrecord.Parse[A[-?, ?, Exp[B]], B] with bot.Parse[A, B] {
 
   lazy val pRcdSubBotE: Parser[Exp2[A, Exp[B]]] = pBotE ||| pTypedRecordE
   lazy val pRcdSubBotT: Parser[Exp[B]] = pBotT ||| pTypedRecordT

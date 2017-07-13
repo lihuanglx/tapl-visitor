@@ -11,14 +11,13 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with ITEq[B]
     with tyarith.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]]
     with typedrecord.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]]
-    with let.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+    with let.Typer[A[-?, ?, Exp[B]], B] {
 
   override def go(c: Ctx[String, Exp[B]]): tyarith.Alg[Exp2[A, Exp[B]], Exp[B]]
     with typedrecord.Alg[Exp2[A, Exp[B]], Exp[B]] =
-    new tyarith.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-      with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+    new tyarith.Typer[A[-?, ?, Exp[B]], B] with typedrecord.Typer[A[-?, ?, Exp[B]], B] {
 
-      override def apply(e: Exp[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]): Exp[B] =
+      override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] =
         Typer.this.apply(e)(c)
 
       override val tEquals: (Exp[B]) => (Exp[B]) => Boolean = Typer.this.tEquals
@@ -66,10 +65,9 @@ trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Typer[A, B] with IJoin[B] with ISubtypeOf[B] {
 
   override def go(c: Ctx[String, Exp[B]]) =
-    new tyarith.Typer2[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-      with typedrecord.Typer[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+    new tyarith.Typer2[A[-?, ?, Exp[B]], B] with typedrecord.Typer[A[-?, ?, Exp[B]], B] {
 
-      override def apply(e: Exp[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]): Exp[B] =
+      override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] =
         Typer2.this.apply(e)(c)
 
       override val join: B[Exp[B], (Exp[B]) => Exp[B]] = Typer2.this.join

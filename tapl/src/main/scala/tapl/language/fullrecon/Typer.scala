@@ -6,7 +6,7 @@ import tapl.language.fullrecon.TAlg.Factory._
 
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[Exp2[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]]
-    with recon.Typer[A, B] with ISubst[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
+    with recon.Typer[A, B] with ISubst[A[-?, ?, Exp[B]]] {
 
   override def tmUAbs(x: String, e: Exp2[A, Exp[B]]): T = (c, i) => {
     val ty = TyVar[B]("X" + i.toString)

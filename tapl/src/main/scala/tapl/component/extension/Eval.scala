@@ -8,11 +8,8 @@ import tapl.component.extension.Alg.Factory._
 import tapl.component.typed.Alg.Factory.TmAbs
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
-  with tyarith.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with floatstring.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with let.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with typedrecord.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with unit.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+  with tyarith.Eval[A[-?, ?, V]] with floatstring.Eval[A[-?, ?, V]]
+  with let.Eval[A[-?, ?, V]] with typedrecord.Eval[A[-?, ?, V]] with unit.Eval[A[-?, ?, V]] {
 
   override def tmAscribe(e: Exp2[A, V], t: V): Exp2[A, V] = e
 
@@ -26,11 +23,7 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], 
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V]
-  with tyarith.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with floatstring.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with typed.IsVal[A, V]
-  with typedrecord.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with unit.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with tyarith.IsVal[A[-?, ?, V]] with floatstring.IsVal[A[-?, ?, V]]
+  with typed.IsVal[A, V] with typedrecord.IsVal[A[-?, ?, V]] with unit.IsVal[A[-?, ?, V]]
 
-trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
-  with let.Subst[({type lam[-X, Y] = A[X, Y, V]})#lam]
+trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V] with let.Subst[A[-?, ?, V]]

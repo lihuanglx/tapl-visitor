@@ -5,7 +5,7 @@ import tapl.component.typed
 import tapl.language.tyarith
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends tyarith.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] with typed.Parse[A, B] {
+  extends tyarith.Parse[A[-?, ?, Exp[B]], B] with typed.Parse[A, B] {
 
   lazy val pReconE: Parser[Exp2[A, Exp[B]]] = pTypedE ||| pTyArithE
   lazy val pReconT: Parser[Exp[B]] = pTypedT ||| pTyArithT

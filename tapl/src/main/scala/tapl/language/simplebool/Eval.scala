@@ -5,7 +5,7 @@ import tapl.component.{typed, typedbool}
 import tapl.language.simplebool.Alg._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
-  with typed.Eval[A, V] with typedbool.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with typed.Eval[A, V] with typedbool.Eval[A[-?, ?, V]]
 
 object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
   override val isVal: Alg[Exp2[Alg, Exp[TAlg]], Boolean, Exp[TAlg]] = IsVal
@@ -14,7 +14,7 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V]
-  with typed.IsVal[A, V] with typedbool.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam]
+  with typed.IsVal[A, V] with typedbool.IsVal[A[-?, ?, V]]
 
 object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
 

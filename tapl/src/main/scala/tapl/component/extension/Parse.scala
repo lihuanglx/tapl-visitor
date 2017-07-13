@@ -7,11 +7,9 @@ import tapl.component.extension.Alg.Factory._
 import tapl.component.extension.TAlg.Factory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends tyarith.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-    with floatstring.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]
-    with let.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam]
-    with typedrecord.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B]
-    with unit.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+  extends tyarith.Parse[A[-?, ?, Exp[B]], B] with floatstring.Parse[A[-?, ?, Exp[B]]]
+    with let.Parse[A[-?, ?, Exp[B]]] with typedrecord.Parse[A[-?, ?, Exp[B]], B]
+    with unit.Parse[A[-?, ?, Exp[B]], B] {
 
   lexical.reserved += ("as", "fix", "String", "Float", "inert")
   lexical.delimiters += ("(", ")", "[", "]")

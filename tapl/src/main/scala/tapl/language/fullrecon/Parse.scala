@@ -6,7 +6,7 @@ import tapl.language.recon
 import tapl.language.fullrecon.Alg.Factory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends recon.Parse[A, B] with let.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
+  extends recon.Parse[A, B] with let.Parse[A[-?, ?, Exp[B]]] {
 
   lazy val pFullReconE: Parser[Exp2[A, Exp[B]]] = pReconE ||| pLetE |||
     ("\\" ~> lcid) ~ ("." ~> pE) ^^ { case x ~ e0 => TmUAbs(x, e0) }

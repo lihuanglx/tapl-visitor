@@ -6,8 +6,7 @@ import tapl.language.fullsub
 import tapl.language.fullref.TAlg.Factory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends fullsub.Parse[A, B] with variant.Parse[A, B]
-    with ref.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+  extends fullsub.Parse[A, B] with variant.Parse[A, B] with ref.Parse[A[-?, ?, Exp[B]], B] {
 
   lexical.reserved += ("Source", "Sink")
 

@@ -6,7 +6,7 @@ import tapl.language.bot
 import tapl.language.fullerror.Alg.Factory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends bot.Parse[A, B]
-  with typedbool.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam, B] {
+  with typedbool.Parse[A[-?, ?, Exp[B]], B] {
 
   lexical.reserved += ("error", "try", "with")
 

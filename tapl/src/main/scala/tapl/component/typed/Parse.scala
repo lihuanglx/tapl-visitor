@@ -6,7 +6,7 @@ import tapl.component.typed.Alg.Factory._
 import tapl.component.typed.TAlg.Factory._
 
 trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B]
-  with varapp.Parse[({type lam[-X, Y] = A[X, Y, Exp[B]]})#lam] {
+  with varapp.Parse[A[-?, ?, Exp[B]]] {
 
   lexical.delimiters += ("\\", ".", "(", ")", ":", "->")
 

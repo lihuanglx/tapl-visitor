@@ -7,15 +7,14 @@ import tapl.language.fullomega.TAlg.Factory._
 import tapl.language.fullomega.KAlg.Factory._
 
 trait Parse[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-F, T, -K] <: TAlg[F, T, K], C[-X, Y] <: KAlg[X, Y]]
-  extends typed.Parse[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
-    with extension.Parse[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
-    with pack.Parse[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
-    with ref.Parse[({type l[-X, Y] = A[X, Y, Exp2[B, Exp[C]], Exp[C]]})#l, ({type l[-X, Y] = B[X, Y, Exp[C]]})#l]
-    with KParser[C] {
+  extends typed.Parse[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]] with KParser[C]
+    with extension.Parse[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]]
+    with pack.Parse[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]]
+    with ref.Parse[A[-?, ?, Exp2[B, Exp[C]], Exp[C]], B[-?, ?, Exp[C]]] {
 
   lexical.reserved += ("Star", "All", "Some")
   lexical.delimiters += ("=>", ":", ".", ",", "{", "}")
-  
+
   private lazy val pOmegaE: Parser[Exp3[A, Exp2[B, Exp[C]], Exp[C]]] =
     "\\" ~> ucid ~ (":" ~> pK) ~ ("." ~> pE) ^^ { case x ~ kn ~ ex => TmTAbs(x, kn, ex) } |||
       pE ~ ("[" ~> pT <~ "]") ^^ { case ex ~ ty => TmTApp(ex, ty) }

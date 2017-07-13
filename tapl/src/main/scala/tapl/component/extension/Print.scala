@@ -5,11 +5,8 @@ import tapl.component._
 import tapl.language.tyarith
 
 trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
-  with tyarith.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with floatstring.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with let.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with typedrecord.Print[({type lam[-X, Y] = A[X, Y, V]})#lam]
-  with unit.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] with PrintT[V] {
+  with tyarith.Print[A[-?, ?, V]] with floatstring.Print[A[-?, ?, V]] with let.Print[A[-?, ?, V]]
+  with typedrecord.Print[A[-?, ?, V]] with unit.Print[A[-?, ?, V]] with PrintT[V] {
 
   override def tmAscribe(e: Exp2[A, V], t: V): String = "(" + apply(e) + ") as " + printT(t)
 

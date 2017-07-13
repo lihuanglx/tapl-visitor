@@ -4,8 +4,8 @@ import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
 
-trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V] with bot.Print[A, V]
-  with typedbool.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
+  with bot.Print[A, V] with typedbool.Print[A[-?, ?, V]] {
 
   override def tmError(): String = "error"
 

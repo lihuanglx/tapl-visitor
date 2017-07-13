@@ -12,13 +12,12 @@ trait Eval[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], C
     with typed.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
     with extension.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
     with pack.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
-    with ref.Eval[({type l[-X, Y] = A[X, Y, _Exp2[B, C], Exp[C]]})#l]
-    with ISubst[({type l[-X, Y] = A[X, Y, _Exp2[B, C], Exp[C]]})#l] {
+    with ref.Eval[A[-?, ?, _Exp2[B, C], Exp[C]]] with ISubst[A[-?, ?, _Exp2[B, C], Exp[C]]] {
 
   override def go(c: mutable.MutableList[_Exp3[A, B, C]]) =
-    new typed.Eval[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, _Exp2[B, C]]
-      with extension.Eval[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, _Exp2[B, C]]
-      with pack.Eval[({type l[-X, Y, -Z] = A[X, Y, Z, Exp[C]]})#l, _Exp2[B, C]] {
+    new typed.Eval[A[-?, ?, -?, Exp[C]], _Exp2[B, C]]
+      with extension.Eval[A[-?, ?, -?, Exp[C]], _Exp2[B, C]]
+      with pack.Eval[A[-?, ?, -?, Exp[C]], _Exp2[B, C]] {
 
       override def apply(e: _Exp3[A, B, C]): _Exp3[A, B, C] = Eval.this.apply(e)(c)
 
@@ -55,10 +54,8 @@ object Eval extends Eval[Alg, TAlg, KAlg]
 }
 
 trait IsVal[A[-R, E, -T0, -K0], T, K] extends Query[Exp3[A, T, K], Boolean, T, K]
-  with typed.IsVal[({type l[-X, Y, -Z] = A[X, Y, Z, K]})#l, T]
-  with extension.IsVal[({type l[-X, Y, -Z] = A[X, Y, Z, K]})#l, T]
-  with pack.IsVal[({type l[-X, Y, -Z] = A[X, Y, Z, K]})#l, T]
-  with ref.IsVal[({type l[-X, Y] = A[X, Y, T, K]})#l] {
+  with typed.IsVal[A[-?, ?, -?, K], T] with extension.IsVal[A[-?, ?, -?, K], T]
+  with pack.IsVal[A[-?, ?, -?, K], T] with ref.IsVal[A[-?, ?, T, K]] {
 
   override def tmTAbs(x: String, k: K, e: Exp3[A, T, K]): Boolean = true
 }
@@ -66,9 +63,7 @@ trait IsVal[A[-R, E, -T0, -K0], T, K] extends Query[Exp3[A, T, K], Boolean, T, K
 object IsVal extends IsVal[Alg, _Exp2[TAlg, KAlg], Exp[KAlg]] with Impl[Boolean]
 
 trait Subst[A[-R, E, -T0, -K0] <: Alg[R, E, T0, K0], T, K] extends Transform[A, T, K]
-  with typed.Subst[({type l[-X, Y, -Z] = A[X, Y, Z, K]})#l, T]
-  with extension.Subst[({type l[-X, Y, -Z] = A[X, Y, Z, K]})#l, T]
-  with pack.Subst[({type l[-X, Y, -Z] = A[X, Y, Z, K]})#l, T]
+  with typed.Subst[A[-?, ?, -?, K], T] with extension.Subst[A[-?, ?, -?, K], T] with pack.Subst[A[-?, ?, -?, K], T]
 
 class SubstImpl(mp: Map[String, _Exp3[Alg, TAlg, KAlg]])
   extends Subst[Alg, _Exp2[TAlg, KAlg], Exp[KAlg]] with Impl[_Exp3[Alg, TAlg, KAlg]] {

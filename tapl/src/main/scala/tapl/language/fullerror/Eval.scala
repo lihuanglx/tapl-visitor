@@ -7,7 +7,7 @@ import tapl.language.fullerror.Alg.{Query, Transform}
 import tapl.language.fullerror.Alg.Factory._
 
 trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
-  with bot.Eval[A, V] with typedbool.Eval[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+  with bot.Eval[A, V] with typedbool.Eval[A[-?, ?, V]] {
 
   override def tmError(): Exp2[A, V] = TmError[A, V]()
 
@@ -35,7 +35,7 @@ object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V]
-  with bot.IsVal[A, V] with typedbool.IsVal[({type lam[-X, Y] = A[X, Y, V]})#lam] {
+  with bot.IsVal[A, V] with typedbool.IsVal[A[-?, ?, V]] {
 
   override def tmError(): Boolean = true
 }

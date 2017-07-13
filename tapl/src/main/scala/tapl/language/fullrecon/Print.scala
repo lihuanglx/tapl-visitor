@@ -4,9 +4,7 @@ import tapl.common._
 import tapl.component.let
 import tapl.language.recon
 
-trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
-  with let.Print[({type lam[-X, Y] = A[X, Y, V]})#lam] with recon.Print[A, V] {
-
+trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V] with let.Print[A[-?, ?, V]] with recon.Print[A, V] {
   override def tmUAbs(x: String, e: Exp2[A, V]): String = "\\" + x + "." + apply(e)
 }
 
