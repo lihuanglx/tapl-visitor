@@ -1,6 +1,6 @@
 digraph G {
-    ratio=0.6;
-    splines=polyline;
+    ratio=0.5;
+    //splines=polyline;
 
     node[fontsize=26, shape=box];
 
@@ -32,9 +32,7 @@ digraph G {
     Nat -> TypedNat;
     Record -> TypedRecord;
     VarApp -> Typed;
-    TyArith, FloatString, Let, TypedRecord -> Extension;
-    //TypeVar -> RecType;
-    Unit -> Extension;
+    TyArith, FloatString, Let, TypedRecord, Unit -> Extension;
 
     // calculi
     Bool, Nat -> Arith;
@@ -44,16 +42,15 @@ digraph G {
     Typed, TypedBool -> SimpleBool;
     Typed, Extension, Variant -> FullSimple;
     Typed, Top, Bottom -> Bot;
-    FullSub, Variant, Ref -> FullRef;
     Bot, TypedBool -> FullError;
     Bot, TypedRecord -> RcdSubBot;
     Typed, Extension, Top -> FullSub;
+    FullSub, Variant, Ref -> FullRef;
     Typed, RecType -> EquiRec;
-    EquiRec, Extension, Top -> FullEquiRec;
+    EquiRec, Extension, Variant -> FullEquiRec;
     FullSimple, RecType -> FullIsoRec;
     Typed, TyArith -> Recon;
     Recon, Let -> FullRecon;
-
     Typed, Extension, Pack -> FullPoly;
     Typed, Extension, Pack, Ref -> FullOmega;
 }
