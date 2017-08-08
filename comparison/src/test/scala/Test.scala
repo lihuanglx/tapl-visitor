@@ -24,183 +24,185 @@ class Test extends FunSuite {
       1 to rep foreach { _ => inputs.foreach(process) }
     }
 
+  def output(name: String, t1: Double, t2: Double): Unit = println(f"$name & $t1%.1f & $t2%.1f")
+
   test("arith") {
-    val lines = readLines("arith")
+    val name = "arith"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.arith.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.arith.Demo.benchmark)
     val t2 = benchmark(lines, visitor.arith.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("untyped") {
-    val lines = readLines("untyped")
+    val name = "untyped"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.untyped.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.untyped.Demo.benchmark)
     val t2 = benchmark(lines, visitor.untyped.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fulluntyped") {
-    val lines = readLines("fulluntyped")
+    val name = "fulluntyped"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fulluntyped.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fulluntyped.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fulluntyped.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("tyarith") {
-    val lines = readLines("tyarith")
+    val name = "tyarith"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.tyarith.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.tyarith.Demo.benchmark)
     val t2 = benchmark(lines, visitor.tyarith.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("simplebool") {
-    val lines = readLines("simplebool")
+    val name = "simplebool"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.simplebool.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.simplebool.Demo.benchmark)
     val t2 = benchmark(lines, visitor.simplebool.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullsimple") {
-    val lines = readLines("fullsimple")
+    val name = "fullsimple"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullsimple.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullsimple.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullsimple.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("bot") {
-    val lines = readLines("bot")
+    val name = "bot"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.bot.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.bot.Demo.benchmark)
     val t2 = benchmark(lines, visitor.bot.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullref") {
-    val lines = readLines("fullref")
+    val name = "fullref"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullref.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullref.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullref.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullerror") {
-    val lines = readLines("fullerror")
+    val name = "fullerror"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullerror.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullerror.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullerror.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("rcdsubbot") {
-    val lines = readLines("rcdsubbot")
+    val name = "rcdsubbot"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.rcdsubbot.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.rcdsubbot.Demo.benchmark)
     val t2 = benchmark(lines, visitor.rcdsubbot.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullsub") {
-    val lines = readLines("fullsub")
+    val name = "fullsub"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullsub.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullsub.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullsub.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullequirec") {
-    val lines = readLines("fullequirec")
+    val name = "fullequirec"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullequirec.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullequirec.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullequirec.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullisorec") {
-    val lines = readLines("fullisorec")
+    val name = "fullisorec"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullisorec.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullisorec.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullisorec.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("equirec") {
-    val lines = readLines("equirec")
+    val name = "equirec"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.equirec.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.equirec.Demo.benchmark)
     val t2 = benchmark(lines, visitor.equirec.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("recon") {
-    val lines = readLines("recon")
+    val name = "recon"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.recon.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.recon.Demo.benchmark)
     val t2 = benchmark(lines, visitor.recon.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullrecon") {
-    val lines = readLines("fullrecon")
+    val name = "fullrecon"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullrecon.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullrecon.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullrecon.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullpoly") {
-    val lines = readLines("fullpoly")
+    val name = "fullpoly"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullpoly.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullpoly.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullpoly.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 
   test("fullomega") {
-    val lines = readLines("fullomega")
+    val name = "fullomega"
+    val lines = readLines(name)
 
-    val time = benchmark(lines, ordinary.fullomega.Demo.benchmark)
-    println(s"Time: $time")
-
+    val t1 = benchmark(lines, ordinary.fullomega.Demo.benchmark)
     val t2 = benchmark(lines, visitor.fullomega.Test.benchmark)
-    println(s"Visitor time: $t2")
+
+    output(name, t1.value, t2.value)
   }
 }
