@@ -1,9 +1,9 @@
 package tapl.component.ref
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait Alg[-R, E] {
   def tmRef(e: R): E
 
@@ -16,7 +16,7 @@ trait Alg[-R, E] {
   def apply(e: R): E
 }
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyRef(t: F): T
 

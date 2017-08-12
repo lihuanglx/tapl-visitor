@@ -1,15 +1,15 @@
 package tapl.component.typed
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.varapp
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends varapp.Alg[R, E] {
   def tmAbs(x: String, t: F, e: R): E
 }
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyArr(t1: F, t2: F): T
 

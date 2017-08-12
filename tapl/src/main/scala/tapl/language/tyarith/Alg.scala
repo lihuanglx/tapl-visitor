@@ -1,13 +1,13 @@
 package tapl.language.tyarith
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.{typedbool, typednat}
 
-@Visitor
+@Language
 trait Alg[-R, E] extends typedbool.Alg[R, E] with typednat.Alg[R, E]
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends typedbool.TAlg[F, T] with typednat.TAlg[F, T]
 
 trait Impl[T] extends Alg[Exp[Alg], T] {

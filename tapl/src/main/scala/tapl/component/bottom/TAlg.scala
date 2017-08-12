@@ -1,9 +1,9 @@
 package tapl.component.bottom
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyBot(): T
 

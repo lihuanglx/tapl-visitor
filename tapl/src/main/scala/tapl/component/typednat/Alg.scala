@@ -1,13 +1,13 @@
 package tapl.component.typednat
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.nat
 
-@Visitor
+@Language
 trait Alg[-R, E] extends nat.Alg[R, E]
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyNat(): T
 

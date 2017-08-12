@@ -1,14 +1,14 @@
 package tapl.language.recon
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.typed
 import tapl.language.tyarith
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends tyarith.Alg[R, E] with typed.Alg[R, E, F]
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends tyarith.TAlg[F, T] with typed.TAlg[F, T]
 
 trait Impl[T] extends Alg[Exp2[Alg, Exp[TAlg]], T, Exp[TAlg]] {

@@ -2,9 +2,9 @@ package tapl.language.untyped
 
 import tapl.common._
 import tapl.component.varapp
-import macros.Visitor
+import macros.Language
 
-@Visitor
+@Language
 trait Alg[-R, E] extends varapp.Alg[R, E] {
   def tmAbs(x: String, e: R): E
 }

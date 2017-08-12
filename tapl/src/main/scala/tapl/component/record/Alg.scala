@@ -1,9 +1,9 @@
 package tapl.component.record
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait Alg[-R, E] {
   def tmRecord(l: List[(String, R)]): E
 

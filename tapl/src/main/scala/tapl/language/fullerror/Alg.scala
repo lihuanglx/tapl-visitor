@@ -1,18 +1,18 @@
 package tapl.language.fullerror
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends bot.Alg[R, E, F] with typedbool.Alg[R, E] {
   def tmError(): E
 
   def tmTry(e1: R, e2: R): E
 }
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends bot.TAlg[F, T] with typedbool.TAlg[F, T]
 
 trait Impl[T] extends Alg[Exp2[Alg, Exp[TAlg]], T, Exp[TAlg]] {

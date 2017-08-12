@@ -1,10 +1,10 @@
 package tapl.language.fullomega
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component._
 
-@Visitor
+@Language
 trait Alg[-R, E, -T, -K] extends typed.Alg[R, E, T] with extension.Alg[R, E, T]
   with pack.Alg[R, E, T] with ref.Alg[R, E] {
 
@@ -13,7 +13,7 @@ trait Alg[-R, E, -T, -K] extends typed.Alg[R, E, T] with extension.Alg[R, E, T]
   def tmTApp(e: R, t: T): E
 }
 
-@Visitor
+@Language
 trait TAlg[-F, T, -K] extends typed.TAlg[F, T] with extension.TAlg[F, T] with ref.TAlg[F, T] {
   def tyAll(x: String, k: K, t: F): T
 
@@ -24,7 +24,7 @@ trait TAlg[-F, T, -K] extends typed.TAlg[F, T] with extension.TAlg[F, T] with re
   def tyApp(t1: F, t2: F): T
 }
 
-@Visitor
+@Language
 trait KAlg[-K, Y] {
   def knStar(): Y
 

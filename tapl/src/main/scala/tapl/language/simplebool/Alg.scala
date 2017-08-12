@@ -1,13 +1,13 @@
 package tapl.language.simplebool
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.{typed, typedbool}
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends typed.Alg[R, E, F] with typedbool.Alg[R, E]
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends typed.TAlg[F, T] with typedbool.TAlg[F, T]
 
 trait Impl[T] extends Alg[Exp2[Alg, Exp[TAlg]], T, Exp[TAlg]] {

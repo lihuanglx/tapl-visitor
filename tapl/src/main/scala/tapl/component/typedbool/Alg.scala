@@ -1,13 +1,13 @@
 package tapl.component.typedbool
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.bool
 
-@Visitor
+@Language
 trait Alg[-R, E] extends bool.Alg[R, E]
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyBool(): T
 

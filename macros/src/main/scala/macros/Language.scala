@@ -3,7 +3,7 @@ package macros
 import scala.collection.immutable.Seq
 import scala.meta._
 
-class Visitor extends scala.annotation.StaticAnnotation {
+class Language extends scala.annotation.StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
     val debug = this match {
       case q"new $_(${Lit.String(a)})" if a == "debug" => true

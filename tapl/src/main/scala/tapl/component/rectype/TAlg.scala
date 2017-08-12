@@ -1,9 +1,9 @@
 package tapl.component.rectype
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyRec(x: String, t: F): T
 

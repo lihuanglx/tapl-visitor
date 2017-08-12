@@ -1,9 +1,9 @@
 package tapl.component.floatstring
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait Alg[-R, E] {
   def tmFloat(d: Double): E
 

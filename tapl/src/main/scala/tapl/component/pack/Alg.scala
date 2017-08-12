@@ -1,9 +1,9 @@
 package tapl.component.pack
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] {
   def tmPack(t1: F, e: R, t2: F): E
 

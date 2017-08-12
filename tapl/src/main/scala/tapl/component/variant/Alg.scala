@@ -1,9 +1,9 @@
 package tapl.component.variant
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] {
   def tmTag(x: String, e: R, t: F): E
 
@@ -12,7 +12,7 @@ trait Alg[-R, E, -F] {
   def apply(e: R): E
 }
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyVariant(l: List[(String, F)]): T
 

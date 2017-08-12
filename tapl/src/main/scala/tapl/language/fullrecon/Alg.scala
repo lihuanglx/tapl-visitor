@@ -1,16 +1,16 @@
 package tapl.language.fullrecon
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.let
 import tapl.language.recon
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends recon.Alg[R, E, F] with let.Alg[R, E] {
   def tmUAbs(x: String, e: R): E
 }
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends recon.TAlg[F, T]
 
 trait Impl[T] extends Alg[Exp2[Alg, Exp[TAlg]], T, Exp[TAlg]] {

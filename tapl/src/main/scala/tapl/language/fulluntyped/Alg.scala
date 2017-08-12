@@ -1,11 +1,11 @@
 package tapl.language.fulluntyped
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.{floatstring, let, record}
 import tapl.language.{arith, untyped}
 
-@Visitor
+@Language
 trait Alg[-R, E] extends arith.Alg[R, E] with untyped.Alg[R, E]
   with record.Alg[R, E] with floatstring.Alg[R, E] with let.Alg[R, E]
 

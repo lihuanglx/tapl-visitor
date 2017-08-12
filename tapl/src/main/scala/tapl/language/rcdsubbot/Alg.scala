@@ -1,14 +1,14 @@
 package tapl.language.rcdsubbot
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.typedrecord
 import tapl.language.bot
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends typedrecord.Alg[R, E] with bot.Alg[R, E, F]
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends typedrecord.TAlg[F, T] with bot.TAlg[F, T]
 
 trait Impl[T] extends Alg[Exp2[Alg, Exp[TAlg]], T, Exp[TAlg]] {

@@ -1,9 +1,9 @@
 package tapl.component.bool
 
 import tapl.common._
-import macros.Visitor
+import macros.Language
 
-@Visitor
+@Language
 trait Alg[-R, E] {
   def tmTrue(): E
 

@@ -1,13 +1,13 @@
 package tapl.component.typedrecord
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.record
 
-@Visitor
+@Language
 trait Alg[-R, E] extends record.Alg[R, E]
 
-@Visitor
+@Language
 trait TAlg[-F, T] {
   def tyRecord(l: List[(String, F)]): T
 

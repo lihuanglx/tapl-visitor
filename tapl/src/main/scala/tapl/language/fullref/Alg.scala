@@ -1,14 +1,14 @@
 package tapl.language.fullref
 
-import macros.Visitor
+import macros.Language
 import tapl.common._
 import tapl.component.{variant, ref}
 import tapl.language.fullsub
 
-@Visitor
+@Language
 trait Alg[-R, E, -F] extends fullsub.Alg[R, E, F] with variant.Alg[R, E, F] with ref.Alg[R, E]
 
-@Visitor
+@Language
 trait TAlg[-F, T] extends fullsub.TAlg[F, T] with variant.TAlg[F, T] with ref.TAlg[F, T] {
   def tySource(t: F): T
 
