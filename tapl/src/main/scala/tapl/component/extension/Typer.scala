@@ -13,7 +13,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with typedrecord.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]]
     with let.Typer[A[-?, ?, Exp[B]], B] {
 
-  override def go(c: Ctx[String, Exp[B]]): tyarith.Alg[Exp2[A, Exp[B]], Exp[B]]
+  override def propagate(c: Ctx[String, Exp[B]]): tyarith.Alg[Exp2[A, Exp[B]], Exp[B]]
     with typedrecord.Alg[Exp2[A, Exp[B]], Exp[B]] =
     new tyarith.Typer[A[-?, ?, Exp[B]], B] with typedrecord.Typer[A[-?, ?, Exp[B]], B] {
 
@@ -64,7 +64,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
 trait Typer2[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Typer[A, B] with IJoin[B] with ISubtypeOf[B] {
 
-  override def go(c: Ctx[String, Exp[B]]) =
+  override def propagate(c: Ctx[String, Exp[B]]) =
     new tyarith.Typer2[A[-?, ?, Exp[B]], B] with typedrecord.Typer[A[-?, ?, Exp[B]], B] {
 
       override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] =

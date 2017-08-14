@@ -6,7 +6,7 @@ import tapl.component.{typed, typedbool}
 trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
   with typed.Typer[A, B] with typedbool.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]] {
 
-  override def go(c: Ctx[String, Exp[B]]): typedbool.Alg[Exp2[A, Exp[B]], Exp[B]] =
+  override def propagate(c: Ctx[String, Exp[B]]): typedbool.Alg[Exp2[A, Exp[B]], Exp[B]] =
     new typedbool.Typer[A[-?, ?, Exp[B]], B] {
       override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] = Typer.this.apply(e)(c)
 

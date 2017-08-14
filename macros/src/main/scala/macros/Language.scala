@@ -337,7 +337,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val stats: Seq[Defn.Def] = cases.map(d => {
       val nm = d.name
       val argss = d.paramss.map(_.map({ p => Term.Name(p.name.value) }))
-      q"override def $nm(...${d.paramss}): C => E = go(_).$nm(...$argss)"
+      q"override def $nm(...${d.paramss}): C => E = propagate(_).$nm(...$argss)"
     })
 
     val pLifters = parents.map({ case (nm, ts) =>
@@ -353,7 +353,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
     val lifter =
       q"""trait Lifter[$recTp, E, ..$secTParams, C] extends $ctor[$recTy, C => E, ..$secTypes] with ..$pLifters {
-            ..$mods def go(c: C): ${alg.name}[$recTy, E, ..$secTypes]
+            ..$mods def propagate(c: C): ${alg.name}[$recTy, E, ..$secTypes]
             ..$stats
           }
         """

@@ -8,7 +8,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with bot.Typer[A, B]
     with typedrecord.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]] {
 
-  override def go(c: Ctx[String, Exp[B]]): typedrecord.Alg[Exp2[A, Exp[B]], Exp[B]] =
+  override def propagate(c: Ctx[String, Exp[B]]): typedrecord.Alg[Exp2[A, Exp[B]], Exp[B]] =
     new typedrecord.Typer2[A[-?, ?, Exp[B]], B] {
       override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] = Typer.this.apply(e)(c)
     }

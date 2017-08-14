@@ -36,7 +36,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)]
   with typed.TAlg.Lifter[Exp[A], Exp[A] => Boolean, Set[(String, String)]]
   with extension.TAlg.Lifter[Exp[A], Exp[A] => Boolean, Set[(String, String)]] {
 
-  override def go(c: Set[(String, String)]) = new typed.TEquals[A] with extension.TEquals[A] {
+  override def propagate(c: Set[(String, String)]) = new typed.TEquals[A] with extension.TEquals[A] {
     override def apply(t: Exp[A]): (Exp[A]) => Boolean = TEquals.this.apply(t)(c)
   }
 

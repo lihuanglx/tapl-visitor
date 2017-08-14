@@ -14,7 +14,7 @@ trait Eval[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], C
     with pack.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
     with ref.Eval[A[-?, ?, _Exp2[B, C], Exp[C]]] with ISubst[A[-?, ?, _Exp2[B, C], Exp[C]]] {
 
-  override def go(c: mutable.MutableList[_Exp3[A, B, C]]) =
+  override def propagate(c: mutable.MutableList[_Exp3[A, B, C]]) =
     new typed.Eval[A[-?, ?, -?, Exp[C]], _Exp2[B, C]]
       with extension.Eval[A[-?, ?, -?, Exp[C]], _Exp2[B, C]]
       with pack.Eval[A[-?, ?, -?, Exp[C]], _Exp2[B, C]] {

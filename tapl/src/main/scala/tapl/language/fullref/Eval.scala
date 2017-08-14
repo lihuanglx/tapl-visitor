@@ -14,7 +14,7 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V]
     with variant.Alg.Lifter[Exp2[A, V], Exp2[A, V], V, mutable.MutableList[Exp2[A, V]]]
     with ref.Eval[A[-?, ?, V]] {
 
-  override def go(c: mutable.MutableList[Exp2[A, V]]) =
+  override def propagate(c: mutable.MutableList[Exp2[A, V]]) =
     new fullsub.Eval[A, V] with variant.Eval[A, V] {
       override def apply(e: Exp2[A, V]): Exp2[A, V] = Eval.this.apply(e)(c)
 

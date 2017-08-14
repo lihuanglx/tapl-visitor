@@ -12,7 +12,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     with variant.Alg.Lifter[Exp2[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
     with ref.Typer[A[-?, ?, Exp[B]], B] {
 
-  override def go(c: Ctx[Int, Exp[B]]) = new fullsub.Typer[A, B] with variant.Typer[A, B] {
+  override def propagate(c: Ctx[Int, Exp[B]]) = new fullsub.Typer[A, B] with variant.Typer[A, B] {
     override def apply(e: Exp2[A, Exp[B]]): Type[B] = Typer.this.apply(e)(c)
 
     override val join: B[Exp[B], Exp[B] => Exp[B]] = Typer.this.join

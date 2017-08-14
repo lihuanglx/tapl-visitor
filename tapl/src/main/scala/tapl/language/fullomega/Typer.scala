@@ -19,7 +19,7 @@ trait Typer0[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z],
     with extension.Alg.Lifter[_Exp3[A, B, C], TC[B, C] => _Exp2[B, C], _Exp2[B, C], Ctx[Int, _Exp2[B, C]]]
     with ref.Typer[A[-?, ?, _Exp2[B, C], Exp[C]], B[-?, ?, Exp[C]]] {
 
-  override def go(c: Ctx[Int, _Exp2[B, C]]) =
+  override def propagate(c: Ctx[Int, _Exp2[B, C]]) =
     new typed.Typer[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]]
       with extension.Typer[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]] {
 
@@ -34,7 +34,7 @@ trait Typer[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], 
     with Alg.Lifter[_Exp3[A, B, C], RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C], KC[C]]
     with ITEq[B[-?, ?, Exp[C]]] with ISubst[B[-?, ?, Exp[C]]] {
 
-  override def go(c: KC[C]) = new Typer0[A, B, C] {
+  override def propagate(c: KC[C]) = new Typer0[A, B, C] {
     override val tEquals: (_Exp2[B, C]) => (_Exp2[B, C]) => Boolean = Typer.this.tEquals
 
     override def apply(e: _Exp3[A, B, C]) = Typer.this.apply(e)(c)
@@ -111,7 +111,7 @@ trait TEquals[B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
     with extension.TAlg.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]]
     with ref.TAlg.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]] {
 
-  override def go(c: Set[(String, String)]) =
+  override def propagate(c: Set[(String, String)]) =
     new typed.TEquals[B[-?, ?, Exp[C]]] with extension.TEquals[B[-?, ?, Exp[C]]] with ref.TEquals[B[-?, ?, Exp[C]]] {
       override def apply(t: _Exp2[B, C]): (_Exp2[B, C]) => Boolean = TEquals.this.apply(t)(c)
     }

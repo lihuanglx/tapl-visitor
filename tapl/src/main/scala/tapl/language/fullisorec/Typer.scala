@@ -28,7 +28,7 @@ object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
 trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(String, String)] => Exp[A] => Boolean]
   with fullsimple.TAlg.Lifter[Exp[A], Exp[A] => Boolean, Set[(String, String)]] with ISubst[A] {
 
-  override def go(c: Set[(String, String)]) = new fullsimple.TEquals[A] {
+  override def propagate(c: Set[(String, String)]) = new fullsimple.TEquals[A] {
     override def apply(t: Exp[A]): (Exp[A]) => Boolean = TEquals.this.apply(t)(c)
   }
 
