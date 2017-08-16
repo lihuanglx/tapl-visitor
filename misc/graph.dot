@@ -7,50 +7,50 @@ digraph G {
     {
         node[style=filled, color=lightgray];
 
-        Arith;
-        Untyped;
-        FullUntyped;
-        TyArith;
-        SimpleBool;
-        FullSimple;
-        Bot;
-        FullRef;
-        FullError;
-        RcdSubBot;
-        FullSub;
-        FullEquiRec;
-        FullIsoRec;
-        EquiRec;
-        Recon;
-        FullRecon;
-        FullPoly;
-        FullOmega;
+        arith;
+        untyped;
+        fulluntyped;
+        tyarith;
+        simplebool;
+        fullsimple;
+        bot;
+        fullref;
+        fullerror;
+        rcdsubbot;
+        fullsub;
+        fullequirec;
+        fullisorec;
+        equirec;
+        recon;
+        fullrecon;
+        fullpoly;
+        fullomega;
     }
 
     // components
-    Bool -> TypedBool;
-    Nat -> TypedNat;
-    Record -> TypedRecord;
-    VarApp -> Typed;
-    TyArith, FloatString, Let, TypedRecord, Unit -> Extension;
+    bool -> typedbool;
+    nat -> typednat;
+    record -> typedrecord;
+    varapp -> typed;
+    tyarith, floatstring, let, typedrecord, unit -> extension;
 
     // calculi
-    Bool, Nat -> Arith;
-    VarApp -> Untyped;
-    Arith, Untyped, Record, FloatString, Let -> FullUntyped;
-    TypedBool, TypedNat -> TyArith;
-    Typed, TypedBool -> SimpleBool;
-    Typed, Extension, Variant -> FullSimple;
-    Typed, Top, Bottom -> Bot;
-    Bot, TypedBool -> FullError;
-    Bot, TypedRecord -> RcdSubBot;
-    Typed, Extension, Top -> FullSub;
-    FullSub, Variant, Ref -> FullRef;
-    Typed, RecType -> EquiRec;
-    EquiRec, Extension, Variant -> FullEquiRec;
-    FullSimple, RecType -> FullIsoRec;
-    Typed, TyArith -> Recon;
-    Recon, Let -> FullRecon;
-    Typed, Extension, Pack -> FullPoly;
-    Typed, Extension, Pack, Ref -> FullOmega;
+    bool, nat -> arith;
+    varapp -> untyped;
+    arith, untyped, record, floatstring, let -> fulluntyped;
+    typedbool, typednat -> tyarith;
+    typed, typedbool -> simplebool;
+    typed, extension, variant -> fullsimple;
+    typed, top, bottom -> bot;
+    bot, typedbool -> fullerror;
+    bot, typedrecord -> rcdsubbot;
+    typed, extension, top -> fullsub;
+    fullsub, variant, ref -> fullref;
+    typed, rectype -> equirec;
+    equirec, extension, variant -> fullequirec;
+    fullsimple, rectype -> fullisorec;
+    typed, tyarith -> recon;
+    recon, let -> fullrecon;
+    typed, extension, pack -> fullpoly;
+    typed, extension, pack, ref -> fullomega;
 }
