@@ -1,9 +1,9 @@
 package tapl.component.record
 
 import tapl.common._
-import tapl.component.record.Alg.Factory._
+import tapl.component.record.Term.Factory._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends EParser[A] {
   lexical.delimiters += ("{", "}", ",", ".", "(", ")", "=")
 
   private lazy val pRec =

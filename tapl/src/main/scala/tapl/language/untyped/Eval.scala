@@ -2,10 +2,10 @@ package tapl.language.untyped
 
 import tapl.common._
 import tapl.component._
-import tapl.language.untyped.Alg.{Query, Transform}
-import tapl.language.untyped.Alg.Factory._
+import tapl.language.untyped.Term.{Query, Transform}
+import tapl.language.untyped.Term.Factory._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]]
+trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]]
   with varapp.Eval[A] with IIsVal[A] with ISubst[A] {
 
   override def tmAbs(x: String, e: Exp[A]): Exp[A] = TmAbs(x, e)
@@ -23,22 +23,22 @@ trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]]
     }
 }
 
-object Eval extends Eval[Alg] with Impl[Exp[Alg]] {
-  override val isVal: Alg[Exp[Alg], Boolean] = IsVal
+object Eval extends Eval[Term] with Impl[Exp[Term]] {
+  override val isVal: Term[Exp[Term], Boolean] = IsVal
 
-  override def subst(m: Map[String, Exp[Alg]]): Alg[Exp[Alg], Exp[Alg]] = new SubstImpl(m)
+  override def subst(m: Map[String, Exp[Term]]): Term[Exp[Term], Exp[Term]] = new SubstImpl(m)
 }
 
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with varapp.IsVal[A] {
   override def tmAbs(x: String, e: Exp[A]) = true
 }
 
-object IsVal extends IsVal[Alg] with Impl[Boolean]
+object IsVal extends IsVal[Term] with Impl[Boolean]
 
-trait Subst[A[-X, Y] <: Alg[X, Y]] extends Transform[A] with varapp.Subst[A] {
+trait Subst[A[-X, Y] <: Term[X, Y]] extends Transform[A] with varapp.Subst[A] {
   override def tmAbs(x: String, e: Exp[A]): Exp[A] = TmAbs[A](x, if (m.contains(x)) e else apply(e))
 }
 
-class SubstImpl(mp: Map[String, Exp[Alg]]) extends Subst[Alg] with Impl[Exp[Alg]] {
-  override val m: Map[String, Exp[Alg]] = mp
+class SubstImpl(mp: Map[String, Exp[Term]]) extends Subst[Term] with Impl[Exp[Term]] {
+  override val m: Map[String, Exp[Term]] = mp
 }

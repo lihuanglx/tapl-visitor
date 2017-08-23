@@ -2,10 +2,10 @@ package tapl.component.typed
 
 import tapl.common._
 import tapl.component.varapp
-import tapl.component.typed.Alg.Factory._
-import tapl.component.typed.TAlg.Factory._
+import tapl.component.typed.Term.Factory._
+import tapl.component.typed.Type.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B]
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]] extends ETParser[A, B]
   with varapp.Parse[A[-?, ?, Exp[B]]] {
 
   lexical.delimiters += ("\\", ".", "(", ")", ":", "->")

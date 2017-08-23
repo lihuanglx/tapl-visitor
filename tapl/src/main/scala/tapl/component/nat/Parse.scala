@@ -1,9 +1,9 @@
 package tapl.component.nat
 
 import tapl.common._
-import tapl.component.nat.Alg._
+import tapl.component.nat.Term._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends EParser[A] {
   lexical.reserved += ("iszero", "succ", "pred")
   lexical.delimiters += ("(", ")")
 

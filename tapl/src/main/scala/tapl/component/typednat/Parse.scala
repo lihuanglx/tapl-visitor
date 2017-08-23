@@ -2,9 +2,9 @@ package tapl.component.typednat
 
 import tapl.common._
 import tapl.component.nat
-import tapl.component.typednat.TAlg.Factory._
+import tapl.component.typednat.Type.Factory._
 
-trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends EParser[A] with TParser[B] with nat.Parse[A] {
+trait Parse[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y]] extends EParser[A] with TParser[B] with nat.Parse[A] {
   lexical.reserved += "Nat"
 
   lazy val pTypedNatE: Parser[Exp[A]] = pNatE

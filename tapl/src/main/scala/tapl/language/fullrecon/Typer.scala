@@ -2,10 +2,10 @@ package tapl.language.fullrecon
 
 import tapl.common._
 import tapl.language.recon
-import tapl.language.fullrecon.TAlg.Factory._
+import tapl.language.fullrecon.Type.Factory._
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[Exp2[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]]
+trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
+  extends Term[Exp2[A, Exp[B]], (Ctx[String, Exp[B]], Int) => (Exp[B], Int, Set[(Exp[B], Exp[B])]), Exp[B]]
     with recon.Typer[A, B] with ISubst[A[-?, ?, Exp[B]]] {
 
   override def tmUAbs(x: String, e: Exp2[A, Exp[B]]): T = (c, i) => {
@@ -21,28 +21,28 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
   }
 }
 
-object Typer extends Typer[Alg, TAlg]
-  with Impl[(Ctx[String, Exp[TAlg]], Int) => (Exp[TAlg], Int, Set[(Exp[TAlg], Exp[TAlg])])] {
+object Typer extends Typer[Term, Type]
+  with Impl[(Ctx[String, Exp[Type]], Int) => (Exp[Type], Int, Set[(Exp[Type], Exp[Type])])] {
 
-  override def subst(m: Map[String, Exp2[Alg, Exp[TAlg]]]) = new SubstImpl(m)
+  override def subst(m: Map[String, Exp2[Term, Exp[Type]]]) = new SubstImpl(m)
 }
 
-object Unify extends recon.Unify[TAlg] {
-  override val tEquals: (Exp[TAlg]) => (Exp[TAlg]) => Boolean = _ (TEquals)
+object Unify extends recon.Unify[Type] {
+  override val tEquals: (Exp[Type]) => (Exp[Type]) => Boolean = _ (TEquals)
 
-  override val freeVars: TAlg[Exp[TAlg], Set[String]] = new FreeVars[TAlg] with TImpl[Set[String]]
+  override val freeVars: Type[Exp[Type], Set[String]] = new FreeVars[Type] with TImpl[Set[String]]
 
-  override def subst(m: Map[String, Exp[TAlg]]): TAlg[Exp[TAlg], Exp[TAlg]] = new TSubstImpl(m)
+  override def subst(m: Map[String, Exp[Type]]): Type[Exp[Type], Exp[Type]] = new TSubstImpl(m)
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] with recon.TEquals[A]
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] with recon.TEquals[A]
 
-object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
+object TEquals extends TEquals[Type] with TImpl[Exp[Type] => Boolean]
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with recon.TSubst[A]
+trait TSubst[A[-X, Y] <: Type[X, Y]] extends Type.Transform[A] with recon.TSubst[A]
 
-class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
-  override val m: Map[String, Exp[TAlg]] = mp
+class TSubstImpl(mp: Map[String, Exp[Type]]) extends TSubst[Type] with TImpl[Exp[Type]] {
+  override val m: Map[String, Exp[Type]] = mp
 }
 
-trait FreeVars[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[String]] with recon.FreeVars[A]
+trait FreeVars[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Set[String]] with recon.FreeVars[A]

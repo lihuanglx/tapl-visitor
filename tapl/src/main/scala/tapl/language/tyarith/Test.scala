@@ -5,7 +5,7 @@ import tapl.common._
 import scala.io.Source
 
 object Test {
-  val parser = new Parse[Alg, TAlg] {}
+  val parser = new Parse[Term, Type] {}
 
   val name = "tyarith"
 
@@ -17,13 +17,13 @@ object Test {
 
   def process(input: String): Unit = {
     println(input)
-    val ast: Exp[Alg] = parser.parse(input).get
+    val ast: Exp[Term] = parser.parse(input).get
     println("Type: " + ast(Typer)(TPrint))
     go(ast, 1)
     println("-" * 80)
   }
 
-  def go(e: Exp[Alg], step: Int): Unit = {
+  def go(e: Exp[Term], step: Int): Unit = {
     print("Step " + step.toString + ": ")
     println(e(Print))
     if (e(IsVal)) {
@@ -33,11 +33,11 @@ object Test {
     }
   }
 
-  def eval(e: Exp[Alg]): Exp[Alg] = if (e(IsVal)) e else eval(e(Eval))
+  def eval(e: Exp[Term]): Exp[Term] = if (e(IsVal)) e else eval(e(Eval))
 
   def benchmark(input: String): Unit = {
-    val e: Exp[Alg] = parser.parse(input).get
-    val t: Exp[TAlg] = e(Typer)
+    val e: Exp[Term] = parser.parse(input).get
+    val t: Exp[Type] = e(Typer)
     val _ = eval(e)
   }
 

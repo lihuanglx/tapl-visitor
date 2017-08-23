@@ -3,7 +3,7 @@ package tapl.language.fullpoly
 import tapl.common._
 import tapl.component._
 
-trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
+trait Print[A[-R, E, -F], V] extends Term[Exp2[A, V], String, V]
   with typed.Print[A, V] with extension.Print[A, V] with pack.Print[A, V] {
 
   override def tmTAbs(x: String, e: Exp2[A, V]): String = "\\" + x + "." + apply(e)
@@ -11,11 +11,11 @@ trait Print[A[-R, E, -F], V] extends Alg[Exp2[A, V], String, V]
   override def tmTApp(e: Exp2[A, V], t: V): String = apply(e) + " [" + printT(t) + "]"
 }
 
-object Print extends Print[Alg, Exp[TAlg]] with Impl[String] {
-  override def printT(t: Exp[TAlg]): String = t(TPrint)
+object Print extends Print[Term, Exp[Type]] with Impl[String] {
+  override def printT(t: Exp[Type]): String = t(TPrint)
 }
 
-trait TPrint[A[-F, T]] extends TAlg[Exp[A], String]
+trait TPrint[A[-F, T]] extends Type[Exp[A], String]
   with typed.TPrint[A] with extension.TPrint[A] {
 
   override def tyAll(x: String, t: Exp[A]): String = "All " + x + "." + apply(t)
@@ -23,4 +23,4 @@ trait TPrint[A[-F, T]] extends TAlg[Exp[A], String]
   override def tySome(x: String, t: Exp[A]): String = "{Some " + x + "," + apply(t) + "}"
 }
 
-object TPrint extends TPrint[TAlg] with TImpl[String]
+object TPrint extends TPrint[Type] with TImpl[String]

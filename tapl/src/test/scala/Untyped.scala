@@ -4,7 +4,7 @@ import tapl.language.untyped._
 
 class Untyped extends FreeSpec with Matchers {
 
-  type E = Exp[Alg]
+  type E = Exp[Term]
 
   type Case = {
     val inp: String

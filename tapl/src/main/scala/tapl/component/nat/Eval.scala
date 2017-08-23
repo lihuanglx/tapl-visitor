@@ -2,11 +2,11 @@ package tapl.component.nat
 
 import tapl.common._
 import tapl.component.bool
-import tapl.component.bool.Alg.Factory._
-import tapl.component.nat.Alg._
+import tapl.component.bool.Term.Factory._
+import tapl.component.nat.Term._
 
-trait Eval[A[-X, Y] <: Alg[X, Y] with bool.Alg[X, Y]]
-  extends Alg[Exp[A], Exp[A]] with IIsVal[A] with IsNatVal[A] {
+trait Eval[A[-X, Y] <: Term[X, Y] with bool.Term[X, Y]]
+  extends Term[Exp[A], Exp[A]] with IIsVal[A] with IsNatVal[A] {
 
   override def tmZero(): Exp[A] = TmZero[A]()
 

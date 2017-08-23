@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 class FullRef extends FreeSpec with Matchers {
 
-  type E = Exp2[Alg, Exp[TAlg]]
+  type E = Exp2[Term, Exp[Type]]
 
   type Case = {
     val inp: String
@@ -26,7 +26,7 @@ class FullRef extends FreeSpec with Matchers {
     }
   )
 
-  val parse: String => E = new Parse[Alg, TAlg] {}.parse(_).get
+  val parse: String => E = new Parse[Term, Type] {}.parse(_).get
 
   "Parse" - {
     cases foreach { c =>
@@ -53,7 +53,7 @@ class FullRef extends FreeSpec with Matchers {
   }
 
   "Eval" - {
-    def eval(e: E, c: mutable.MutableList[Exp2[Alg, Exp[TAlg]]]): E =
+    def eval(e: E, c: mutable.MutableList[Exp2[Term, Exp[Type]]]): E =
       if (e(IsVal)) e else eval(e(Eval)(c), c)
 
     cases foreach { c =>

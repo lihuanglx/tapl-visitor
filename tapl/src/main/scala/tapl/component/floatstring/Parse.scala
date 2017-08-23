@@ -1,9 +1,9 @@
 package tapl.component.floatstring
 
 import tapl.common._
-import tapl.component.floatstring.Alg._
+import tapl.component.floatstring.Term._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends EParser[A] {
   lexical.delimiters += "*"
 
   // todo

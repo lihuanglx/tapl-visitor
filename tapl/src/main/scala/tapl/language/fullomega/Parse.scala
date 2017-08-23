@@ -2,11 +2,11 @@ package tapl.language.fullomega
 
 import tapl.common._
 import tapl.component._
-import tapl.language.fullomega.Alg.Factory._
-import tapl.language.fullomega.TAlg.Factory._
-import tapl.language.fullomega.KAlg.Factory._
+import tapl.language.fullomega.Term.Factory._
+import tapl.language.fullomega.Type.Factory._
+import tapl.language.fullomega.Kind.Factory._
 
-trait Parse[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-F, T, -K] <: TAlg[F, T, K], C[-X, Y] <: KAlg[X, Y]]
+trait Parse[A[-R, E, -T, -K] <: Term[R, E, T, K], B[-F, T, -K] <: Type[F, T, K], C[-X, Y] <: Kind[X, Y]]
   extends typed.Parse[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]] with KParser[C]
     with extension.Parse[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]]
     with pack.Parse[A[-?, ?, -?, Exp[C]], B[-?, ?, Exp[C]]]

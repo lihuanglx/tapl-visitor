@@ -1,9 +1,9 @@
 package tapl.component.rectype
 
 import tapl.common._
-import tapl.component.rectype.TAlg.Factory._
+import tapl.component.rectype.Type.Factory._
 
-trait Parse[A[-X, Y] <: TAlg[X, Y]] extends TParser[A] {
+trait Parse[A[-X, Y] <: Type[X, Y]] extends TParser[A] {
   lexical.reserved += "Rec"
   lexical.delimiters += "."
 

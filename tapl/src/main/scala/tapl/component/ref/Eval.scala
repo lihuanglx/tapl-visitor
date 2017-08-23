@@ -3,12 +3,12 @@ package tapl.component.ref
 import tapl.common._
 import scala.collection.mutable
 import tapl.component.unit
-import tapl.component.unit.Alg.Factory._
-import tapl.component.ref.Alg.Query
-import tapl.component.ref.Alg.Factory._
+import tapl.component.unit.Term.Factory._
+import tapl.component.ref.Term.Query
+import tapl.component.ref.Term.Factory._
 
-trait Eval[A[-R, E] <: Alg[R, E] with unit.Alg[R, E]]
-  extends Alg[Exp[A], mutable.MutableList[Exp[A]] => Exp[A]] with IIsVal[A] {
+trait Eval[A[-R, E] <: Term[R, E] with unit.Term[R, E]]
+  extends Term[Exp[A], mutable.MutableList[Exp[A]] => Exp[A]] with IIsVal[A] {
 
   override def tmAssign(l: Exp[A], r: Exp[A]): (mutable.MutableList[Exp[A]]) => Exp[A] = c =>
     if (l(isVal))

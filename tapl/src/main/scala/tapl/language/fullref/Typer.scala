@@ -3,17 +3,17 @@ package tapl.language.fullref
 import tapl.common._
 import tapl.component.{ref, variant}
 import tapl.language.fullsub
-import tapl.language.fullref.TAlg.Factory._
+import tapl.language.fullref.Type.Factory._
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[Exp2[A, Exp[B]], Ctx[Int, Exp[B]] => Ctx[String, Exp[B]] => Exp[B], Exp[B]]
+trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
+  extends Term[Exp2[A, Exp[B]], Ctx[Int, Exp[B]] => Ctx[String, Exp[B]] => Exp[B], Exp[B]]
     with IJoin[B] with ISubtypeOf[B] with ITEq[B]
-    with fullsub.Alg.Lifter[Exp2[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
-    with variant.Alg.Lifter[Exp2[A, Exp[B]], Type[B], Exp[B], Ctx[Int, Exp[B]]]
+    with fullsub.Term.Lifter[Exp2[A, Exp[B]], CtxTo[B], Exp[B], Ctx[Int, Exp[B]]]
+    with variant.Term.Lifter[Exp2[A, Exp[B]], CtxTo[B], Exp[B], Ctx[Int, Exp[B]]]
     with ref.Typer[A[-?, ?, Exp[B]], B] {
 
   override def propagate(c: Ctx[Int, Exp[B]]) = new fullsub.Typer[A, B] with variant.Typer[A, B] {
-    override def apply(e: Exp2[A, Exp[B]]): Type[B] = Typer.this.apply(e)(c)
+    override def apply(e: Exp2[A, Exp[B]]): CtxTo[B] = Typer.this.apply(e)(c)
 
     override val join: B[Exp[B], Exp[B] => Exp[B]] = Typer.this.join
 
@@ -22,7 +22,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     override val tEquals: Exp[B] => Exp[B] => Boolean = Typer.this.tEquals
   }
 
-  override def tmDeRef(e: Exp2[A, Exp[B]]): (Ctx[Int, Exp[B]]) => Type[B] =
+  override def tmDeRef(e: Exp2[A, Exp[B]]): (Ctx[Int, Exp[B]]) => CtxTo[B] =
     c1 => c2 => {
       apply(e)(c1)(c2) match {
         case TyRef(t) => t
@@ -31,7 +31,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       }
     }
 
-  override def tmAssign(l: Exp2[A, Exp[B]], r: Exp2[A, Exp[B]]): (Ctx[Int, Exp[B]]) => Type[B] =
+  override def tmAssign(l: Exp2[A, Exp[B]], r: Exp2[A, Exp[B]]): (Ctx[Int, Exp[B]]) => CtxTo[B] =
     c1 => c2 => {
       val tl = apply(l)(c1)(c2)
       val tr = apply(r)(c1)(c2)
@@ -39,15 +39,15 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     }
 }
 
-object Typer extends Typer[Alg, TAlg] with Impl[Ctx[Int, Exp[TAlg]] => Type[TAlg]] {
-  override val tEquals: (Exp[TAlg]) => (Exp[TAlg]) => Boolean = _ (TEquals)
+object Typer extends Typer[Term, Type] with Impl[Ctx[Int, Exp[Type]] => CtxTo[Type]] {
+  override val tEquals: (Exp[Type]) => (Exp[Type]) => Boolean = _ (TEquals)
 
-  override val join: TAlg[Exp[TAlg], (Exp[TAlg]) => Exp[TAlg]] = Join
+  override val join: Type[Exp[Type], (Exp[Type]) => Exp[Type]] = Join
 
-  override val subtypeOf: TAlg[Exp[TAlg], (Exp[TAlg]) => Boolean] = SubtypeOf
+  override val subtypeOf: Type[Exp[Type], (Exp[Type]) => Boolean] = SubtypeOf
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean]
   with fullsub.TEquals[A] with variant.TEquals[A] with ref.TEquals[A] {
 
   override def tySource(t: Exp[A]): Exp[A] => Boolean = {
@@ -61,9 +61,9 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
   }
 }
 
-object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
+object TEquals extends TEquals[Type] with TImpl[Exp[Type] => Boolean]
 
-trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+trait SubtypeOf[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean]
   with fullsub.SubtypeOf[A] with variant.SubtypeOf[A] {
 
   override def tySource(t: Exp[A]): Exp[A] => Boolean = {
@@ -87,9 +87,9 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
   }
 }
 
-object SubtypeOf extends SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
+object SubtypeOf extends SubtypeOf[Type] with TImpl[Exp[Type] => Boolean]
 
-trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
+trait Join[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]]
   with fullsub.Join[A] with variant.Join[A] {
 
   override def tySource(t: Exp[A]): (Exp[A]) => Exp[A] = {
@@ -112,13 +112,13 @@ trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
   }
 }
 
-object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
-  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+object Join extends Join[Type] with TImpl[Exp[Type] => Exp[Type]] {
+  override val subtypeOf: Type[Exp[Type], Exp[Type] => Boolean] = SubtypeOf
 
-  override val meet: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Meet
+  override val meet: Type[Exp[Type], Exp[Type] => Exp[Type]] = Meet
 }
 
-trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with fullsub.Meet[A] {
+trait Meet[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]] with fullsub.Meet[A] {
   override def tyVariant(l: List[(String, Exp[A])]): Exp[A] => Exp[A] = u =>
     directMeet(TyVariant[A](l), u).getOrElse(u match {
       case TyVariant(l2) =>
@@ -153,8 +153,8 @@ trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with f
   }
 }
 
-object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
-  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+object Meet extends Meet[Type] with TImpl[Exp[Type] => Exp[Type]] {
+  override val subtypeOf: Type[Exp[Type], Exp[Type] => Boolean] = SubtypeOf
 
-  override val join: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Join
+  override val join: Type[Exp[Type], Exp[Type] => Exp[Type]] = Join
 }

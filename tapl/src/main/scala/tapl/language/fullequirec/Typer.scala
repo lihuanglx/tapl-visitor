@@ -1,11 +1,11 @@
 package tapl.language.fullequirec
 
 import tapl.common._
-import tapl.language.fullequirec.TAlg.Factory._
+import tapl.language.fullequirec.Type.Factory._
 import tapl.component.{extension, variant}
 import tapl.language.equirec
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
+trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]] extends Term[Exp2[A, Exp[B]], CtxTo[B], Exp[B]]
   with equirec.Typer[A, B] with extension.Typer[A, B] with variant.Typer[A, B] {
 
   private def unwrap(t: Exp[B]): Exp[B] = t match {
@@ -13,9 +13,9 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Ex
     case _ => t
   }
 
-  override def tmTag(x: String, e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = super.tmTag(x, e, unwrap(t))
+  override def tmTag(x: String, e: Exp2[A, Exp[B]], t: Exp[B]): CtxTo[B] = super.tmTag(x, e, unwrap(t))
 
-  override def tmCase(e: Exp2[A, Exp[B]], l: List[(String, String, Exp2[A, Exp[B]])]): Type[B] = c =>
+  override def tmCase(e: Exp2[A, Exp[B]], l: List[(String, String, Exp2[A, Exp[B]])]): CtxTo[B] = c =>
     unwrap(apply(e)(c)) match {
       case TyVariant(l2) =>
         l.map({ case (n, v, b) =>
@@ -26,13 +26,13 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Ex
     }
 }
 
-object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _ (TEquals)(Set.empty)
+object Typer extends Typer[Term, Type] with Impl[CtxTo[Type]] {
+  override val tEquals: Exp[Type] => Exp[Type] => Boolean = _ (TEquals)(Set.empty)
 
-  override def subst(m: Map[String, Exp[TAlg]]): TAlg[Exp[TAlg], Exp[TAlg]] = new TSubstImpl(m)
+  override def subst(m: Map[String, Exp[Type]]): Type[Exp[Type], Exp[Type]] = new TSubstImpl(m)
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Set[(Exp[A], Exp[A])] => Exp[A] => Boolean]
   with equirec.TEquals[A] {
 
   type T = Set[(Exp[A], Exp[A])] => Exp[A] => Boolean
@@ -90,12 +90,12 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Set[(Exp[A], Exp[A])]
   })
 }
 
-object TEquals extends TEquals[TAlg] with TImpl[Set[(Exp[TAlg], Exp[TAlg])] => Exp[TAlg] => Boolean] {
-  override def subst(m: Map[String, Exp[TAlg]]): TAlg[Exp[TAlg], Exp[TAlg]] = new TSubstImpl(m)
+object TEquals extends TEquals[Type] with TImpl[Set[(Exp[Type], Exp[Type])] => Exp[Type] => Boolean] {
+  override def subst(m: Map[String, Exp[Type]]): Type[Exp[Type], Exp[Type]] = new TSubstImpl(m)
 }
 
-trait TSubst[A[-X, Y] <: TAlg[X, Y]] extends TAlg.Transform[A] with equirec.TSubst[A]
+trait TSubst[A[-X, Y] <: Type[X, Y]] extends Type.Transform[A] with equirec.TSubst[A]
 
-class TSubstImpl(mp: Map[String, Exp[TAlg]]) extends TSubst[TAlg] with TImpl[Exp[TAlg]] {
-  override val m: Map[String, Exp[TAlg]] = mp
+class TSubstImpl(mp: Map[String, Exp[Type]]) extends TSubst[Type] with TImpl[Exp[Type]] {
+  override val m: Map[String, Exp[Type]] = mp
 }

@@ -1,7 +1,7 @@
 package tapl.component.nat
 
 import tapl.common.Exp
-import tapl.component.nat.Alg._
+import tapl.component.nat.Term._
 
 trait IsNatVal[A[-X, Y]] {
   // Int value and predecessor

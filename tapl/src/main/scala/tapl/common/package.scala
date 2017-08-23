@@ -30,9 +30,9 @@ package object common {
   // type checker and evaluation
   def typeError(msg: String = "Type error!"): Nothing = sys.error(msg)
 
-  type Type[A[-X, Y]] = Ctx[String, Exp[A]] => Exp[A]
+  type CtxTo[A[-X, Y]] = Ctx[String, Exp[A]] => Exp[A]
 
-  implicit def constType[A[-X, Y]](t: Exp[A]): Type[A] = _ => t
+  implicit def constType[A[-X, Y]](t: Exp[A]): CtxTo[A] = _ => t
 
   class Ctx[K, V](m: Map[K, V]) {
     def +(b: (K, V)): Ctx[K, V] = new Ctx(m + b)

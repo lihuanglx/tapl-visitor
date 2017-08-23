@@ -1,9 +1,9 @@
 package tapl.component.bool
 
 import tapl.common._
-import tapl.component.bool.Alg._
+import tapl.component.bool.Term._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends EParser[A] {
   lexical.reserved += ("true", "false", "if", "then", "else")
   lexical.delimiters += ("(", ")")
 

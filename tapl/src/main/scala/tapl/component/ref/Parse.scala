@@ -1,10 +1,10 @@
 package tapl.component.ref
 
 import tapl.common._
-import tapl.component.ref.Alg.Factory._
-import tapl.component.ref.TAlg.Factory._
+import tapl.component.ref.Term.Factory._
+import tapl.component.ref.Type.Factory._
 
-trait Parse[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends EParser[A] with TParser[B] {
+trait Parse[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y]] extends EParser[A] with TParser[B] {
   lexical.reserved += ("ref", "Ref")
   lexical.delimiters += ("!", ":=")
 

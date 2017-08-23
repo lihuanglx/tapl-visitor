@@ -2,10 +2,10 @@ package tapl.component.typedbool
 
 import tapl.common._
 import tapl.component.top
-import tapl.component.top.TAlg.Factory._
-import tapl.component.typedbool.TAlg.Factory._
+import tapl.component.top.Type.Factory._
+import tapl.component.typedbool.Type.Factory._
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Exp[B]] with ITEq[B] {
+trait Typer[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y]] extends Term[Exp[A], Exp[B]] with ITEq[B] {
 
   override def tmTrue(): Exp[B] = TyBool[B]()
 
@@ -21,7 +21,7 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], E
     }
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyBool(): Exp[A] => Boolean = {
     case TyBool() => true
     case _ => false
@@ -29,7 +29,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
 }
 
 // subtyping
-trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] with IJoin[B] with ISubtypeOf[B] {
+trait Typer2[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y]] extends Typer[A, B] with IJoin[B] with ISubtypeOf[B] {
   override def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[B] =
     if (apply(e1)(subtypeOf)(TyBool())) {
       val t2 = apply(e2)
@@ -38,7 +38,7 @@ trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Typer[A, B] 
     } else typeError()
 }
 
-trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait SubtypeOf[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyBool(): (Exp[A]) => Boolean = {
     case TyTop() => true
     case TyBool() => true
@@ -46,6 +46,6 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
   }
 }
 
-trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+trait Join[A[-X, Y] <: Type[X, Y] with top.Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
   override def tyBool(): Exp[A] => Exp[A] = directJoin(TyBool[A](), _).getOrElse(TyTop[A]())
 }

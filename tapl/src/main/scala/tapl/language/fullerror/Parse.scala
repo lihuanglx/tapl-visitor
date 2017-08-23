@@ -3,9 +3,9 @@ package tapl.language.fullerror
 import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot
-import tapl.language.fullerror.Alg.Factory._
+import tapl.language.fullerror.Term.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends bot.Parse[A, B]
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]] extends bot.Parse[A, B]
   with typedbool.Parse[A[-?, ?, Exp[B]], B] {
 
   lexical.reserved += ("error", "try", "with")

@@ -5,7 +5,7 @@ import tapl.common._
 import scala.io.Source
 
 object Test {
-  val parser = new Parse[Alg, TAlg] {}
+  val parser = new Parse[Term, Type] {}
 
   val name = "fullisorec"
 
@@ -17,13 +17,13 @@ object Test {
 
   def process(input: String): Unit = {
     println(input)
-    val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
+    val ast: Exp2[Term, Exp[Type]] = parser.parse(input).get
     println("Type: " + ast(Typer)(Ctx.empty())(TPrint))
     go(ast, 1)
     println("-" * 80)
   }
 
-  def go(e: Exp2[Alg, Exp[TAlg]], step: Int): Unit = {
+  def go(e: Exp2[Term, Exp[Type]], step: Int): Unit = {
     print("Step " + step.toString + ": ")
     println(e(Print))
     if (e(IsVal)) {
@@ -33,11 +33,11 @@ object Test {
     }
   }
 
-  def eval(e: Exp2[Alg, Exp[TAlg]]): Exp2[Alg, Exp[TAlg]] = if (e(IsVal)) e else eval(e(Eval))
+  def eval(e: Exp2[Term, Exp[Type]]): Exp2[Term, Exp[Type]] = if (e(IsVal)) e else eval(e(Eval))
 
   def benchmark(input: String): Unit = {
-    val e: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
-    val t: Exp[TAlg] = e(Typer)(Ctx.empty())
+    val e: Exp2[Term, Exp[Type]] = parser.parse(input).get
+    val t: Exp[Type] = e(Typer)(Ctx.empty())
     val _ = eval(e)
   }
 }

@@ -3,9 +3,9 @@ package tapl.language.fullref
 import tapl.common._
 import tapl.component.{variant, ref}
 import tapl.language.fullsub
-import tapl.language.fullref.TAlg.Factory._
+import tapl.language.fullref.Type.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
   extends fullsub.Parse[A, B] with variant.Parse[A, B] with ref.Parse[A[-?, ?, Exp[B]], B] {
 
   lexical.reserved += ("Source", "Sink")

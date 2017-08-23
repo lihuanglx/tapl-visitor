@@ -2,9 +2,9 @@ package tapl.language.untyped
 
 import tapl.common._
 import tapl.component.varapp
-import tapl.language.untyped.Alg.Factory._
+import tapl.language.untyped.Term.Factory._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends varapp.Parse[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends varapp.Parse[A] {
   lexical.delimiters += ("\\", ".")
 
   private lazy val pLamE: Parser[Exp[A]] =
@@ -15,4 +15,4 @@ trait Parse[A[-X, Y] <: Alg[X, Y]] extends varapp.Parse[A] {
   override lazy val pE: Parser[Exp[A]] = pUntypedE
 }
 
-object Parse extends Parse[Alg]
+object Parse extends Parse[Term]

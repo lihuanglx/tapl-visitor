@@ -2,7 +2,7 @@ package tapl.component.record
 
 import tapl.common.Exp
 
-trait Print[A[-R, _]] extends Alg[Exp[A], String] {
+trait Print[A[-R, _]] extends Term[Exp[A], String] {
   override def tmRecord(l: List[(String, Exp[A])]): String =
     "{" + l.map(x => x._1 + " = " + apply(x._2)).reduce((x, y) => x + ", " + y) + "}"
 

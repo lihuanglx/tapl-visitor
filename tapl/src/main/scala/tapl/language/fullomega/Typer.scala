@@ -2,8 +2,8 @@ package tapl.language.fullomega
 
 import tapl.common._
 import tapl.component._
-import tapl.language.fullomega.TAlg.Factory._
-import tapl.language.fullomega.KAlg.Factory._
+import tapl.language.fullomega.Type.Factory._
+import tapl.language.fullomega.Kind.Factory._
 
 object Wrapper {
   type TC[B[-X, Y, -Z], C[-X, Y]] = Ctx[String, _Exp2[B, C]]
@@ -13,10 +13,10 @@ object Wrapper {
 
 import Wrapper._
 
-trait Typer0[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
-  extends Alg[_Exp3[A, B, C], RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C]]
-    with typed.Alg.Lifter[_Exp3[A, B, C], TC[B, C] => _Exp2[B, C], _Exp2[B, C], Ctx[Int, _Exp2[B, C]]]
-    with extension.Alg.Lifter[_Exp3[A, B, C], TC[B, C] => _Exp2[B, C], _Exp2[B, C], Ctx[Int, _Exp2[B, C]]]
+trait Typer0[A[-R, E, -T, -K] <: Term[R, E, T, K], B[-X, Y, -Z] <: Type[X, Y, Z], C[-X, Y] <: Kind[X, Y]]
+  extends Term[_Exp3[A, B, C], RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C]]
+    with typed.Term.Lifter[_Exp3[A, B, C], TC[B, C] => _Exp2[B, C], _Exp2[B, C], Ctx[Int, _Exp2[B, C]]]
+    with extension.Term.Lifter[_Exp3[A, B, C], TC[B, C] => _Exp2[B, C], _Exp2[B, C], Ctx[Int, _Exp2[B, C]]]
     with ref.Typer[A[-?, ?, _Exp2[B, C], Exp[C]], B[-?, ?, Exp[C]]] {
 
   override def propagate(c: Ctx[Int, _Exp2[B, C]]) =
@@ -29,9 +29,9 @@ trait Typer0[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z],
     }
 }
 
-trait Typer[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
-  extends Alg[_Exp3[A, B, C], KC[C] => RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C]]
-    with Alg.Lifter[_Exp3[A, B, C], RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C], KC[C]]
+trait Typer[A[-R, E, -T, -K] <: Term[R, E, T, K], B[-X, Y, -Z] <: Type[X, Y, Z], C[-X, Y] <: Kind[X, Y]]
+  extends Term[_Exp3[A, B, C], KC[C] => RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C]]
+    with Term.Lifter[_Exp3[A, B, C], RC[B, C] => TC[B, C] => _Exp2[B, C], _Exp2[B, C], Exp[C], KC[C]]
     with ITEq[B[-?, ?, Exp[C]]] with ISubst[B[-?, ?, Exp[C]]] {
 
   override def propagate(c: KC[C]) = new Typer0[A, B, C] {
@@ -89,27 +89,27 @@ trait Typer[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], 
     }
 }
 
-object Typer extends Typer[Alg, TAlg, KAlg]
-  with Impl[KC[KAlg] => RC[TAlg, KAlg] => TC[TAlg, KAlg] => _Exp2[TAlg, KAlg]] {
+object Typer extends Typer[Term, Type, Kind]
+  with Impl[KC[Kind] => RC[Type, Kind] => TC[Type, Kind] => _Exp2[Type, Kind]] {
 
-  override val kEquals: (Exp[KAlg]) => (Exp[KAlg]) => Boolean = _ (KEquals)
+  override val kEquals: (Exp[Kind]) => (Exp[Kind]) => Boolean = _ (KEquals)
 
-  override val kinding: TAlg[_Exp2[TAlg, KAlg], KC[KAlg] => Exp[KAlg], Exp[KAlg]] = Kinding
+  override val kinding: Type[_Exp2[Type, Kind], KC[Kind] => Exp[Kind], Exp[Kind]] = Kinding
 
-  override def subst(m: Map[String, _Exp2[TAlg, KAlg]]): TAlg[_Exp2[TAlg, KAlg], _Exp2[TAlg, KAlg], Exp[KAlg]] =
+  override def subst(m: Map[String, _Exp2[Type, Kind]]): Type[_Exp2[Type, Kind], _Exp2[Type, Kind], Exp[Kind]] =
     new TSubstImpl(m)
 
-  override val tEval: TAlg[_Exp2[TAlg, KAlg], _Exp2[TAlg, KAlg], Exp[KAlg]] = TEval
+  override val tEval: Type[_Exp2[Type, Kind], _Exp2[Type, Kind], Exp[Kind]] = TEval
 
-  override val tEquals: (_Exp2[TAlg, KAlg]) => (_Exp2[TAlg, KAlg]) => Boolean =
+  override val tEquals: (_Exp2[Type, Kind]) => (_Exp2[Type, Kind]) => Boolean =
     a => b => a(tEval)(TEquals)(Set.empty)(b(tEval))
 }
 
-trait TEquals[B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
-  extends TAlg[_Exp2[B, C], Set[(String, String)] => _Exp2[B, C] => Boolean, Exp[C]]
-    with typed.TAlg.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]]
-    with extension.TAlg.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]]
-    with ref.TAlg.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]] {
+trait TEquals[B[-X, Y, -Z] <: Type[X, Y, Z], C[-X, Y] <: Kind[X, Y]]
+  extends Type[_Exp2[B, C], Set[(String, String)] => _Exp2[B, C] => Boolean, Exp[C]]
+    with typed.Type.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]]
+    with extension.Type.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]]
+    with ref.Type.Lifter[_Exp2[B, C], _Exp2[B, C] => Boolean, Set[(String, String)]] {
 
   override def propagate(c: Set[(String, String)]) =
     new typed.TEquals[B[-?, ?, Exp[C]]] with extension.TEquals[B[-?, ?, Exp[C]]] with ref.TEquals[B[-?, ?, Exp[C]]] {
@@ -148,11 +148,11 @@ trait TEquals[B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
   }
 }
 
-object TEquals extends TEquals[TAlg, KAlg] with TImpl[Set[(String, String)] => _Exp2[TAlg, KAlg] => Boolean] {
-  override val kEquals: (Exp[KAlg]) => (Exp[KAlg]) => Boolean = _ (KEquals)
+object TEquals extends TEquals[Type, Kind] with TImpl[Set[(String, String)] => _Exp2[Type, Kind] => Boolean] {
+  override val kEquals: (Exp[Kind]) => (Exp[Kind]) => Boolean = _ (KEquals)
 }
 
-trait KEquals[C[-X, Y] <: KAlg[X, Y]] extends KAlg[Exp[C], Exp[C] => Boolean] {
+trait KEquals[C[-X, Y] <: Kind[X, Y]] extends Kind[Exp[C], Exp[C] => Boolean] {
   override def knStar(): (Exp[C]) => Boolean = {
     case KnStar() => true
     case _ => false
@@ -164,11 +164,11 @@ trait KEquals[C[-X, Y] <: KAlg[X, Y]] extends KAlg[Exp[C], Exp[C] => Boolean] {
   }
 }
 
-object KEquals extends KEquals[KAlg] with KImpl[Exp[KAlg] => Boolean]
+object KEquals extends KEquals[Kind] with KImpl[Exp[Kind] => Boolean]
 
 // todo: error
-trait Kinding[B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
-  extends TAlg[_Exp2[B, C], (KC[C]) => Exp[C], Exp[C]] {
+trait Kinding[B[-X, Y, -Z] <: Type[X, Y, Z], C[-X, Y] <: Kind[X, Y]]
+  extends Type[_Exp2[B, C], (KC[C]) => Exp[C], Exp[C]] {
 
   val kEquals: Exp[C] => Exp[C] => Boolean
 
@@ -227,11 +227,11 @@ trait Kinding[B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
   }
 }
 
-object Kinding extends Kinding[TAlg, KAlg] with TImpl[(KC[KAlg]) => Exp[KAlg]] {
-  override val kEquals: (Exp[KAlg]) => (Exp[KAlg]) => Boolean = _ (KEquals)
+object Kinding extends Kinding[Type, Kind] with TImpl[(KC[Kind]) => Exp[Kind]] {
+  override val kEquals: (Exp[Kind]) => (Exp[Kind]) => Boolean = _ (KEquals)
 }
 
-trait TSubst[B[-X, Y, -Z] <: TAlg[X, Y, Z], C] extends TAlg.Transform[B, C] with typed.TSubst[B[-?, ?, C]] {
+trait TSubst[B[-X, Y, -Z] <: Type[X, Y, Z], C] extends Type.Transform[B, C] with typed.TSubst[B[-?, ?, C]] {
   override def tyAbs(x: String, k: C, t: Exp2[B, C]): Exp2[B, C] =
     TyAbs(x, k, if (m.contains(x)) t else apply(t))
 
@@ -242,11 +242,11 @@ trait TSubst[B[-X, Y, -Z] <: TAlg[X, Y, Z], C] extends TAlg.Transform[B, C] with
     TySome(x, k, if (m.contains(x)) t else apply(t))
 }
 
-class TSubstImpl(mp: Map[String, _Exp2[TAlg, KAlg]]) extends TSubst[TAlg, Exp[KAlg]] with TImpl[_Exp2[TAlg, KAlg]] {
-  override val m: Map[String, _Exp2[TAlg, KAlg]] = mp
+class TSubstImpl(mp: Map[String, _Exp2[Type, Kind]]) extends TSubst[Type, Exp[Kind]] with TImpl[_Exp2[Type, Kind]] {
+  override val m: Map[String, _Exp2[Type, Kind]] = mp
 }
 
-trait TEval[B[-X, Y, -Z] <: TAlg[X, Y, Z], C] extends TAlg.Id[B, C] with ISubst[B[-?, ?, C]] {
+trait TEval[B[-X, Y, -Z] <: Type[X, Y, Z], C] extends Type.Id[B, C] with ISubst[B[-?, ?, C]] {
   override def tyApp(t1: Exp2[B, C], t2: Exp2[B, C]): Exp2[B, C] = {
     val v2 = apply(t2)
     apply(t1) match {
@@ -256,7 +256,7 @@ trait TEval[B[-X, Y, -Z] <: TAlg[X, Y, Z], C] extends TAlg.Id[B, C] with ISubst[
   }
 }
 
-object TEval extends TEval[TAlg, Exp[KAlg]] with TImpl[_Exp2[TAlg, KAlg]] {
-  override def subst(m: Map[String, _Exp2[TAlg, KAlg]]): TAlg[_Exp2[TAlg, KAlg], _Exp2[TAlg, KAlg], Exp[KAlg]] =
+object TEval extends TEval[Type, Exp[Kind]] with TImpl[_Exp2[Type, Kind]] {
+  override def subst(m: Map[String, _Exp2[Type, Kind]]): Type[_Exp2[Type, Kind], _Exp2[Type, Kind], Exp[Kind]] =
     new TSubstImpl(m)
 }

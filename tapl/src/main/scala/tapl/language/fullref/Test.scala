@@ -6,7 +6,7 @@ import scala.collection.mutable
 import scala.io.Source
 
 object Test {
-  val parser = new Parse[Alg, TAlg] {}
+  val parser = new Parse[Term, Type] {}
 
   val name = "fullref"
 
@@ -18,13 +18,13 @@ object Test {
 
   def process(input: String): Unit = {
     println(input)
-    val ast: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
+    val ast: Exp2[Term, Exp[Type]] = parser.parse(input).get
     println("Type: " + ast(Typer)(Ctx.empty())(Ctx.empty())(TPrint))
     go(ast, 1, mutable.MutableList())
     println("-" * 80)
   }
 
-  def go(e: Exp2[Alg, Exp[TAlg]], step: Int, c: mutable.MutableList[Exp2[Alg, Exp[TAlg]]]): Unit = {
+  def go(e: Exp2[Term, Exp[Type]], step: Int, c: mutable.MutableList[Exp2[Term, Exp[Type]]]): Unit = {
     println(s"Step $step, context = $c: ")
     println(e(Print))
     if (e(IsVal)) {
@@ -35,7 +35,7 @@ object Test {
     }
   }
 
-  def eval(e: Exp2[Alg, Exp[TAlg]], c: mutable.MutableList[Exp2[Alg, Exp[TAlg]]]): Exp2[Alg, Exp[TAlg]] =
+  def eval(e: Exp2[Term, Exp[Type]], c: mutable.MutableList[Exp2[Term, Exp[Type]]]): Exp2[Term, Exp[Type]] =
     if (e(IsVal))
       e
     else {
@@ -44,8 +44,8 @@ object Test {
     }
 
   def benchmark(input: String): Unit = {
-    val e: Exp2[Alg, Exp[TAlg]] = parser.parse(input).get
-    val t: Exp[TAlg] = e(Typer)(Ctx.empty())(Ctx.empty())
+    val e: Exp2[Term, Exp[Type]] = parser.parse(input).get
+    val t: Exp[Type] = e(Typer)(Ctx.empty())(Ctx.empty())
     val _ = eval(e, mutable.MutableList())
   }
 

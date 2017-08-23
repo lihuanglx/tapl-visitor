@@ -3,9 +3,9 @@ package tapl.language.fullisorec
 import tapl.common._
 import tapl.component.rectype
 import tapl.language.fullsimple
-import tapl.language.fullisorec.Alg.Factory._
+import tapl.language.fullisorec.Term.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
   extends fullsimple.Parse[A, B] with rectype.Parse[B] {
 
   lexical.reserved += ("fold", "unfold")

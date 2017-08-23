@@ -1,9 +1,9 @@
 package tapl.component.floatstring
 
 import tapl.common._
-import tapl.component.floatstring.Alg._
+import tapl.component.floatstring.Term._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
+trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]] with IIsVal[A] {
   override def tmFloat(d: Double): Exp[A] = TmFloat[A](d)
 
   override def tmString(s: String): Exp[A] = TmString[A](s)

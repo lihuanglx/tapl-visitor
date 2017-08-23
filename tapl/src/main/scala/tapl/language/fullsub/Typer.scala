@@ -2,39 +2,39 @@ package tapl.language.fullsub
 
 import tapl.common._
 import tapl.component.{typed, extension, top}
-import tapl.language.fullsub.TAlg.Factory._
+import tapl.language.fullsub.Type.Factory._
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with typed.Typer2[A, B] with extension.Typer2[A, B]
+trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
+  extends Term[Exp2[A, Exp[B]], CtxTo[B], Exp[B]] with typed.Typer2[A, B] with extension.Typer2[A, B]
 
-object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean = _ (TEquals)
+object Typer extends Typer[Term, Type] with Impl[CtxTo[Type]] {
+  override val tEquals: Exp[Type] => Exp[Type] => Boolean = _ (TEquals)
 
-  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+  override val subtypeOf: Type[Exp[Type], Exp[Type] => Boolean] = SubtypeOf
 
-  override val join: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Join
+  override val join: Type[Exp[Type], Exp[Type] => Exp[Type]] = Join
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean]
   with typed.TEquals[A] with extension.TEquals[A] with top.TEquals[A]
 
-object TEquals extends TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean]
+object TEquals extends TEquals[Type] with TImpl[Exp[Type] => Boolean]
 
-trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+trait SubtypeOf[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean]
   with typed.SubtypeOf[A] with extension.SubtypeOf[A] with top.SubtypeOf[A]
 
-object SubtypeOf extends SubtypeOf[TAlg] with TImpl[Exp[TAlg] => Boolean]
+object SubtypeOf extends SubtypeOf[Type] with TImpl[Exp[Type] => Boolean]
 
-trait Join[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]]
+trait Join[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]]
   with typed.Join[A] with extension.Join[A] with top.Join[A]
 
-object Join extends Join[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
-  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+object Join extends Join[Type] with TImpl[Exp[Type] => Exp[Type]] {
+  override val subtypeOf: Type[Exp[Type], Exp[Type] => Boolean] = SubtypeOf
 
-  override val meet: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Meet
+  override val meet: Type[Exp[Type], Exp[Type] => Exp[Type]] = Meet
 }
 
-trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with top.Meet[A] with Default[Exp[A]] {
+trait Meet[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]] with top.Meet[A] with Default[Exp[A]] {
   override lazy val default: Exp[A] = typeError()
 
   override def tyBool(): Exp[A] => Exp[A] = directMeet(TyBool[A](), _).getOrElse(default)
@@ -70,8 +70,8 @@ trait Meet[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with t
   override def tyVar(x: String): Exp[A] => Exp[A] = directMeet(TyVar[A](x), _).getOrElse(default)
 }
 
-object Meet extends Meet[TAlg] with TImpl[Exp[TAlg] => Exp[TAlg]] {
-  override val subtypeOf: TAlg[Exp[TAlg], Exp[TAlg] => Boolean] = SubtypeOf
+object Meet extends Meet[Type] with TImpl[Exp[Type] => Exp[Type]] {
+  override val subtypeOf: Type[Exp[Type], Exp[Type] => Boolean] = SubtypeOf
 
-  override val join: TAlg[Exp[TAlg], Exp[TAlg] => Exp[TAlg]] = Join
+  override val join: Type[Exp[Type], Exp[Type] => Exp[Type]] = Join
 }

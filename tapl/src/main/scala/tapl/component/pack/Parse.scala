@@ -1,9 +1,9 @@
 package tapl.component.pack
 
 import tapl.common._
-import tapl.component.pack.Alg.Factory._
+import tapl.component.pack.Term.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-F, T]] extends ETParser[A, B] {
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-F, T]] extends ETParser[A, B] {
   lexical.reserved += ("as", "let", "in")
   lexical.delimiters += (",", "{", "}", "*", "=")
 

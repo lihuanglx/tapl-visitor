@@ -3,10 +3,10 @@ package tapl.language.simplebool
 import tapl.common._
 import tapl.component.{typed, typedbool}
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]]
-  with typed.Typer[A, B] with typedbool.Alg.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]] {
+trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]] extends Term[Exp2[A, Exp[B]], CtxTo[B], Exp[B]]
+  with typed.Typer[A, B] with typedbool.Term.Lifter[Exp2[A, Exp[B]], Exp[B], Ctx[String, Exp[B]]] {
 
-  override def propagate(c: Ctx[String, Exp[B]]): typedbool.Alg[Exp2[A, Exp[B]], Exp[B]] =
+  override def propagate(c: Ctx[String, Exp[B]]): typedbool.Term[Exp2[A, Exp[B]], Exp[B]] =
     new typedbool.Typer[A[-?, ?, Exp[B]], B] {
       override def apply(e: Exp[A[-?, ?, Exp[B]]]): Exp[B] = Typer.this.apply(e)(c)
 
@@ -14,10 +14,10 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends Alg[Ex
     }
 }
 
-object Typer extends Typer[Alg, TAlg] with Impl[Type[TAlg]] {
-  override val tEquals: Exp[TAlg] => Exp[TAlg] => Boolean =
-    _ (new TEquals[TAlg] with TImpl[Exp[TAlg] => Boolean])
+object Typer extends Typer[Term, Type] with Impl[CtxTo[Type]] {
+  override val tEquals: Exp[Type] => Exp[Type] => Boolean =
+    _ (new TEquals[Type] with TImpl[Exp[Type] => Boolean])
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean]
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean]
   with typed.TEquals[A] with typedbool.TEquals[A]

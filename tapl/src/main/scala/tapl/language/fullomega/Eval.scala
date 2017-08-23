@@ -2,16 +2,16 @@ package tapl.language.fullomega
 
 import tapl.common._
 import tapl.component._
-import tapl.language.fullomega.Alg.{Query, Transform, Map2}
-import tapl.language.fullomega.Alg.Factory._
+import tapl.language.fullomega.Term.{Query, Transform, Map2}
+import tapl.language.fullomega.Term.Factory._
 
 import scala.collection.mutable
 
-trait Eval[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], C[-X, Y] <: KAlg[X, Y]]
-  extends Alg[_Exp3[A, B, C], mutable.MutableList[_Exp3[A, B, C]] => _Exp3[A, B, C], _Exp2[B, C], Exp[C]]
-    with typed.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
-    with extension.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
-    with pack.Alg.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
+trait Eval[A[-R, E, -T, -K] <: Term[R, E, T, K], B[-X, Y, -Z] <: Type[X, Y, Z], C[-X, Y] <: Kind[X, Y]]
+  extends Term[_Exp3[A, B, C], mutable.MutableList[_Exp3[A, B, C]] => _Exp3[A, B, C], _Exp2[B, C], Exp[C]]
+    with typed.Term.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
+    with extension.Term.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
+    with pack.Term.Lifter[_Exp3[A, B, C], _Exp3[A, B, C], _Exp2[B, C], mutable.MutableList[_Exp3[A, B, C]]]
     with ref.Eval[A[-?, ?, _Exp2[B, C], Exp[C]]] with ISubst[A[-?, ?, _Exp2[B, C], Exp[C]]] {
 
   override def propagate(c: mutable.MutableList[_Exp3[A, B, C]]) =
@@ -40,17 +40,17 @@ trait Eval[A[-R, E, -T, -K] <: Alg[R, E, T, K], B[-X, Y, -Z] <: TAlg[X, Y, Z], C
     } else TmTApp(apply(e)(c), t)
 }
 
-object Eval extends Eval[Alg, TAlg, KAlg]
-  with Impl[mutable.MutableList[_Exp3[Alg, TAlg, KAlg]] => _Exp3[Alg, TAlg, KAlg]] {
+object Eval extends Eval[Term, Type, Kind]
+  with Impl[mutable.MutableList[_Exp3[Term, Type, Kind]] => _Exp3[Term, Type, Kind]] {
 
-  override val isVal: Alg[_Exp3[Alg, TAlg, KAlg], Boolean, _Exp2[TAlg, KAlg], Exp[KAlg]] = IsVal
+  override val isVal: Term[_Exp3[Term, Type, Kind], Boolean, _Exp2[Type, Kind], Exp[Kind]] = IsVal
 
-  override def subst(m: Map[String, _Exp3[Alg, TAlg, KAlg]]) = new SubstImpl(m)
+  override def subst(m: Map[String, _Exp3[Term, Type, Kind]]) = new SubstImpl(m)
 
-  override val map2 = new Map2[Alg, _Exp2[TAlg, KAlg], Exp[KAlg]]
-    with Impl[(_Exp2[TAlg, KAlg] => _Exp2[TAlg, KAlg]) => _Exp3[Alg, TAlg, KAlg]]
+  override val map2 = new Map2[Term, _Exp2[Type, Kind], Exp[Kind]]
+    with Impl[(_Exp2[Type, Kind] => _Exp2[Type, Kind]) => _Exp3[Term, Type, Kind]]
 
-  override def tSubst(m: Map[String, _Exp2[TAlg, KAlg]]) = new TSubstImpl(m)
+  override def tSubst(m: Map[String, _Exp2[Type, Kind]]) = new TSubstImpl(m)
 }
 
 trait IsVal[A[-R, E, -T0, -K0], T, K] extends Query[Exp3[A, T, K], Boolean, T, K]
@@ -60,13 +60,13 @@ trait IsVal[A[-R, E, -T0, -K0], T, K] extends Query[Exp3[A, T, K], Boolean, T, K
   override def tmTAbs(x: String, k: K, e: Exp3[A, T, K]): Boolean = true
 }
 
-object IsVal extends IsVal[Alg, _Exp2[TAlg, KAlg], Exp[KAlg]] with Impl[Boolean]
+object IsVal extends IsVal[Term, _Exp2[Type, Kind], Exp[Kind]] with Impl[Boolean]
 
-trait Subst[A[-R, E, -T0, -K0] <: Alg[R, E, T0, K0], T, K] extends Transform[A, T, K]
+trait Subst[A[-R, E, -T0, -K0] <: Term[R, E, T0, K0], T, K] extends Transform[A, T, K]
   with typed.Subst[A[-?, ?, -?, K], T] with extension.Subst[A[-?, ?, -?, K], T] with pack.Subst[A[-?, ?, -?, K], T]
 
-class SubstImpl(mp: Map[String, _Exp3[Alg, TAlg, KAlg]])
-  extends Subst[Alg, _Exp2[TAlg, KAlg], Exp[KAlg]] with Impl[_Exp3[Alg, TAlg, KAlg]] {
+class SubstImpl(mp: Map[String, _Exp3[Term, Type, Kind]])
+  extends Subst[Term, _Exp2[Type, Kind], Exp[Kind]] with Impl[_Exp3[Term, Type, Kind]] {
 
-  override val m: Map[String, _Exp3[Alg, TAlg, KAlg]] = mp
+  override val m: Map[String, _Exp3[Term, Type, Kind]] = mp
 }

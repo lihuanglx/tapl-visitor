@@ -1,9 +1,9 @@
 package tapl.component.let
 
 import tapl.common._
-import tapl.component.let.Alg._
+import tapl.component.let.Term._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends EParser[A] {
   lexical.reserved += ("let", "in")
   lexical.delimiters += "="
 

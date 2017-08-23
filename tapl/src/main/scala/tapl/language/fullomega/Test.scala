@@ -6,9 +6,9 @@ import scala.collection.mutable
 import scala.io.Source
 
 object Test {
-  val parser = new Parse[Alg, TAlg, KAlg] {}
+  val parser = new Parse[Term, Type, Kind] {}
 
-  type E = Exp3[Alg, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]]
+  type E = Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]]
 
   val name = "fullomega"
 

@@ -3,7 +3,7 @@ import tapl.common._
 import tapl.language.fulluntyped._
 
 class FullUntyped extends FreeSpec with Matchers {
-  type E = Exp[Alg]
+  type E = Exp[Term]
 
   type Case = {
     val inp: String
@@ -21,7 +21,7 @@ class FullUntyped extends FreeSpec with Matchers {
     }
   )
 
-  val parse: String => E = new Parse[Alg] {}.parse(_).get
+  val parse: String => E = new Parse[Term] {}.parse(_).get
 
   "Parse" - {
     cases foreach { c =>

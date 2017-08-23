@@ -1,10 +1,10 @@
 package tapl.component.unit
 
 import tapl.common._
-import tapl.component.unit.Alg.Factory._
-import tapl.component.unit.TAlg.Factory._
+import tapl.component.unit.Term.Factory._
+import tapl.component.unit.Type.Factory._
 
-trait Parse[A[-R, E] <: Alg[R, E], B[-X, Y] <: TAlg[X, Y]] extends EParser[A] with TParser[B] {
+trait Parse[A[-R, E] <: Term[R, E], B[-X, Y] <: Type[X, Y]] extends EParser[A] with TParser[B] {
   lexical.reserved += ("unit", "Unit")
 
   lazy val pUnitE: Parser[Exp[A]] = "unit" ^^^ TmUnit[A]()

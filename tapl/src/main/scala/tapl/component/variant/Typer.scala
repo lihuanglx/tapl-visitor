@@ -1,14 +1,14 @@
 package tapl.component.variant
 
 import tapl.common._
-import tapl.component.variant.TAlg.Factory._
-import tapl.component.top.TAlg.Factory._
+import tapl.component.variant.Type.Factory._
+import tapl.component.top.Type.Factory._
 import tapl.component.top
 
-trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
-  extends Alg[Exp2[A, Exp[B]], Type[B], Exp[B]] with ITEq[B] {
+trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
+  extends Term[Exp2[A, Exp[B]], CtxTo[B], Exp[B]] with ITEq[B] {
 
-  override def tmTag(x: String, e: Exp2[A, Exp[B]], t: Exp[B]): Type[B] = c =>
+  override def tmTag(x: String, e: Exp2[A, Exp[B]], t: Exp[B]): CtxTo[B] = c =>
     t match {
       case TyVariant(l) =>
         val t2 = l.find(_._1 == x).getOrElse(typeError())._2
@@ -16,7 +16,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
       case _ => typeError()
     }
 
-  override def tmCase(e: Exp2[A, Exp[B]], l: List[(String, String, Exp2[A, Exp[B]])]): Type[B] = c =>
+  override def tmCase(e: Exp2[A, Exp[B]], l: List[(String, String, Exp2[A, Exp[B]])]): CtxTo[B] = c =>
     apply(e)(c) match {
       case TyVariant(l2) =>
         l.map({ case (n, v, b) =>
@@ -27,7 +27,7 @@ trait Typer[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
     }
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyVariant(l: List[(String, Exp[A])]): Exp[A] => Boolean = {
     case TyVariant(l2) => l.length == l2.length && l.foldRight(true)({
       case ((n, t), b) => l2.find(_._1 == n) match {
@@ -39,7 +39,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   }
 }
 
-trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait SubtypeOf[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyVariant(l: List[(String, Exp[A])]): Exp[A] => Boolean = {
     case TyVariant(l2) => l.foldRight(true)({
       case ((n, t), b) => l2.find(_._1 == n) match {
@@ -52,7 +52,7 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
   }
 }
 
-trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+trait Join[A[-X, Y] <: Type[X, Y] with top.Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
   override def tyVariant(l: List[(String, Exp[A])]): Exp[A] => Exp[A] = u => {
     directJoin(TyVariant[A](l), u).getOrElse(u match {
       case TyVariant(l2) =>

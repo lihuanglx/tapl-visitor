@@ -5,7 +5,7 @@ import tapl.language.fullomega._
 import scala.collection.mutable
 
 class FullOmega extends FreeSpec with Matchers {
-  type E = Exp3[Alg, Exp2[TAlg, Exp[KAlg]], Exp[KAlg]]
+  type E = Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]]
 
   type Case = {
     val inp: String
@@ -25,7 +25,7 @@ class FullOmega extends FreeSpec with Matchers {
     }
   )
 
-  val parse: String => E = new Parse[Alg, TAlg, KAlg] {}.parse(_).get
+  val parse: String => E = new Parse[Term, Type, Kind] {}.parse(_).get
 
   "Parse" - {
     cases foreach { c =>

@@ -1,13 +1,13 @@
 package tapl.component.typednat
 
 import tapl.common._
-import tapl.component.top.TAlg.Factory._
-import tapl.component.typedbool.TAlg.Factory._
-import tapl.component.typednat.TAlg.Factory._
+import tapl.component.top.Type.Factory._
+import tapl.component.typedbool.Type.Factory._
+import tapl.component.typednat.Type.Factory._
 import tapl.component.{top, typedbool}
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X, Y]]
-  extends Alg[Exp[A], Exp[B]] {
+trait Typer[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y] with typedbool.Type[X, Y]]
+  extends Term[Exp[A], Exp[B]] {
 
   override def tmZero(): Exp[B] = TyNat[B]()
 
@@ -36,14 +36,14 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with typedbool.TAlg[X,
   }
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyNat(): (Exp[A]) => Boolean = {
     case TyNat() => true
     case _ => false
   }
 }
 
-trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait SubtypeOf[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyNat(): (Exp[A]) => Boolean = {
     case TyTop() => true
     case TyNat() => true
@@ -51,6 +51,6 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
   }
 }
 
-trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+trait Join[A[-X, Y] <: Type[X, Y] with top.Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
   override def tyNat(): Exp[A] => Exp[A] = directJoin(TyNat[A](), _).getOrElse(TyTop[A]())
 }

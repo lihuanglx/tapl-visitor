@@ -1,10 +1,10 @@
 package tapl.component.variant
 
 import tapl.common._
-import tapl.component.variant.Alg.Factory._
-import tapl.component.variant.TAlg.Factory._
+import tapl.component.variant.Term.Factory._
+import tapl.component.variant.Type.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]] extends ETParser[A, B] {
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]] extends ETParser[A, B] {
   lexical.reserved += ("as", "case", "of")
   lexical.delimiters += ("<", ">", "=", ":", ",", "|", "=>")
 

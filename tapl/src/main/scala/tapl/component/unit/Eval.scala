@@ -1,10 +1,10 @@
 package tapl.component.unit
 
 import tapl.common._
-import tapl.component.unit.Alg.Factory._
-import tapl.component.unit.Alg.Query
+import tapl.component.unit.Term.Factory._
+import tapl.component.unit.Term.Query
 
-trait Eval[A[-R, E] <: Alg[R, E]] extends Alg[Exp[A], Exp[A]] {
+trait Eval[A[-R, E] <: Term[R, E]] extends Term[Exp[A], Exp[A]] {
   override def tmUnit(): Exp[A] = TmUnit[A]()
 }
 

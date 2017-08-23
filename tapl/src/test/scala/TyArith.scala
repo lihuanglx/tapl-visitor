@@ -4,7 +4,7 @@ import tapl.language.tyarith._
 
 class TyArith extends FreeSpec with Matchers {
 
-  type E = Exp[Alg]
+  type E = Exp[Term]
 
   type Case = {
     val inp: String
@@ -24,7 +24,7 @@ class TyArith extends FreeSpec with Matchers {
     }
   )
 
-  val parse: String => E = new Parse[Alg, TAlg] {}.parse(_).get
+  val parse: String => E = new Parse[Term, Type] {}.parse(_).get
 
   "Parse" - {
     cases foreach { c =>

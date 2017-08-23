@@ -3,10 +3,10 @@ package tapl.language.fullrecon
 import tapl.common._
 import tapl.component.let
 import tapl.language.recon
-import tapl.language.fullrecon.Alg.Factory._
-import tapl.language.fullrecon.Alg.{Query, Transform}
+import tapl.language.fullrecon.Term.Factory._
+import tapl.language.fullrecon.Term.{Query, Transform}
 
-trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], V]
+trait Eval[A[-R, E, -F] <: Term[R, E, F], V] extends Term[Exp2[A, V], Exp2[A, V], V]
   with recon.Eval[A, V] with let.Eval[A[-?, ?, V]] {
 
   override def tmUAbs(x: String, e: Exp2[A, V]): Exp2[A, V] = TmUAbs(x, e)
@@ -21,24 +21,24 @@ trait Eval[A[-R, E, -F] <: Alg[R, E, F], V] extends Alg[Exp2[A, V], Exp2[A, V], 
     else TmApp[A[-?, ?, V]](apply(e1), e2)
 }
 
-object Eval extends Eval[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
-  override val isVal: Alg[Exp2[Alg, Exp[TAlg]], Boolean, Exp[TAlg]] = IsVal
+object Eval extends Eval[Term, Exp[Type]] with Impl[Exp2[Term, Exp[Type]]] {
+  override val isVal: Term[Exp2[Term, Exp[Type]], Boolean, Exp[Type]] = IsVal
 
-  override def subst(m: Map[String, Exp2[Alg, Exp[TAlg]]]) = new SubstImpl(m)
+  override def subst(m: Map[String, Exp2[Term, Exp[Type]]]) = new SubstImpl(m)
 }
 
 trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V] with recon.IsVal[A, V] {
   override def tmUAbs(x: String, e: Exp2[A, V]): Boolean = true
 }
 
-object IsVal extends IsVal[Alg, Exp[TAlg]] with Impl[Boolean]
+object IsVal extends IsVal[Term, Exp[Type]] with Impl[Boolean]
 
-trait Subst[A[-R, E, -F] <: Alg[R, E, F], V] extends Transform[A, V]
+trait Subst[A[-R, E, -F] <: Term[R, E, F], V] extends Transform[A, V]
   with recon.Subst[A, V] with let.Subst[A[-?, ?, V]] {
 
   override def tmUAbs(x: String, e: Exp2[A, V]): Exp2[A, V] = TmUAbs(x, if (m.contains(x)) e else apply(e))
 }
 
-class SubstImpl(mp: Map[String, Exp2[Alg, Exp[TAlg]]]) extends Subst[Alg, Exp[TAlg]] with Impl[Exp2[Alg, Exp[TAlg]]] {
-  override val m: Map[String, Exp2[Alg, Exp[TAlg]]] = mp
+class SubstImpl(mp: Map[String, Exp2[Term, Exp[Type]]]) extends Subst[Term, Exp[Type]] with Impl[Exp2[Term, Exp[Type]]] {
+  override val m: Map[String, Exp2[Term, Exp[Type]]] = mp
 }

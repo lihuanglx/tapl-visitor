@@ -1,10 +1,10 @@
 package tapl.component.record
 
 import tapl.common._
-import tapl.component.record.Alg.Query
-import tapl.component.record.Alg.Factory._
+import tapl.component.record.Term.Query
+import tapl.component.record.Term.Factory._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
+trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]] with IIsVal[A] {
   override def tmRecord(l: List[(String, Exp[A])]): Exp[A] = {
     val (vs, es) = l.partition(x => isVal(x._2))
     es match {

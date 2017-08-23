@@ -2,7 +2,7 @@ package tapl.component.bool
 
 import tapl.common.Exp
 
-trait Print[A[-R, _]] extends Alg[Exp[A], String] {
+trait Print[A[-R, _]] extends Term[Exp[A], String] {
   override def tmTrue() = "true"
 
   override def tmFalse() = "false"

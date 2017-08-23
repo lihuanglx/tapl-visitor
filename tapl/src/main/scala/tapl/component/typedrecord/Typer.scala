@@ -1,12 +1,12 @@
 package tapl.component.typedrecord
 
 import tapl.common._
-import tapl.component.top.TAlg.Factory._
-import tapl.component.bottom.TAlg.Factory._
+import tapl.component.top.Type.Factory._
+import tapl.component.bottom.Type.Factory._
 import tapl.component.{top, bottom}
-import tapl.component.typedrecord.TAlg.Factory._
+import tapl.component.typedrecord.Type.Factory._
 
-trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], Exp[B]] {
+trait Typer[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y]] extends Term[Exp[A], Exp[B]] {
   override def tmRecord(l: List[(String, Exp[A])]): Exp[B] =
     TyRecord[B](l.map(x => (x._1, apply(x._2))))
 
@@ -17,7 +17,7 @@ trait Typer[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y]] extends Alg[Exp[A], E
     }
 }
 
-trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait TEquals[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyRecord(l: List[(String, Exp[A])]): (Exp[A]) => Boolean = {
     case TyRecord(l2) => l.foldRight(true)({
       case ((n, t), b) => l2.find(_._1 == n) match {
@@ -29,7 +29,7 @@ trait TEquals[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
   }
 }
 
-trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] {
+trait SubtypeOf[A[-X, Y] <: Type[X, Y]] extends Type[Exp[A], Exp[A] => Boolean] {
   override def tyRecord(l: List[(String, Exp[A])]): (Exp[A]) => Boolean = {
     case TyRecord(l2) => l2.foldRight(true)({
       case ((n, t), b) => l.find(_._1 == n) match {
@@ -42,7 +42,7 @@ trait SubtypeOf[A[-X, Y] <: TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Boolean] 
   }
 }
 
-trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with bottom.TAlg[X, Y]] extends Typer[A, B] {
+trait Typer2[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y] with bottom.Type[X, Y]] extends Typer[A, B] {
   override def tmProj(e: Exp[A], x: String): Exp[B] =
     apply(e) match {
       case TyBot() => TyBot[B]()
@@ -50,7 +50,7 @@ trait Typer2[A[-X, Y] <: Alg[X, Y], B[-X, Y] <: TAlg[X, Y] with bottom.TAlg[X, Y
     }
 }
 
-trait Join[A[-X, Y] <: TAlg[X, Y] with top.TAlg[X, Y]] extends TAlg[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
+trait Join[A[-X, Y] <: Type[X, Y] with top.Type[X, Y]] extends Type[Exp[A], Exp[A] => Exp[A]] with JoinAux[A] {
   override def tyRecord(l: List[(String, Exp[A])]): Exp[A] => Exp[A] = u =>
     directJoin(TyRecord[A](l), u).getOrElse(u match {
       case TyRecord(l2) =>

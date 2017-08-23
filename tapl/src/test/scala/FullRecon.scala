@@ -3,7 +3,7 @@ import tapl.common._
 import tapl.language.fullrecon._
 
 class FullRecon extends FreeSpec with Matchers {
-  type E = Exp2[Alg, Exp[TAlg]]
+  type E = Exp2[Term, Exp[Type]]
 
   type Case = {
     val inp: String
@@ -30,7 +30,7 @@ class FullRecon extends FreeSpec with Matchers {
     }
   )
 
-  val parse: String => E = new Parse[Alg, TAlg] {}.parse(_).get
+  val parse: String => E = new Parse[Term, Type] {}.parse(_).get
 
   "Parse" - {
     cases foreach { c =>
@@ -62,7 +62,7 @@ class FullRecon extends FreeSpec with Matchers {
       c.inp in {
         val (ty, _, cs) = parse(c.inp)(Typer)(Ctx.empty(), 0)
         val solution = Unify.unify(cs)
-        val map2 = new Alg.Map2[Alg, Exp[TAlg]] with Impl[(Exp[TAlg] => Exp[TAlg]) => Exp2[Alg, Exp[TAlg]]]
+        val map2 = new Term.Map2[Term, Exp[Type]] with Impl[(Exp[Type] => Exp[Type]) => Exp2[Term, Exp[Type]]]
         parse(c.inp)(map2)(_ (new TSubstImpl(solution)))(Print) shouldBe c.ast2
       }
     }

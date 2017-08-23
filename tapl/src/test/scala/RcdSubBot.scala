@@ -4,7 +4,7 @@ import tapl.language.rcdsubbot._
 
 class RcdSubBot extends FreeSpec with Matchers {
 
-  type E = Exp2[Alg, Exp[TAlg]]
+  type E = Exp2[Term, Exp[Type]]
 
   type Case = {
     val inp: String
@@ -31,7 +31,7 @@ class RcdSubBot extends FreeSpec with Matchers {
     }
   )
 
-  val parse: String => E = new Parse[Alg, TAlg] {}.parse(_).get
+  val parse: String => E = new Parse[Term, Type] {}.parse(_).get
 
   "Parse" - {
     cases foreach { c =>

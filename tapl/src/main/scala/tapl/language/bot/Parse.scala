@@ -3,7 +3,7 @@ package tapl.language.bot
 import tapl.common._
 import tapl.component.{top, bottom, typed}
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
   extends typed.Parse[A, B] with top.Parse[B] with bottom.Parse[B] {
 
   lazy val pBotE: Parser[Exp2[A, Exp[B]]] = pTypedE

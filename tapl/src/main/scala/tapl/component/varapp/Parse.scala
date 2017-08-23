@@ -1,9 +1,9 @@
 package tapl.component.varapp
 
 import tapl.common._
-import tapl.component.varapp.Alg._
+import tapl.component.varapp.Term._
 
-trait Parse[A[-X, Y] <: Alg[X, Y]] extends EParser[A] {
+trait Parse[A[-X, Y] <: Term[X, Y]] extends EParser[A] {
   lexical.delimiters += ("(", ")", ";")
 
   lazy val pVarAppE: Parser[Exp[A]] =

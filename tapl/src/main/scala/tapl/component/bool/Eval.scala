@@ -1,9 +1,9 @@
 package tapl.component.bool
 
 import tapl.common._
-import tapl.component.bool.Alg._
+import tapl.component.bool.Term._
 
-trait Eval[A[-X, Y] <: Alg[X, Y]] extends Alg[Exp[A], Exp[A]] with IIsVal[A] {
+trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]] with IIsVal[A] {
   override def tmTrue(): Exp[A] = TmTrue[A]()
 
   override def tmFalse(): Exp[A] = TmFalse[A]()

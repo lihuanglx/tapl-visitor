@@ -15,12 +15,12 @@ object Test {
 
   def process(input: String): Unit = {
     println(input)
-    val ast: Exp[Alg] = Parse.parse(input).get
+    val ast: Exp[Term] = Parse.parse(input).get
     go(ast, 1)
     println("-" * 80)
   }
 
-  def go(e: Exp[Alg], step: Int): Unit = {
+  def go(e: Exp[Term], step: Int): Unit = {
     print("Step " ++ step.toString ++ ": ")
     println(e(Print))
     if (e(IsVal)) {
@@ -30,10 +30,10 @@ object Test {
     }
   }
 
-  def eval(e: Exp[Alg]): Exp[Alg] = if (e(IsVal)) e else eval(e(Eval))
+  def eval(e: Exp[Term]): Exp[Term] = if (e(IsVal)) e else eval(e(Eval))
 
   def benchmark(input: String): Unit = {
-    val e: Exp[Alg] = Parse.parse(input).get
+    val e: Exp[Term] = Parse.parse(input).get
     val _ = eval(e)
   }
 

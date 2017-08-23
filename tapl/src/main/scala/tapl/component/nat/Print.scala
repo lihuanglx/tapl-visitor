@@ -2,7 +2,7 @@ package tapl.component.nat
 
 import tapl.common.Exp
 
-trait Print[A[-R, _]] extends Alg[Exp[A], String] with IsNatVal[A] {
+trait Print[A[-R, _]] extends Term[Exp[A], String] with IsNatVal[A] {
   override def tmZero() = "0"
 
   override def tmSucc(e: Exp[A]): String =

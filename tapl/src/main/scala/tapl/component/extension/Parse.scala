@@ -3,10 +3,10 @@ package tapl.component.extension
 import tapl.common._
 import tapl.component._
 import tapl.language.tyarith
-import tapl.component.extension.Alg.Factory._
-import tapl.component.extension.TAlg.Factory._
+import tapl.component.extension.Term.Factory._
+import tapl.component.extension.Type.Factory._
 
-trait Parse[A[-R, E, -F] <: Alg[R, E, F], B[-X, Y] <: TAlg[X, Y]]
+trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
   extends tyarith.Parse[A[-?, ?, Exp[B]], B] with floatstring.Parse[A[-?, ?, Exp[B]]]
     with let.Parse[A[-?, ?, Exp[B]]] with typedrecord.Parse[A[-?, ?, Exp[B]], B]
     with unit.Parse[A[-?, ?, Exp[B]], B] {
