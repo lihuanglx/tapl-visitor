@@ -57,7 +57,7 @@ class Language extends scala.annotation.StaticAnnotation {
         Term.Block(Seq(alg, Util(alg, debug).makeCompanion()))
 
       case _ =>
-        abort("@Visitor must annotate a trait.")
+        abort("Must annotate a trait.")
     }
   }
 
@@ -138,7 +138,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
 
     val cls =
       q""" case class $capName[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams](...$paramss) extends $expCtor[A, ..$secTypes] {
-             override def apply[E](alg: A[$expA, E, ..$secTypes]): E = alg.$name(...$argss)
+             def apply[E](alg: A[$expA, E, ..$secTypes]): E = alg.$name(...$argss)
            }
         """
     cls
@@ -171,7 +171,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val ctor = Ctor.Ref.Name(alg.name.value)
 
     val stats: Seq[Defn.Def] = cases.map(
-      d => q"override def ${d.name}(...${d.paramss}): E = default"
+      d => q"def ${d.name}(...${d.paramss}): E = default"
     )
 
     val recTp = alg.tparams.head
@@ -212,7 +212,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
       val capName = Term.Name(d.name.value.capitalize)
       val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
 
-      q"override def ${d.name}(...$paramss): $expTy = $capName[A, ..$secTypes](...$args)"
+      q"def ${d.name}(...$paramss): $expTy = $capName[A, ..$secTypes](...$args)"
     })
 
     val pTrans = parents.map({ case (nm, ts) =>
@@ -241,7 +241,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
       val capName = Term.Name(d.name.value.capitalize)
       val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
 
-      q"override def ${d.name}(...$paramss): $expTy = $capName[A, ..$secTypes](...$args)"
+      q"def ${d.name}(...$paramss): $expTy = $capName[A, ..$secTypes](...$args)"
     })
 
     val ps = parents.map({ case (nm, ts) =>
@@ -274,7 +274,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
         val capName = Term.Name(d.name.value.capitalize)
         val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
 
-        q"override def ${d.name}(...$paramss): (D => D) => $expTy = f => $capName[A, ..$secTypes](...$args)"
+        q"def ${d.name}(...$paramss): (D => D) => $expTy = f => $capName[A, ..$secTypes](...$args)"
       })
 
       val ps = parents.map({ case (nm, ts) =>
@@ -303,7 +303,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
         val capName = Term.Name(d.name.value.capitalize)
         val paramss = d.paramss.map(_.map(_.transform({ case Type.Name(`rec`) => expTy }).asInstanceOf[Term.Param]))
 
-        q"override def ${d.name}(...$paramss): (($ty) => $ty) => $expTy = f => $capName[A, ..$secTypes](...$args)"
+        q"def ${d.name}(...$paramss): (($ty) => $ty) => $expTy = f => $capName[A, ..$secTypes](...$args)"
       })
       val ps = parents.map({ case (nm, ts) =>
         val typeA =
@@ -337,7 +337,7 @@ case class Util(alg: Defn.Trait, debug: Boolean) {
     val stats: Seq[Defn.Def] = cases.map(d => {
       val nm = d.name
       val argss = d.paramss.map(_.map({ p => Term.Name(p.name.value) }))
-      q"override def $nm(...${d.paramss}): C => E = propagate(_).$nm(...$argss)"
+      q"def $nm(...${d.paramss}): C => E = propagate(_).$nm(...$argss)"
     })
 
     val pLifters = parents.map({ case (nm, ts) =>
