@@ -54,7 +54,7 @@ class Language extends scala.annotation.StaticAnnotation {
       */
 
       case alg: Defn.Trait =>
-        Term.Block(Seq(alg, Util(alg, debug).makeCompanion()))
+        Term.Block(Seq(alg, new Util(alg, debug).makeCompanion()))
 
       case _ =>
         abort("Must annotate a trait.")
@@ -63,7 +63,7 @@ class Language extends scala.annotation.StaticAnnotation {
 
 }
 
-case class Util(alg: Defn.Trait, debug: Boolean) {
+class Util(alg: Defn.Trait, debug: Boolean) {
 
   val parents: Seq[(String, Seq[Type])] = alg.templ.parents.map({
     case Term.Apply(Term.ApplyType(fun, targs), _) => (fun.syntax, targs)
