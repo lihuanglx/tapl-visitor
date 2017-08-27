@@ -12,13 +12,13 @@ trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]] with IIsVal[A] w
     if (e1(isVal)) {
       inspectBool(e1) match {
         case Some(x) => x(new Query[Exp[A], Exp[A]] {
-          override val default: Exp[A] = typeError()
+          override def default: Exp[A] = typeError()
 
           override def tmTrue(): Exp[A] = e2
 
           override def tmFalse(): Exp[A] = e3
 
-          override def apply(e: Exp[A]): Exp[A] = sys.error("impossible")
+          override def apply(e: Exp[A]): Exp[A] = impossible
         })
         case _ => typeError()
       }
@@ -29,7 +29,7 @@ trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]] with IIsVal[A] w
 }
 
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
-  override val default: Boolean = false
+  override def default: Boolean = false
 
   override def tmTrue(): Boolean = true
 

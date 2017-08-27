@@ -372,11 +372,13 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
       q"trait Inspect[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] { $stat }"
     }
 
+    def parentName(p: String): String = {
+      val ss = p.split('.')
+      if (ss.length == 1) p else ss(ss.length - 2)
+    }.capitalize
+
     val inspectChains = parents.map({ case (nm, ts) =>
-      val pName: String = {
-        val ss = nm.split('.')
-        if (ss.length == 1) nm else ss(ss.length - 2)
-      }.capitalize
+      val pName = parentName(nm)
 
       val typeA =
         if (ts.length == alg.tparams.length) s"A"
@@ -408,7 +410,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
 
             override def ${inspectFn(pName)}[B[-X, Y]](e: $pSExpTy[$pTypeATy, B, ..$pSecTypes]): $pRetTy = {
               val t = new Term[$expB, $pRetTy, ..$secTypes] with $pIdOption with QueryThis[$expB, $pRetTy, ..$secTypes] with ..$pQueries {
-                override val default: $pRetTy = None
+                override def default: $pRetTy = None
 
                 override def apply(e: $expB): $pRetTy = None
               }
@@ -418,7 +420,20 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
         """
     })
 
-    inspect +: inspectChains
+    val inspects = inspect +: inspectChains
+
+    if (parents.isEmpty)
+      inspects
+    else {
+      val chains = parents.map({ case (p, _) =>
+        val n = parentName(p)
+        val t = ("A" +: secTParams.map(_.syntax)).mkString(", ")
+        s"InspectChain$n[$t]".parse[Ctor.Call].get
+      })
+      val allInspectChains = q"trait AllInspectChains[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] extends ..$chains"
+
+      inspects :+ allInspectChains
+    }
   }
 
   def genStats(): Seq[Defn] = {

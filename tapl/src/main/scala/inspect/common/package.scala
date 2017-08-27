@@ -20,8 +20,10 @@ package object common {
   type SExp3[-A[-R, E, -T, -K], B[-R, E], +V1, +V2] = SExp[A[-?, ?, V1, V2], B]
 
   trait Default[T] {
-    val default: T
+    def default: T
   }
+
+  def impossible: Nothing = sys.error("impossible")
 
   def typeError(msg: String = "Type error!"): Nothing = sys.error(msg)
 
