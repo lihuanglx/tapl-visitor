@@ -361,15 +361,15 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
     lifter
   }
 
-  def genInspect(): Seq[Defn.Trait] = {
-    def inspectFn(n: String): Term.Name = Term.Name("inspect" + n.capitalize)
+  def genConvert(): Seq[Defn.Trait] = {
+    def convertFn(n: String): Term.Name = Term.Name("convert" + n.capitalize)
 
-    val mName = inspectFn(cname)
+    val mName = convertFn(cname)
 
-    val inspect = {
+    val convert = {
       val stat = q"def $mName[B[-R, _]](e: $sExpTy): Option[${Type.Name(sExp)}[${alg.name}, B, ..$secTypes]]"
 
-      q"trait Inspect[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] { $stat }"
+      q"trait Convert[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] { $stat }"
     }
 
     def parentName(p: String): String = {
@@ -377,7 +377,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
       if (ss.length == 1) p else ss(ss.length - 2)
     }.capitalize
 
-    val inspectChains = parents.map({ case (nm, ts) =>
+    val convertChains = parents.map({ case (nm, ts) =>
       val pName = parentName(nm)
 
       val typeA =
@@ -387,7 +387,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
           s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
         }
       val str = (typeA +: ts.drop(2).map(_.syntax)).mkString(", ")
-      val pInspect = (nm + s".Inspect[$str]").parse[Ctor.Call].get
+      val pConvert = (nm + s".Convert[$str]").parse[Ctor.Call].get
 
       val pNumOfSorts = ts.length - 1
       val pTParams = tParamsForNum(pNumOfSorts)
@@ -405,10 +405,10 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
           (nm2 + s".Query[$str]").parse[Ctor.Call].get
       })
 
-      q"""trait ${Type.Name("InspectChain" + pName)}[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams]
-            extends $pInspect with Inspect[A, ..$secTypes] {
+      q"""trait ${Type.Name("ConvertChain" + pName)}[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams]
+            extends $pConvert with Convert[A, ..$secTypes] {
 
-            override def ${inspectFn(pName)}[B[-X, Y]](e: $pSExpTy[$pTypeATy, B, ..$pSecTypes]): $pRetTy = {
+            override def ${convertFn(pName)}[B[-X, Y]](e: $pSExpTy[$pTypeATy, B, ..$pSecTypes]): $pRetTy = {
               val t = new Term[$expB, $pRetTy, ..$secTypes] with $pIdOption with QueryThis[$expB, $pRetTy, ..$secTypes] with ..$pQueries {
                 override def default: $pRetTy = None
 
@@ -420,19 +420,19 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
         """
     })
 
-    val inspects = inspect +: inspectChains
+    val converts = convert +: convertChains
 
     if (parents.isEmpty)
-      inspects
+      converts
     else {
       val chains = parents.map({ case (p, _) =>
         val n = parentName(p)
         val t = ("A" +: secTParams.map(_.syntax)).mkString(", ")
-        s"InspectChain$n[$t]".parse[Ctor.Call].get
+        s"ConvertChain$n[$t]".parse[Ctor.Call].get
       })
-      val allInspectChains = q"trait AllInspectChains[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] extends ..$chains"
+      val allConvertChains = q"trait AllConvertChains[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] extends ..$chains"
 
-      inspects :+ allInspectChains
+      converts :+ allConvertChains
     }
   }
 
@@ -444,7 +444,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
       q"object Factory extends Factory",
       genTransform(),
       genLifter()
-    ) ++ genId() ++ genInspect() ++ genMaps()
+    ) ++ genId() ++ genConvert() ++ genMaps()
   }
 
   def makeCompanion(): Defn.Object = {
