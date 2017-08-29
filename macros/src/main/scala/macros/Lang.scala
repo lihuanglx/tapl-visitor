@@ -234,7 +234,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
         """
     }
 
-    val idOption = {
+    val inject = {
       val ctor = Ctor.Ref.Name(alg.name.value)
       val retTy = t"Option[${Type.Name(sExp)}[A, B, ..$secTypes]]"
 
@@ -254,13 +254,13 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
             s"({type l[${tss.mkString(", ")}] = A[${alg.tparams.map(_.name.value).mkString(", ")}]})#l"
           }
         val str = (Seq(typeA, "B") ++ ts.drop(2).map(_.syntax)).mkString(", ")
-        (nm + s".IdOption[$str]").parse[Ctor.Call].get
+        (nm + s".Inject[$str]").parse[Ctor.Call].get
       })
 
-      q"trait IdOption[A[..$tParamsForA] <: ${alg.name}[..$typesForA], B[-R, _], ..$secTParams] extends $ctor[$expB, $retTy, ..$secTypes] with ..$pNs { ..$stats }"
+      q"trait Inject[A[..$tParamsForA] <: ${alg.name}[..$typesForA], B[-R, _], ..$secTParams] extends $ctor[$expB, $retTy, ..$secTypes] with ..$pNs { ..$stats }"
     }
 
-    Seq(id, idOption)
+    Seq(id, inject)
   }
 
   def genMaps(): Seq[Defn.Trait] = {
@@ -396,7 +396,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
       val pSecTypes: Seq[Type] = ts.drop(2)
 
       val pTypeATy = typeA.parse[Type].get
-      val pIdOption = s"$nm.IdOption[${(Seq(nm, "B") ++ pSecTypes.map(_.syntax)).mkString(", ")}]".parse[Ctor.Call].get
+      val pInject = s"$nm.Inject[${(Seq(nm, "B") ++ pSecTypes.map(_.syntax)).mkString(", ")}]".parse[Ctor.Call].get
       val pRetTy = t"Option[$pSExpTy[${Type.Name(nm)}, B, ..$pSecTypes]]"
 
       val pQueries = parents.filter({ case (nm2, _) => nm != nm2 }).map({
@@ -409,7 +409,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
             extends $pConvert with Convert[A, ..$secTypes] {
 
             override def ${convertFn(pName)}[B[-X, Y]](e: $pSExpTy[$pTypeATy, B, ..$pSecTypes]): $pRetTy = {
-              val t = new Term[$expB, $pRetTy, ..$secTypes] with $pIdOption with QueryThis[$expB, $pRetTy, ..$secTypes] with ..$pQueries {
+              val t = new Term[$expB, $pRetTy, ..$secTypes] with $pInject with QueryThis[$expB, $pRetTy, ..$secTypes] with ..$pQueries {
                 override def default: $pRetTy = None
 
                 override def apply(e: $expB): $pRetTy = None
