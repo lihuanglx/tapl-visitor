@@ -72,7 +72,7 @@ def sloc_languages():
             if file_name == 'Test.scala':
                 demo += int(row['code'])
                 continue
-            assert(file_name in [x + '.scala' for x in ['Alg', 'Print', 'Parse', 'Eval', 'Typer']])
+            assert(file_name in [x + '.scala' for x in ['Term', 'Print', 'Parse', 'Eval', 'Typer']])
             s += int(row['code'])
         # print(c.name, s)
         ret[c.name] = s
@@ -102,19 +102,25 @@ def sloc_comparison():
 
 
 components = sloc_components()
+cs = "nat bool bottom record varapp let typedrecord pack typednat typed ref typedbool unit variant floatstring top rectype extension".split()
+assert(len(cs) == 18)
+for x in cs:
+    print("{} & {}\\\\".format(x, components[x]))
+tot_components = sum(components.values())
+print("{} & {}\\\\".format("total", tot_components))
+print()
+
 languages = sloc_languages()
 comparison = sloc_comparison()
 
 assert(len(languages) == len(comparison) == len(NAMES))
 
-tot_s = 0
+tot_s = tot_components
 tot_s2 = sum(comparison.values())
 
 for name in NAMES:
     s = languages[name]
-    for c in NEW_ADDED[name]:
-        s += components[c]
     tot_s += s
     s2 = comparison[name]
-    print('{} & {} & {} & {} & {:+.1%}'.format(','.join(NEW_ADDED[name]), name, s, s2, (s - s2) / s2))
-print('& {} & {} & {} & {:+.1%}'.format('total', tot_s, tot_s2, (tot_s - tot_s2) / tot_s2))
+    print('{} & {} & {} & {:+.1f}\\%\\\\'.format(name, s, s2, (s - s2) / s2 * 100))
+print('{} & {} & {} & {:+.1f}\\%\\\\'.format('total', tot_s, tot_s2, (tot_s - tot_s2) / tot_s2 * 100))
