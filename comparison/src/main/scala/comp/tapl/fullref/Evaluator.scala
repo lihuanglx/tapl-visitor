@@ -174,11 +174,11 @@ object Evaluator {
   }
 
   def eval(ctx: Context, store: Store, t: Term): (Term, Store) =
-    try {
+    if (isVal(ctx, t))
+      (t, store)
+    else {
       val (t1, store1) = eval1(ctx, store, t)
       eval(ctx, store1, t1)
-    } catch {
-      case _: NoRuleApplies => (t, store)
     }
 
   def evalBinding(ctx: Context, store: Store, bind: Binding): (Binding, Store) = bind match {

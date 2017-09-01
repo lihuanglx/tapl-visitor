@@ -2,7 +2,7 @@ package comp.tapl.bot
 
 import scala.io.Source
 
-object Demo extends {
+object Demo extends benchmark.Benchmark[Term] {
 
   import Evaluator._
   import PrettyPrinter._
@@ -38,4 +38,10 @@ object Demo extends {
     val _ = eval(Context(), e)
   }
 
+  override def benchmarkParsing(i: String): Term = Parser.input(i)(Context())
+
+  override def benchmarkEval(e: Term): Term = {
+    //val t = Typer.typeof(Context(), e)
+    eval(Context(), e)
+  }
 }

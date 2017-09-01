@@ -4,7 +4,7 @@ import tapl.common._
 
 import scala.io.Source
 
-object Test {
+object Test extends benchmark.Benchmark[Exp[Term]] {
   val name = "untyped"
 
   def main(args: Array[String]): Unit = {
@@ -36,5 +36,9 @@ object Test {
     val e: Exp[Term] = Parse.parse(input).get
     val _ = eval(e)
   }
+
+  def benchmarkParsing(input: String): Exp[Term] = Parse.parse(input).get
+
+  def benchmarkEval(e: Exp[Term]): Exp[Term] = eval(e)
 
 }

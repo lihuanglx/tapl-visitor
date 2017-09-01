@@ -5,33 +5,36 @@ import tapl.component.bool
 import tapl.component.bool.Term.Factory._
 import tapl.component.nat.Term._
 
-trait Eval[A[-X, Y] <: Term[X, Y] with bool.Term[X, Y]]
-  extends Term[Exp[A], Exp[A]] with IIsVal[A] with IsNatVal[A] {
-
+trait Eval[A[-X, Y] <: Term[X, Y] with bool.Term[X, Y]] extends Term[Exp[A], Exp[A]] with IIsVal[A] {
   override def tmZero(): Exp[A] = TmZero[A]()
 
   override def tmPred(e: Exp[A]): Exp[A] =
-    if (e(isVal)) {
-      isNatVal(e).getOrElse(typeError())._2
-    } else {
-      TmPred[A](apply(e))
+    e match {
+      case TmZero() => e
+      case TmSucc(x) => x
+      case _ => if (e(isVal)) typeError() else TmPred[A](apply(e))
     }
 
   override def tmSucc(e: Exp[A]): Exp[A] =
-    if (e(isVal)) {
-      isNatVal(e).getOrElse(typeError())
-      TmSucc[A](e)
-    } else {
+    if (e(isVal))
+      e match {
+        case TmZero() => TmSucc[A](e)
+        case TmSucc(_) => TmSucc[A](e)
+        case _ => typeError()
+      }
+    else
       TmSucc[A](apply(e))
-    }
+
 
   override def tmIsZero(e: Exp[A]): Exp[A] =
-    if (e(isVal)) {
-      val (i, _) = isNatVal(e).getOrElse(typeError())
-      if (i == 0) TmTrue[A]() else TmFalse[A]()
-    } else {
+    if (e(isVal))
+      e match {
+        case TmZero() => TmTrue[A]()
+        case TmSucc(_) => TmFalse[A]()
+        case _ => typeError()
+      }
+    else
       TmIsZero[A](apply(e))
-    }
 }
 
 trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with IsNatVal[A] {
@@ -39,5 +42,5 @@ trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with IsNatVal[A] {
 
   override def tmZero(): Boolean = true
 
-  override def tmSucc(e: Exp[A]): Boolean = isNatVal(e).nonEmpty
+  override def tmSucc(e: Exp[A]): Boolean = isNatVal(e).isDefined
 }

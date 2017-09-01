@@ -2,7 +2,7 @@ package comp.tapl.arith
 
 import scala.io.Source
 
-object Demo {
+object Demo extends benchmark.Benchmark[Term] {
 
   import Evaluator._
   import PrettyPrinter._
@@ -35,4 +35,11 @@ object Demo {
     val _ = eval(e)
   }
 
+  def benchmarkParsing(input: String): Term = {
+    Parser.input(input)
+  }
+
+  def benchmarkEval(e: Term): Term = {
+    eval(e)
+  }
 }

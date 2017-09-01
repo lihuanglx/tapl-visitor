@@ -6,6 +6,7 @@ object Util {
     case TmTrue => true
     case TmFalse => true
     case TmAbs(_, _, _) => true
+    case TmError => true
     case _ => false
   }
 
@@ -43,16 +44,19 @@ object Evaluator {
     case TmIf(t1, t2, t3) =>
       val t11 = eval1(ctx, t1)
       TmIf(t11, t2, t3)
+    case TmTry(TmError, t1) => t1
+    case TmTry(t1, t2) =>
+      if (isVal(ctx, t1)) t1 else TmTry(eval1(ctx, t1), t2)
     case _ =>
       throw new NoRuleApplies(t)
   }
 
   def eval(ctx: Context, t: Term): Term =
-    try {
+    if (isVal(ctx, t))
+      t
+    else {
       val t1 = eval1(ctx, t)
       eval(ctx, t1)
-    } catch {
-      case _: NoRuleApplies => t
     }
 
   def evalBinding(ctx: Context, bind: Binding): Binding = bind match {

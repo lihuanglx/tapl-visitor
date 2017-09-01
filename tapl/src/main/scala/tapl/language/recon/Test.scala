@@ -4,7 +4,7 @@ import tapl.common._
 
 import scala.io.Source
 
-object Test {
+object Test extends benchmark.Benchmark[Exp2[Term, Exp[Type]]] {
   val parser = new Parse[Term, Type] {}
 
   val name = "recon"
@@ -45,5 +45,14 @@ object Test {
     val t: Exp[Type] = Unify(ty, cs)
     val _ = eval(e)
   }
+
+  override def benchmarkParsing(i: String): Exp2[Term, Exp[Type]] = parser.parse(i).get
+
+  override def benchmarkEval(e: Exp2[Term, Exp[Type]]): Exp2[Term, Exp[Type]] = {
+    //val (ty, _, cs) = e(Typer)(Ctx.empty(), 0)
+    //val t: Exp[Type] = Unify(ty, cs)
+    eval(e)
+  }
+
 }
 

@@ -115,7 +115,7 @@ comparison = sloc_comparison()
 
 assert(len(languages) == len(comparison) == len(NAMES))
 
-tot_s = tot_components
+tot_s = tot_components + 89
 tot_s2 = sum(comparison.values())
 
 for name in NAMES:

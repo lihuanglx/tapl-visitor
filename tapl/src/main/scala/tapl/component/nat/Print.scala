@@ -7,7 +7,7 @@ trait Print[A[-R, _]] extends Term[Exp[A], String] with IsNatVal[A] {
 
   override def tmSucc(e: Exp[A]): String =
     isNatVal(e) match {
-      case Some((x, _)) => (x + 1).toString
+      case Some(x) => (x + 1).toString
       case _ => "succ (" + apply(e) + ")"
     }
 

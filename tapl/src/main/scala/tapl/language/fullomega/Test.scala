@@ -5,7 +5,7 @@ import tapl.common._
 import scala.collection.mutable
 import scala.io.Source
 
-object Test {
+object Test extends benchmark.Benchmark[Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]]] {
   val parser = new Parse[Term, Type, Kind] {}
 
   type E = Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]]
@@ -47,5 +47,13 @@ object Test {
     val e: E = parser.parse(input).get
     val t = e(Typer)(Ctx.empty())
     val _ = eval(e, mutable.MutableList())
+  }
+
+  override def benchmarkParsing(i: String): Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]] =
+    parser.parse(i).get
+
+  override def benchmarkEval(e: Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]]): Exp3[Term, Exp2[Type, Exp[Kind]], Exp[Kind]] = {
+    //val t = e(Typer)(Ctx.empty())
+    eval(e, mutable.MutableList())
   }
 }

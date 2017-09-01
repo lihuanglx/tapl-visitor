@@ -2,7 +2,7 @@ package comp.tapl.fullpoly
 
 import scala.io.Source
 
-object Demo {
+object Demo extends benchmark.Benchmark[Term] {
 
   import Evaluator._
   import PrettyPrinter._
@@ -36,5 +36,12 @@ object Demo {
     val e = Parser.input(i)(Context())
     val t = Typer.typeof(Context(), e)
     val _ = eval(Context(), e)
+  }
+
+  override def benchmarkParsing(i: String): Term = Parser.input(i)(Context())
+
+  override def benchmarkEval(e: Term): Term = {
+    //val t = Typer.typeof(Context(), e)
+    eval(Context(), e)
   }
 }

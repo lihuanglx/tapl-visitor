@@ -4,7 +4,7 @@ import comp.tapl.fullrecon.Typer._
 
 import scala.io.Source
 
-object Demo {
+object Demo extends benchmark.Benchmark[Term] {
 
   import Evaluator._
   import PrettyPrinter._
@@ -42,6 +42,14 @@ object Demo {
     val (t0, _, cs) = Typer.recon(Context(), Typer.uvargen, e)
     val t = applySub(unify(Context(), "Could not simplify constraints", cs), t0)
     val _ = eval(Context(), e)
+  }
+
+  override def benchmarkParsing(i: String): Term = Parser.input(i)(Context())
+
+  override def benchmarkEval(e: Term): Term = {
+    //val (t0, _, cs) = Typer.recon(Context(), Typer.uvargen, e)
+    //val t = applySub(unify(Context(), "Could not simplify constraints", cs), t0)
+    eval(Context(), e)
   }
 
 }

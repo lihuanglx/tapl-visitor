@@ -2,7 +2,7 @@ package comp.tapl.untyped
 
 import scala.io.Source
 
-object Demo {
+object Demo extends benchmark.Benchmark[Term] {
 
   import Evaluator._
   import PrettyPrinter._
@@ -33,6 +33,14 @@ object Demo {
   def benchmark(i: String): Unit = {
     val e = Parser.input(i)(Context())
     val _ = eval(Context(), e)
+  }
+
+  def benchmarkParsing(input: String): Term = {
+    Parser.input(input)(Context())
+  }
+
+  def benchmarkEval(e: Term): Term = {
+    eval(Context(), e)
   }
 
 }

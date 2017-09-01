@@ -4,8 +4,7 @@ import tapl.common._
 
 import scala.io.Source
 
-
-object Test {
+object Test extends benchmark.Benchmark[Exp[Term]] {
   val parser = new Parse[Term] {}
 
   val name = "arith"
@@ -39,5 +38,9 @@ object Test {
     val e: Exp[Term] = parser.parse(input).get
     val _ = eval(e)
   }
+
+  def benchmarkParsing(input: String): Exp[Term] = parser.parse(input).get
+
+  def benchmarkEval(e: Exp[Term]): Exp[Term] = eval(e)
 
 }

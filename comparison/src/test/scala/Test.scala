@@ -4,6 +4,7 @@ import comp.{tapl => ordinary}
 import tapl.{language => visitor}
 
 import scala.io.Source
+import benchmark.Benchmark
 
 class Test extends FunSuite {
 
@@ -12,9 +13,9 @@ class Test extends FunSuite {
     Source.fromFile(inputFile).getLines().toList
   }
 
-  def benchmark(inputs: List[String], process: String => Unit, rep: Int = 200): Quantity[Double] =
+  def benchmark[A](inputs: List[A], process: A => Unit, rep: Int): Quantity[Double] =
     config(
-      Key.exec.benchRuns -> 20
+      Key.exec.benchRuns -> 10
       //Key.verbose -> true
     ) withWarmer {
       new Warmer.Default
@@ -26,183 +27,92 @@ class Test extends FunSuite {
 
   def output(name: String, t1: Double, t2: Double): Unit = println(f"$name & $t1%.1f & $t2%.1f")
 
+  def compare[A, B](name: String, modular: Benchmark[A], nonmod: Benchmark[B]): Unit = {
+    val lines: List[String] = readLines(name)
+
+    val parsingRep = 200
+    val pt1 = benchmark(lines, modular.benchmarkParsing, parsingRep).value
+    val pt2 = benchmark(lines, nonmod.benchmarkParsing, parsingRep).value
+
+    val es1 = lines.map(modular.benchmarkParsing)
+    val es2 = lines.map(nonmod.benchmarkParsing)
+
+    val evalRep = 100000
+    val pe1 = benchmark(es1, modular.benchmarkEval, evalRep).value
+    val pe2 = benchmark(es2, nonmod.benchmarkEval, evalRep).value
+
+    println(f"$name & $pt1%.1f & $pt2%.1f & $pe1%.1f & $pe2%.1f")
+  }
+
   test("arith") {
-    val name = "arith"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.arith.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.arith.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("arith", visitor.arith.Test, ordinary.arith.Demo)
   }
 
   test("untyped") {
-    val name = "untyped"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.untyped.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.untyped.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("untyped", visitor.untyped.Test, ordinary.untyped.Demo)
   }
 
   test("fulluntyped") {
-    val name = "fulluntyped"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fulluntyped.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fulluntyped.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fulluntyped", visitor.fulluntyped.Test, ordinary.fulluntyped.Demo)
   }
 
   test("tyarith") {
-    val name = "tyarith"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.tyarith.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.tyarith.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("tyarith", visitor.tyarith.Test, ordinary.tyarith.Demo)
   }
 
   test("simplebool") {
-    val name = "simplebool"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.simplebool.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.simplebool.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("simplebool", visitor.simplebool.Test, ordinary.simplebool.Demo)
   }
 
   test("fullsimple") {
-    val name = "fullsimple"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullsimple.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullsimple.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullsimple", visitor.fullsimple.Test, ordinary.fullsimple.Demo)
   }
 
   test("bot") {
-    val name = "bot"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.bot.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.bot.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("bot", visitor.bot.Test, ordinary.bot.Demo)
   }
 
   test("fullref") {
-    val name = "fullref"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullref.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullref.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullref", visitor.fullref.Test, ordinary.fullref.Demo)
   }
 
   test("fullerror") {
-    val name = "fullerror"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullerror.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullerror.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullerror", visitor.fullerror.Test, ordinary.fullerror.Demo)
   }
 
   test("rcdsubbot") {
-    val name = "rcdsubbot"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.rcdsubbot.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.rcdsubbot.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("rcdsubbot", visitor.rcdsubbot.Test, ordinary.rcdsubbot.Demo)
   }
 
   test("fullsub") {
-    val name = "fullsub"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullsub.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullsub.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullsub", visitor.fullsub.Test, ordinary.fullsub.Demo)
   }
 
   test("fullequirec") {
-    val name = "fullequirec"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullequirec.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullequirec.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullequirec", visitor.fullequirec.Test, ordinary.fullequirec.Demo)
   }
 
   test("fullisorec") {
-    val name = "fullisorec"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullisorec.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullisorec.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullisorec", visitor.fullisorec.Test, ordinary.fullisorec.Demo)
   }
 
   test("equirec") {
-    val name = "equirec"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.equirec.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.equirec.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("equirec", visitor.equirec.Test, ordinary.equirec.Demo)
   }
 
   test("recon") {
-    val name = "recon"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.recon.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.recon.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("recon", visitor.recon.Test, ordinary.recon.Demo)
   }
 
   test("fullrecon") {
-    val name = "fullrecon"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullrecon.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullrecon.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullrecon", visitor.fullrecon.Test, ordinary.fullrecon.Demo)
   }
 
   test("fullpoly") {
-    val name = "fullpoly"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullpoly.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullpoly.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullpoly", visitor.fullpoly.Test, ordinary.fullpoly.Demo)
   }
 
   test("fullomega") {
-    val name = "fullomega"
-    val lines = readLines(name)
-
-    val t1 = benchmark(lines, ordinary.fullomega.Demo.benchmark)
-    val t2 = benchmark(lines, visitor.fullomega.Test.benchmark)
-
-    output(name, t1.value, t2.value)
+    compare("fullomega", visitor.fullomega.Test, ordinary.fullomega.Demo)
   }
 }

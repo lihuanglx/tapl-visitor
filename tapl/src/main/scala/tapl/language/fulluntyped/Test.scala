@@ -4,7 +4,7 @@ import tapl.common._
 
 import scala.io.Source
 
-object Test {
+object Test extends benchmark.Benchmark[Exp[Term]] {
   val parser = new Parse[Term] {}
 
   val name = "fulluntyped"
@@ -38,5 +38,9 @@ object Test {
     val e: Exp[Term] = parser.parse(input).get
     val _ = eval(e)
   }
+
+  override def benchmarkParsing(i: String): Exp[Term] = parser.parse(i).get
+
+  override def benchmarkEval(e: Exp[Term]): Exp[Term] = eval(e)
 
 }

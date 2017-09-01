@@ -2,7 +2,7 @@ package comp.tapl.tyarith
 
 import scala.io.Source
 
-object Demo {
+object Demo extends benchmark.Benchmark[Term] {
 
   import Evaluator._
   import PrettyPrinter._
@@ -38,4 +38,10 @@ object Demo {
     val _ = eval(e)
   }
 
+  override def benchmarkParsing(i: String): Term = Parser.input(i)
+
+  override def benchmarkEval(e: Term): Term = {
+    //val t = Typer.typeof(e)
+    eval(e)
+  }
 }
