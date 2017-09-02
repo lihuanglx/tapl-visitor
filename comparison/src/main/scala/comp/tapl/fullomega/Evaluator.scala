@@ -133,14 +133,14 @@ object Evaluator {
       (nv1, store)
     case TmPred(t1) =>
       val (t2, store1) = eval1(ctx, store, t1)
-      (TmPred(t2), store)
+      (TmPred(t2), store1)
     case TmIsZero(TmZero) =>
       (TmTrue, store)
     case TmIsZero(TmSucc(nv1)) if isNumericVal(ctx, nv1) =>
       (TmFalse, store)
     case TmIsZero(t1) =>
       val (t2, store1) = eval1(ctx, store, t1)
-      (TmIsZero(t2), store)
+      (TmIsZero(t2), store1)
     case t@TmFix(v1) if isVal(ctx, v1) =>
       v1 match {
         case TmAbs(_, _, t12) => (termSubstTop(t, t12), store)
@@ -164,6 +164,9 @@ object Evaluator {
         case TmAbbBind(t1, _) => (t1, store)
         case _ => throw new NoRuleApplies(t)
       }
+    case TmPack(tyT1, t1, tyT2) =>
+      val (t2, store1) = eval1(ctx, store, t1)
+      (TmPack(tyT1, t2, tyT2), store1)
     case _ =>
       throw new NoRuleApplies(t)
   }

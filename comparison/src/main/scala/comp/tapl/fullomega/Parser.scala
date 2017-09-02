@@ -7,7 +7,7 @@ object Parser extends StandardTokenParsers with PackratParsers with ImplicitConv
   lexical.reserved += ("Bool", "true", "false", "if", "then", "else",
     "Nat", "String", "Unit", "Float", "unit", "case", "let", "in", "succ", "pred",
     "as", "of", "fix", "iszero", "letrec", "Star", "All", "Some", "Ref", "ref")
-  lexical.delimiters += ("\\", "(", ")", ";", "/", ".", ":", "->", "=",
+  lexical.delimiters += ("\\", "(", ")", ";", "/", ".", ":", "->", "=", "!", ":=",
     "<", ">", "{", "}", "=>", ",", "|", "*", "[", "]")
 
   // lower-case identifier
