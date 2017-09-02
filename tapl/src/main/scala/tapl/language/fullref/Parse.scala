@@ -12,7 +12,7 @@ trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
 
   lazy val pFullRefE: Parser[Exp2[A, Exp[B]]] = pFullSubE ||| pRefE ||| pVariantE
   lazy val pFullRefT: Parser[Exp[B]] =
-    pFullSubT ||| pRefT ||| pTopT |||
+    pFullSubT ||| pRefT ||| pTopT ||| pVariantT |||
       "Source" ~> pT ^^ TySource[B] |||
       "Sink" ~> pT ^^ TySink[B]
 
