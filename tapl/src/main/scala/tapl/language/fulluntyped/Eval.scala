@@ -19,7 +19,7 @@ trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] with arith.IsVal[A] with un
 
 object IsVal extends IsVal[Term] with Impl[Boolean]
 
-trait Subst[A[-X, Y] <: Term[X, Y]] extends Transform[A] with untyped.Subst[A]
+trait Subst[A[-X, Y] <: Term[X, Y]] extends Transform[A] with untyped.Subst[A] with let.Subst[A]
 
 class SubstImpl(mp: Map[String, Exp[Term]]) extends Subst[Term] with Impl[Exp[Term]] {
   override val m: Map[String, Exp[Term]] = mp
