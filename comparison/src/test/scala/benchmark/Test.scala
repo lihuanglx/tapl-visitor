@@ -1,10 +1,11 @@
-import org.scalatest.FunSuite
-import org.scalameter._
+package benchmark
+
 import comp.{tapl => ordinary}
+import org.scalameter._
+import org.scalatest.FunSuite
 import tapl.{language => visitor}
 
 import scala.io.Source
-import benchmark.Benchmark
 
 class Test extends FunSuite {
 
@@ -25,19 +26,17 @@ class Test extends FunSuite {
       1 to rep foreach { _ => inputs.foreach(process) }
     }
 
-  def output(name: String, t1: Double, t2: Double): Unit = println(f"$name & $t1%.1f & $t2%.1f")
-
   def compare[A, B](name: String, modular: Benchmark[A], nonmod: Benchmark[B]): Unit = {
     val lines: List[String] = readLines(name)
 
-    val parsingRep = 200
+    val parsingRep = 1
     val pt1 = benchmark(lines, modular.benchmarkParsing, parsingRep).value
     val pt2 = benchmark(lines, nonmod.benchmarkParsing, parsingRep).value
 
     val es1 = lines.map(modular.benchmarkParsing)
     val es2 = lines.map(nonmod.benchmarkParsing)
 
-    val evalRep = 100000
+    val evalRep = 1
     val pe1 = benchmark(es1, modular.benchmarkEval, evalRep).value
     val pe2 = benchmark(es2, nonmod.benchmarkEval, evalRep).value
 
