@@ -155,7 +155,7 @@ object Evaluator {
       (TmFalse, store)
     case TmIsZero(t1) =>
       val (t2, store1) = eval1(ctx, store, t1)
-      (TmIsZero(t2), store)
+      (TmIsZero(t2), store1)
     case t@TmFix(v1) if isVal(ctx, v1) =>
       v1 match {
         case TmAbs(_, _, t12) => (termSubstTop(t, t12), store)

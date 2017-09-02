@@ -7,7 +7,7 @@ object Parser extends StandardTokenParsers with PackratParsers with ImplicitConv
   lexical.reserved += ("Bool", "true", "false", "if", "then", "else",
     "Nat", "String", "Unit", "Float", "unit", "case", "let", "in", "succ", "pred",
     "as", "of", "fix", "iszero", "letrec", "_", "Top", "Bot", "Ref", "Source", "Sink", "ref")
-  lexical.delimiters += ("\\", "(", ")", ";", "/", ".", ":", "->", "=", "<", ">", "{", "}", "=>", "==>", ",", "|", "!", ":=")
+  lexical.delimiters += ("\\", "(", ")", ";", "/", ".", ":", "->", "=", "<", ">", "{", "}", "=>", ",", "|", "!", ":=")
 
   // lower-case identifier
   lazy val lcid: PackratParser[String] = ident ^? { case id if id.charAt(0).isLower => id }
@@ -95,7 +95,7 @@ object Parser extends StandardTokenParsers with PackratParsers with ImplicitConv
   lazy val cases: PackratParser[Res[List[(String, String, Term)]]] =
     rep1sep(`case`, "|") ^^ { cs => ctx: Context => cs.map { c => c(ctx) } }
   lazy val `case`: PackratParser[Res[(String, String, Term)]] =
-    ("<" ~> lcid <~ "=") ~ (lcid <~ ">") ~ ("==>" ~> term) ^^ { case l1 ~ l2 ~ t => ctx: Context => (l1, l2, t(ctx.addName(l2))) }
+    ("<" ~> lcid <~ "=") ~ (lcid <~ ">") ~ ("=>" ~> term) ^^ { case l1 ~ l2 ~ t => ctx: Context => (l1, l2, t(ctx.addName(l2))) }
 
   lazy val fields: PackratParser[Res[List[(String, Term)]]] =
     repsep(field, ",") ^^ { fs => ctx: Context => fs.zipWithIndex.map { case (ft, i) => ft(ctx, i + 1) } }
