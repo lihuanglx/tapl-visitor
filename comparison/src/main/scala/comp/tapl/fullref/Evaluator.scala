@@ -148,7 +148,7 @@ object Evaluator {
       (nv1, store)
     case TmPred(t1) =>
       val (t2, store1) = eval1(ctx, store, t1)
-      (TmPred(t2), store)
+      (TmPred(t2), store1)
     case TmIsZero(TmZero) =>
       (TmTrue, store)
     case TmIsZero(TmSucc(nv1)) if isNumericVal(ctx, nv1) =>
