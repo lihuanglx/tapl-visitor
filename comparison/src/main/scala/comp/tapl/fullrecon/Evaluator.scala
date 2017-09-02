@@ -26,7 +26,7 @@ object Evaluator {
     case TmLet(x, v1, t2) if isVal(ctx, v1) =>
       termSubstTop(v1, t2)
     case TmLet(x, v1, t2) =>
-      TmLet(x, eval(ctx, v1), t2)
+      TmLet(x, eval1(ctx, v1), t2)
     case TmIf(TmTrue, t2, t3) =>
       t2
     case TmIf(TmFalse, t2, t3) =>
@@ -49,7 +49,7 @@ object Evaluator {
     case TmIsZero(TmSucc(nv1)) if isNumericVal(ctx, nv1) =>
       TmFalse
     case TmIsZero(t1) =>
-      val t2 = eval(ctx, t1)
+      val t2 = eval1(ctx, t1)
       TmIsZero(t2)
     case TmApp(TmAbs(x, ty, t), v2) if isVal(ctx, v2) =>
       termSubstTop(v2, t)

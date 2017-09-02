@@ -28,7 +28,7 @@ object Evaluator {
     case TmIsZero(TmSucc(nv1)) if isNumericVal(nv1) =>
       TmFalse
     case TmIsZero(t1) =>
-      val t2 = eval(t1)
+      val t2 = eval1(t1)
       TmIsZero(t2)
     case _ => throw new NoRuleApplies(t)
   }

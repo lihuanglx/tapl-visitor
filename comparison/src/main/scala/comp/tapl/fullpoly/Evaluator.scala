@@ -39,7 +39,7 @@ object Evaluator {
     case TmLet(x, v1, t2) if isVal(ctx, v1) =>
       termSubstTop(v1, t2)
     case TmLet(x, v1, t2) =>
-      TmLet(x, eval(ctx, v1), t2)
+      TmLet(x, eval1(ctx, v1), t2)
     case t@TmFix(v1) if isVal(ctx, v1) =>
       v1 match {
         case TmAbs(_, _, t12) => termSubstTop(t, t12)
@@ -95,7 +95,7 @@ object Evaluator {
     case TmIsZero(TmSucc(nv1)) if isNumericVal(ctx, nv1) =>
       TmFalse
     case TmIsZero(t1) =>
-      val t2 = eval(ctx, t1)
+      val t2 = eval1(ctx, t1)
       TmIsZero(t2)
     case TmUnPack(_, _, TmPack(tyT11, v12, _), t2) if isVal(ctx, v12) =>
       tyTermSubstTop(tyT11, termSubstTop(termShift(1, v12), t2))
@@ -105,6 +105,8 @@ object Evaluator {
       tyTermSubstTop(tyT2, t11)
     case TmTApp(t1, tyT2) =>
       TmTApp(eval1(ctx, t1), tyT2)
+    case TmPack(tyT1, t1, tyT2) =>
+      TmPack(tyT1, eval1(ctx, t1), tyT2)
     case _ =>
       throw new NoRuleApplies(t)
   }

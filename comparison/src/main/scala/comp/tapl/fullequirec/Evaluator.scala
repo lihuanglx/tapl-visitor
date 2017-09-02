@@ -83,7 +83,7 @@ object Evaluator {
     case TmIsZero(TmSucc(nv1)) if isNumericVal(ctx, nv1) =>
       TmFalse
     case TmIsZero(t1) =>
-      val t2 = eval(ctx, t1)
+      val t2 = eval1(ctx, t1)
       TmIsZero(t2)
     case TmTag(l, t1, tyT) =>
       TmTag(l, eval1(ctx, t1), tyT)
@@ -99,7 +99,7 @@ object Evaluator {
     case TmLet(x, v1, t2) if isVal(ctx, v1) =>
       termSubstTop(v1, t2)
     case TmLet(x, v1, t2) =>
-      TmLet(x, eval(ctx, v1), t2)
+      TmLet(x, eval1(ctx, v1), t2)
     case t@TmFix(v1) if isVal(ctx, v1) =>
       v1 match {
         case TmAbs(_, _, t12) => termSubstTop(t, t12)
