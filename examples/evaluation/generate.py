@@ -2,10 +2,10 @@
 
 from random import randrange, choice
 import string
-from copy import copy
+from copy import deepcopy
 
-BOOL_TERM, NAT_TERM, TYPE = 0, 1, 2
-SORT = [BOOL_TERM, NAT_TERM, TYPE]
+BOOL_TERM, NAT_TERM, TYPE, U_TERM = 0, 1, 2, 3
+SORT = [BOOL_TERM, NAT_TERM, TYPE, U_TERM]
 
 NAMES = ["Arith", "Untyped", "FullUntyped", "TyArith", "SimpleBool",
          "FullSimple", "Bot", "FullRef", "FullError", "RcdSubBot", "FullSub",
@@ -13,17 +13,21 @@ NAMES = ["Arith", "Untyped", "FullUntyped", "TyArith", "SimpleBool",
          "FullPoly", "FullOmega"]
 
 
+def replace_sorts(temp, depth, g):
+    for i in range(0, len(temp)):
+        if temp[i] in SORT:
+            d = randrange(max(0, depth - 2), depth)
+            temp[i] = g.gen(temp[i], d, g)
+    return '(' + " ".join(temp) + ')'
+
+
 class NonTerminal:
     def __init__(self, template):
         self.template = template
 
     def gen(self, depth, g):
-        temp = copy(self.template)
-        for i in range(0, len(temp)):
-            if temp[i] in SORT:
-                d = randrange(max(0, depth - 2), depth)
-                temp[i] = g.gen(temp[i], d, g)
-        return '(' + " ".join(temp) + ')'
+        temp = deepcopy(self.template)
+        return replace_sorts(temp, depth, g)
 
 
 class Generator:
@@ -32,8 +36,8 @@ class Generator:
         self.non_terminals = non_terminals
 
     def __add__(self, other):
-        terminals = copy(self.terminals)
-        non_terminals = copy(self.non_terminals)
+        terminals = deepcopy(self.terminals)
+        non_terminals = deepcopy(self.non_terminals)
         for i in SORT:
             terminals[i] += other.terminals[i]
             non_terminals[i] += other.non_terminals[i]
@@ -41,7 +45,11 @@ class Generator:
 
     def gen(self, typ, depth, g):
         if depth < 1 or len(self.non_terminals[typ]) == 0:
-            return choice(self.terminals[typ])
+            t = choice(self.terminals[typ])
+            if type(t) == str:
+                return t
+            temp = deepcopy(t)
+            return replace_sorts(temp, 1, g)
         else:
             nt = choice(self.non_terminals[typ])
             return nt.gen(depth, g)
@@ -49,11 +57,24 @@ class Generator:
 
 class EGenerator(Generator):
     def __init__(self, bool_ts, bool_nts, nat_ts, nat_nts):
-        terminals = [bool_ts, nat_ts, []]
+        terminals = [bool_ts, nat_ts, [], []]
         non_terminals = [
             [NonTerminal(x) for x in bool_nts],
             [NonTerminal(x) for x in nat_nts],
+            [],
             []
+        ]
+        super().__init__(terminals, non_terminals)
+
+
+class UGenerator(Generator):
+    def __init__(self, bool_ts, bool_nts, nat_ts, nat_nts, u_ts, u_nts):
+        terminals = [bool_ts, nat_ts, [], u_ts]
+        non_terminals = [
+            [NonTerminal(x) for x in bool_nts],
+            [NonTerminal(x) for x in nat_nts],
+            [],
+            [NonTerminal(x) for x in u_nts]
         ]
         super().__init__(terminals, non_terminals)
 
@@ -63,7 +84,8 @@ def gBool():
     bool_nts = [['if', BOOL_TERM, 'then', BOOL_TERM, 'else', BOOL_TERM]]
     nat_ts = []
     nat_nts = [['if', BOOL_TERM, 'then', NAT_TERM, 'else', NAT_TERM]]
-    return EGenerator(bool_ts, bool_nts, nat_ts, nat_nts)
+    u_nts = [['if', BOOL_TERM, 'then', U_TERM, 'else', U_TERM]]
+    return UGenerator(bool_ts, bool_nts, nat_ts, nat_nts, [], u_nts)
 
 
 def gNat():
@@ -82,22 +104,28 @@ def gArith():
 
 
 def gUntyped():
-    # TODO
     bool_ts = []
     bool_nts = [
-        ['((\\x.\\y.x)', BOOL_TERM, ')', BOOL_TERM],
-        ['((\\x.\\y.y)', BOOL_TERM, ')', BOOL_TERM],
-        ['(', '\\f.((f', BOOL_TERM, ')', BOOL_TERM, ')', ')', '(\\a.\\b.a)'],
-        ['(', '\\f.((f', BOOL_TERM, ')', BOOL_TERM, ')', ')', '(\\a.\\b.b)']
+        ['((\\x.\\y. x)', BOOL_TERM, ')', BOOL_TERM],
+        ['((\\x.\\y. y)', BOOL_TERM, ')', BOOL_TERM],
+        ['(', '\\f.((f', BOOL_TERM, ')', BOOL_TERM, ')', ')', '(\\a.\\b. a)'],
+        ['(', '\\f.((f', BOOL_TERM, ')', BOOL_TERM, ')', ')', '(\\a.\\b. b)']
     ]
     nat_ts = []
     nat_nts = [
-        ['((\\x.\\y.x)', NAT_TERM, ')', BOOL_TERM],
-        ['((\\x.\\y.y)', BOOL_TERM, ')', NAT_TERM],
-        ['(', '\\f.((f', NAT_TERM, ')', NAT_TERM, ')', ')', '(\\a.\\b.a)'],
-        ['(', '\\f.((f', NAT_TERM, ')', NAT_TERM, ')', ')', '(\\a.\\b.b)']
+        ['((\\x.\\y. x)', NAT_TERM, ')', BOOL_TERM],
+        ['((\\x.\\y. y)', BOOL_TERM, ')', NAT_TERM],
+        ['(', '\\f. ((f', NAT_TERM, ')', NAT_TERM, ')', ')', '(\\a.\\b. a)'],
+        ['(', '\\f. ((f', NAT_TERM, ')', NAT_TERM, ')', ')', '(\\a.\\b. b)']
     ]
-    return EGenerator(bool_ts, bool_nts, nat_ts, nat_nts)
+    u_ts = ['(\\x. x)', '(\\y. y)']
+    u_nts = [
+        ['((\\x.\\y. x)', U_TERM, ')', U_TERM],
+        ['(', '\\f. f', U_TERM, ')', U_TERM],
+        [U_TERM, U_TERM],
+        ['(\\k.', U_TERM, 'k)']
+    ]
+    return UGenerator(bool_ts, bool_nts, nat_ts, nat_nts, u_ts, u_nts)
 
 
 def gRecord():
@@ -115,7 +143,11 @@ def gRecord():
         ['{a =', NAT_TERM, ', b =', NAT_TERM, '}.b'],
         ['{a =', NAT_TERM, ', b =', BOOL_TERM, ', c =', NAT_TERM, '}.c']
     ]
-    return EGenerator(bool_ts, bool_nts, nat_ts, nat_nts)
+    u_nts = [
+        ['{x =', U_TERM, ', y =', U_TERM, '}.x'],
+        ['{a =', U_TERM, ', b =', U_TERM, '}.b'],
+    ]
+    return UGenerator(bool_ts, bool_nts, nat_ts, nat_nts, [], u_nts)
 
 
 def gLet():
@@ -127,11 +159,15 @@ def gLet():
     ]
     nat_ts = []
     nat_nts = [
-        ['let u = ', NAT_TERM, 'in', NAT_TERM],
-        ['let u = ', BOOL_TERM, 'in', NAT_TERM],
-        ['let u = ', NAT_TERM, 'in', 'u'],
+        ['let u =', NAT_TERM, 'in', NAT_TERM],
+        ['let u =', BOOL_TERM, 'in', NAT_TERM],
+        ['let u =', NAT_TERM, 'in', 'u'],
     ]
-    return EGenerator(bool_ts, bool_nts, nat_ts, nat_nts)
+    u_nts = [
+        ['let e =', U_TERM, 'in', U_TERM],
+        ['let e =', U_TERM, 'in e'],
+    ]
+    return UGenerator(bool_ts, bool_nts, nat_ts, nat_nts, [], u_nts)
 
 
 def gFullUntyped():
@@ -140,10 +176,11 @@ def gFullUntyped():
 
 class ETGenerator(Generator):
     def __init__(self, bool_ts, bool_nts, nat_ts, nat_nts, ty_ts):
-        terminals = [bool_ts, nat_ts, ty_ts]
+        terminals = [bool_ts, nat_ts, ty_ts, []]
         non_terminals = [
             [NonTerminal(x) for x in bool_nts],
             [NonTerminal(x) for x in nat_nts],
+            [],
             []
         ]
         super().__init__(terminals, non_terminals)
@@ -178,7 +215,14 @@ def gTyped():
         ['(', '\\f:', TYPE, '.((f', NAT_TERM, ')', NAT_TERM, ')', ')', '(\\a:', TYPE, '.\\b:', TYPE, '.a)'],
         ['(', '\\f:', TYPE, '.((f', NAT_TERM, ')', NAT_TERM, ')', ')', '(\\a:', TYPE, '.\\b:', TYPE, '.b)']
     ]
-    return EGenerator(bool_ts, bool_nts, nat_ts, nat_nts)
+    u_ts = [['(\\x:', TYPE, '. x)'], ['(\\y:', TYPE, '. y)']]
+    u_nts = [
+        ['((\\x:', TYPE, '.\\y:', TYPE, '. x)', U_TERM, ')', U_TERM],
+        ['(', '\\f:', TYPE, '. f', U_TERM, ')', U_TERM],
+        [U_TERM, U_TERM],
+        ['(\\k:', TYPE, '.', U_TERM, 'k)']
+    ]
+    return UGenerator(bool_ts, bool_nts, nat_ts, nat_nts, u_ts, u_nts)
 
 
 def gSimpleBool():
@@ -343,46 +387,44 @@ def gFullOmega():
     return gSimple() + gRef() + gPack() + gOmega()
 
 
-def gen_by_id(index, times, depth):
+def gen_by_id(index, times):
+    BN = [BOOL_TERM, NAT_TERM]
+    DP = 6
     gens = [
-        gArith(),
-        gUntyped(),
-        gFullUntyped(),
-        gTyArith(),
-        gSimpleBool(),
-        gFullSimple(),
-        gBot(),
-        gFullRef(),
-        gFullError(),
-        gRcdSubBot(),
-        gFullSub(),
-        gFullEquiRec(),
-        gFullIsoRec(),
-        gEquiRec(),
-        gRecon(),
-        gFullRecon(),
-        gFullPoly(),
-        gFullOmega()
+        (gArith(), BN, 8),
+        (gUntyped(), [U_TERM], DP),
+        (gFullUntyped(), [BOOL_TERM, NAT_TERM, U_TERM], DP),
+        (gTyArith(), BN, 8),
+        (gSimpleBool(), [BOOL_TERM], DP),
+        (gFullSimple(), BN, DP),
+        (gBot(), [U_TERM], DP),
+        (gFullRef(), BN, DP),
+        (gFullError(), BN, DP),
+        (gRcdSubBot(), [U_TERM], DP),
+        (gFullSub(), BN, DP),
+        (gFullEquiRec(), BN, DP),
+        (gFullIsoRec(), BN, DP),
+        (gEquiRec(), [U_TERM], DP),
+        (gRecon(), BN, DP),
+        (gFullRecon(), BN, DP),
+        (gFullPoly(), BN, DP),
+        (gFullOmega(), BN, DP),
     ]
     assert(len(gens) == len(NAMES))
     ret = []
-    g = gens[index]
+    (g, s, depth) = gens[index]
     for i in range(0, times):
-        # TODO
-        t = g.gen(BOOL_TERM, depth, g)
+        t = g.gen(choice(s), depth, g)
         ret.append(t)
     return ret
 
 
 def main():
-    NUM_CASES = 100
-    MAX_DEPTH = 6
+    NUM_CASES = 10000
     for i in range(len(NAMES)):
-        if i == 1 or i == 6 or i == 9 or i == 13:
-            continue
         name = NAMES[i].lower()
         print(name)
-        cs = gen_by_id(i, NUM_CASES, MAX_DEPTH)
+        cs = gen_by_id(i, NUM_CASES)
         cases = [x + '\n' for x in cs]
         # print(cases)
         with open('{}.txt'.format(name), 'w') as f:

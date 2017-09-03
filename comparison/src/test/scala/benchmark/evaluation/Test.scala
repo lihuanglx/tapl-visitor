@@ -34,7 +34,7 @@ class Test extends FunSuite {
     val es1 = lines.map(modular.benchmarkParsing)
     val es2 = lines.map(nonmod.benchmarkParsing)
 
-    val rep = 10
+    val rep = 1
     val pe1 = benchmark(es1, modular.benchmarkEval, rep).value
     val pe2 = benchmark(es2, nonmod.benchmarkEval, rep).value
 
@@ -45,9 +45,9 @@ class Test extends FunSuite {
     compare("arith", visitor.arith.Test, comp.tapl.arith.Demo)
   }
 
-//  test("untyped") {
-//    compare("untyped", visitor.untyped.Test, comp.tapl.untyped.Demo)
-//  }
+  test("untyped") {
+    compare("untyped", visitor.untyped.Test, comp.tapl.untyped.Demo)
+  }
 
   test("fulluntyped") {
     compare("fulluntyped", visitor.fulluntyped.Test, comp.tapl.fulluntyped.Demo)
@@ -65,17 +65,17 @@ class Test extends FunSuite {
     compare("fullsimple", visitor.fullsimple.Test, comp.tapl.fullsimple.Demo)
   }
 
-//  test("bot") {
-//    compare("bot", visitor.bot.Test, comp.tapl.bot.Demo)
-//  }
+  test("bot") {
+    compare("bot", visitor.bot.Test, comp.tapl.bot.Demo)
+  }
 
   test("fullerror") {
     compare("fullerror", visitor.fullerror.Test, comp.tapl.fullerror.Demo)
   }
 
-//  test("rcdsubbot") {
-//    compare("rcdsubbot", visitor.rcdsubbot.Test, comp.tapl.rcdsubbot.Demo)
-//  }
+  test("rcdsubbot") {
+    compare("rcdsubbot", visitor.rcdsubbot.Test, comp.tapl.rcdsubbot.Demo)
+  }
 
   test("fullsub") {
     compare("fullsub", visitor.fullsub.Test, comp.tapl.fullsub.Demo)
@@ -85,10 +85,10 @@ class Test extends FunSuite {
     compare("fullref", visitor.fullref.Test, comp.tapl.fullref.Demo)
   }
 
-//  test("equirec") {
-//    compare("equirec", visitor.equirec.Test, comp.tapl.equirec.Demo)
-//  }
-//
+  test("equirec") {
+    compare("equirec", visitor.equirec.Test, comp.tapl.equirec.Demo)
+  }
+
   test("fullequirec") {
     compare("fullequirec", visitor.fullequirec.Test, comp.tapl.fullequirec.Demo)
   }
@@ -112,4 +112,5 @@ class Test extends FunSuite {
   test("fullomega") {
     compare("fullomega", visitor.fullomega.Test, comp.tapl.fullomega.Demo)
   }
+
 }
