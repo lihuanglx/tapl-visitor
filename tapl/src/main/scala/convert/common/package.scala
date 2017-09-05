@@ -11,11 +11,9 @@ package object common {
 
   type Exp[-A[-R, _]] = SExp[A, A]
 
-  type Exp2[-A[-R, E, -F], +V] = Exp[A[-?, ?, V]]
-
-  type Exp3[-A[-R, E, -T, -K], +V1, +V2] = Exp[A[-?, ?, V1, V2]]
-
   type SExp2[-A[-R, E, -F], -B[-R, E], +V] = SExp[A[-?, ?, V], B[-?, ?]]
+
+  type Exp2[-A[-R, E, -F], +V] = SExp2[A, A[-?, ?, V], V]
 
   type SExp3[-A[-R, E, -T, -K], B[-R, E], +V1, +V2] = SExp[A[-?, ?, V1, V2], B]
 
