@@ -1,6 +1,6 @@
 package play.examples.lang0
 
-import macros.Language
+import gems.Language
 import play.examples.Common._
 
 @Language

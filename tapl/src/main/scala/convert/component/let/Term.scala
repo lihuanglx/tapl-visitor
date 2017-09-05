@@ -1,6 +1,6 @@
 package convert.component.let
 
-import macros.Lang
+import gems.Lang
 import convert.common._
 
 @Lang("let")

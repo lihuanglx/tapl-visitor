@@ -1,7 +1,7 @@
 package tapl.component.extension
 
 import tapl.common._
-import macros.Language
+import gems.Language
 import tapl.component._
 import tapl.language.tyarith
 

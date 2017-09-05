@@ -1,6 +1,6 @@
 package tapl.component.floatstring
 
-import macros.Language
+import gems.Language
 import tapl.common._
 
 @Language

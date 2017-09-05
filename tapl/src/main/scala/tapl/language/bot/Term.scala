@@ -1,6 +1,6 @@
 package tapl.language.bot
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.{top, bottom, typed}
 

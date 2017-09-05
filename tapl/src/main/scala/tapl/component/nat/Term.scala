@@ -1,7 +1,7 @@
 package tapl.component.nat
 
 import tapl.common._
-import macros.Language
+import gems.Language
 
 @Language
 trait Term[-R, E] {

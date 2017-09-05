@@ -1,6 +1,6 @@
 package tapl.language.equirec
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.{rectype, typed}
 

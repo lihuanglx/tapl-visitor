@@ -1,6 +1,6 @@
 package tapl.language.fullequirec
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.{extension, variant}
 import tapl.language.equirec

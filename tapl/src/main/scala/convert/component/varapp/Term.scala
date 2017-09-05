@@ -1,7 +1,7 @@
 package convert.component.varapp
 
 import convert.common._
-import macros.Lang
+import gems.Lang
 
 @Lang("varapp")
 trait Term[-R, E] {

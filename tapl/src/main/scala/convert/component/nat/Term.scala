@@ -1,7 +1,7 @@
 package convert.component.nat
 
 import convert.common._
-import macros.Lang
+import gems.Lang
 
 @Lang("nat")
 trait Term[-R, E] {

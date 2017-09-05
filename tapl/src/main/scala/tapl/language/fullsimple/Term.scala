@@ -1,6 +1,6 @@
 package tapl.language.fullsimple
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.{typed, extension, variant}
 

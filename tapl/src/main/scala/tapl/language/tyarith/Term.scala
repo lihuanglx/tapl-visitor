@@ -1,6 +1,6 @@
 package tapl.language.tyarith
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.{typedbool, typednat}
 

@@ -1,6 +1,6 @@
 package tapl.component.typedbool
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.bool
 

@@ -1,6 +1,6 @@
 package tapl.component.variant
 
-import macros.Language
+import gems.Language
 import tapl.common._
 
 @Language

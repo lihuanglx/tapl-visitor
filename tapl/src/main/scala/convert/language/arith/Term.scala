@@ -2,7 +2,7 @@ package convert.language.arith
 
 import convert.common._
 import convert.component._
-import macros.Lang
+import gems.Lang
 
 @Lang("arith")
 trait Term[-R, E] extends bool.Term[R, E] with nat.Term[R, E]

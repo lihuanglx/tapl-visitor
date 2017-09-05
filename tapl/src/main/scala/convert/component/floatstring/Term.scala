@@ -1,6 +1,6 @@
 package convert.component.floatstring
 
-import macros.Lang
+import gems.Lang
 import convert.common._
 
 @Lang("floatstring")

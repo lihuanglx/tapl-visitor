@@ -1,6 +1,6 @@
 package tapl.language.fullomega
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component._
 

@@ -2,7 +2,7 @@ package convert.language.untyped
 
 import convert.common._
 import convert.component.varapp
-import macros.Lang
+import gems.Lang
 
 @Lang("untyped")
 trait Term[-R, E] extends varapp.Term[R, E] {

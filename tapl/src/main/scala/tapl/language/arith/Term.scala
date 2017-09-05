@@ -2,7 +2,7 @@ package tapl.language.arith
 
 import tapl.common._
 import tapl.component._
-import macros.Language
+import gems.Language
 
 @Language
 trait Term[-R, E] extends bool.Term[R, E] with nat.Term[R, E]

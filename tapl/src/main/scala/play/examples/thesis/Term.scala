@@ -1,7 +1,7 @@
 package play.examples.thesis
 
 import play.examples.Common._
-import macros.Language
+import gems.Language
 
 @Language
 trait Term[-R, E] {

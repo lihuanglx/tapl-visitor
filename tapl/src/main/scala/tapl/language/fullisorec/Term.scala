@@ -1,6 +1,6 @@
 package tapl.language.fullisorec
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.rectype
 import tapl.language.fullsimple

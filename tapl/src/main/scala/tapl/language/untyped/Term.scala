@@ -2,7 +2,7 @@ package tapl.language.untyped
 
 import tapl.common._
 import tapl.component.varapp
-import macros.Language
+import gems.Language
 
 @Language
 trait Term[-R, E] extends varapp.Term[R, E] {

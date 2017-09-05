@@ -1,6 +1,6 @@
 package tapl.language.rcdsubbot
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.typedrecord
 import tapl.language.bot

@@ -1,6 +1,6 @@
 package tapl.language.fullref
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.{variant, ref}
 import tapl.language.fullsub

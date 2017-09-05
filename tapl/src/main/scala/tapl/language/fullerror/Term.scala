@@ -1,6 +1,6 @@
 package tapl.language.fullerror
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.typedbool
 import tapl.language.bot

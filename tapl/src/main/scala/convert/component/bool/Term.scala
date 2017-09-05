@@ -1,7 +1,7 @@
 package convert.component.bool
 
 import convert.common._
-import macros.Lang
+import gems.Lang
 
 @Lang("bool")
 trait Term[-R, E] {

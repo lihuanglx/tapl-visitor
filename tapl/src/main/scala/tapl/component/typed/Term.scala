@@ -1,6 +1,6 @@
 package tapl.component.typed
 
-import macros.Language
+import gems.Language
 import tapl.common._
 import tapl.component.varapp
 
