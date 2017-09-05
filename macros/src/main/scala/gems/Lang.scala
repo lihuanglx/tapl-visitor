@@ -404,12 +404,13 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
           val str = (Seq(expB, pRetTy) ++ ts2.drop(2)).map(_.syntax).mkString(", ")
           (nm2 + s".Query[$str]").parse[Ctor.Call].get
       })
+      val ctor = Ctor.Ref.Name(alg.name.value)
 
       q"""trait ${Type.Name("ConvertChain" + pName)}[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams]
             extends $pConvert with Convert[A, ..$secTypes] {
 
             override def ${convertFn(pName)}[B[-X, Y]](e: $pSExpTy[$pTypeATy, B, ..$pSecTypes]): $pRetTy = {
-              val t = new Term[$expB, $pRetTy, ..$secTypes] with $pInject with QueryThis[$expB, $pRetTy, ..$secTypes] with ..$pQueries {
+              val t = new $ctor[$expB, $pRetTy, ..$secTypes] with $pInject with QueryThis[$expB, $pRetTy, ..$secTypes] with ..$pQueries {
                 override def default: $pRetTy = None
 
                 override def apply(e: $expB): $pRetTy = None
