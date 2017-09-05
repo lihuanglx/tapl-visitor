@@ -115,7 +115,7 @@ comparison = sloc_comparison()
 
 assert(len(languages) == len(comparison) == len(NAMES))
 
-tot_s = tot_components + 89
+tot_s = 0
 tot_s2 = sum(comparison.values())
 
 for name in NAMES:
@@ -123,4 +123,7 @@ for name in NAMES:
     tot_s += s
     s2 = comparison[name]
     print('{} & {} & {} & {:+.1f}\\%\\\\'.format(name, s, s2, (s - s2) / s2 * 100))
+print('{} & {} & {} & {:+.1f}\\%\\\\'.format('total', tot_s, tot_s2, (tot_s - tot_s2) / tot_s2 * 100))
+
+tot_s += tot_components + 90
 print('{} & {} & {} & {:+.1f}\\%\\\\'.format('total', tot_s, tot_s2, (tot_s - tot_s2) / tot_s2 * 100))

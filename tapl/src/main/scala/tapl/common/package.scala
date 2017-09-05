@@ -6,9 +6,11 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 package object common {
 
   // Exp definition
-  trait Exp[-A[-R, _]] {
-    def apply[E](alg: A[Exp[A], E]): E
+  trait SExp[-A[-R, _], -B[-F, _]] {
+    def apply[E](alg: A[SExp[B, B], E]): E
   }
+
+  type Exp[-A[-R, _]] = SExp[A, A]
 
   type Exp2[-A[-R, E, -F], +V] = Exp[A[-?, ?, V]]
 
