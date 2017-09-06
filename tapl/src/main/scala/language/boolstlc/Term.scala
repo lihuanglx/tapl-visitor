@@ -1,8 +1,7 @@
-package gems.boolstlc
+package language
+package boolstlc
 
-import gems.common._
-import gems.Lang
-import gems.{bool, stlc}
+import gems._
 
 @Lang("boolstlc")
 trait Term[-R, E, -T] extends bool.Term[R, E] with stlc.Term[R, E, T]

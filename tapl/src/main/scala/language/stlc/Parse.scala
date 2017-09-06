@@ -1,8 +1,9 @@
-package gems.stlc
+package language
+package stlc
 
-import gems.common._
-import gems.stlc.Term.Factory._
-import gems.stlc.Type.Factory._
+import gems._
+import Term.Factory._
+import Type.Factory._
 
 trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]] extends BaseParser {
   lexical.reserved += ("unit", "Unit")

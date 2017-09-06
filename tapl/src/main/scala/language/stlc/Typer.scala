@@ -1,12 +1,12 @@
-package gems.stlc
+package language
+package stlc
 
-import gems.common._
-import gems.stlc.Type.Factory._
+import gems._
+import Type.Factory._
 
 trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
-  extends Term[Exp2[A, Exp[B]], List[(String, Exp[B])] => Exp[B], Exp[B]] with Type.Convert[B] {
-
-  def tEquals(t1: Exp[B], t2: Exp[B]): Boolean
+  extends Term[Exp2[A, Exp[B]], List[(String, Exp[B])] => Exp[B], Exp[B]]
+    with Type.Convert[B] with ITEquals[B] {
 
   def tmAbs(x: String, t: Exp[B], e: Exp2[A, Exp[B]]): (List[(String, Exp[B])]) => Exp[B] =
     c => {
@@ -22,7 +22,7 @@ trait Typer[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
         def default: Exp[B] = sys.error("Expect a function type")
 
         override def tyArr(u1: Exp[B], u2: Exp[B]): Exp[B] =
-          if (tEquals(u1, t2)) u2 else sys.error("Type mismatch")
+          if (tEquals(u1)(t2)) u2 else sys.error("Type mismatch")
 
         def apply(t: Exp[B]): Exp[B] = sys.error("Impossible")
       })

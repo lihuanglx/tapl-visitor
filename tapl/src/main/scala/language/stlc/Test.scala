@@ -1,6 +1,6 @@
-package gems.stlc
+package language.stlc
 
-import gems.common._
+import gems._
 
 trait Impl[T] extends Term[Exp2[Term, Exp[Type]], T, Exp[Type]] {
   def apply(e: Exp2[Term, Exp[Type]]): T = e(this)
@@ -37,8 +37,7 @@ object Test extends App {
   val typer = new Typer[Term, Type] with Impl[List[(String, Exp[Type])] => Exp[Type]] {
     def convertStlc[B[-R, _]](e: SExp[Type, B]): Option[SExp[Type, B]] = Some(e)
 
-    def tEquals(t1: Exp[Type], t2: Exp[Type]): Boolean =
-      t1(Test.tEquals)(t2)
+    def tEquals: Type[Exp[Type], (Exp[Type]) => Boolean] = Test.tEquals
   }
 
   val parser = new Parse[Term, Type] {}

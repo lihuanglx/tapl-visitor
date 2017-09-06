@@ -1,7 +1,7 @@
-package gems.boolstlc
+package language
+package boolstlc
 
-import gems.common._
-import gems.{bool, stlc}
+import gems._
 
 trait Parse[A[-R, E, -F] <: Term[R, E, F], B[-X, Y] <: Type[X, Y]]
   extends stlc.Parse[A, B] with bool.Parse[A[-?, ?, Exp[B]], B] {

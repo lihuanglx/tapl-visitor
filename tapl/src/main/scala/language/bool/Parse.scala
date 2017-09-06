@@ -1,8 +1,9 @@
-package gems.bool
+package language
+package bool
 
-import gems.common._
-import gems.bool.Term.Factory._
-import gems.bool.Type.Factory._
+import gems._
+import Term.Factory._
+import Type.Factory._
 
 trait Parse[A[-X, Y] <: Term[X, Y], B[-X, Y] <: Type[X, Y]] extends BaseParser {
   lexical.reserved += ("true", "false", "if", "then", "else", "Bool")

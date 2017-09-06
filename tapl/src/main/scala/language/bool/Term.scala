@@ -1,7 +1,6 @@
-package gems.bool
+package language.bool
 
-import gems.common._
-import gems.Lang
+import gems._
 
 @Lang("bool")
 trait Term[-R, E] {

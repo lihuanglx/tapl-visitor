@@ -1,7 +1,6 @@
-package gems.stlc
+package language.stlc
 
-import gems.common._
-import gems.Lang
+import gems._
 
 @Lang("stlc")
 trait Term[-R, E, -F] {

@@ -1,10 +1,11 @@
-package gems.bool
+package language
+package bool
 
-import gems.common._
-import gems.bool.Term._
+import gems._
+import Term.Factory._
 
 trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]]
-  with IIsVal[A] with Convert[A] {
+  with IIsVal[A] with Term.Convert[A] {
 
   def tmTrue(): Exp[A] = TmTrue[A, A]()
 
@@ -28,8 +29,8 @@ trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]]
       TmIf[A, A](apply(e1), e2, e3)
 }
 
-trait IsVal[A[-R, _]] extends Query[Exp[A], Boolean] {
-  def default: Boolean = false
+trait IsVal[A[-R, _]] extends Term.Query[Exp[A], Boolean] {
+  override def default: Boolean = false
 
   override def tmTrue(): Boolean = true
 

@@ -1,10 +1,11 @@
-package gems.stlc
+package language
+package stlc
 
-import gems.common._
-import gems.stlc.Term._
+import gems._
+import Term.Factory._
 
 trait Eval[A[-R, E, -F] <: Term[R, E, F], T] extends Term[Exp2[A, T], Exp2[A, T], T]
-  with IIsVal[A[-?, ?, T]] with ISubst[A[-?, ?, T]] with Convert[A, T] {
+  with IIsVal[A[-?, ?, T]] with ISubst[A[-?, ?, T]] with Term.Convert[A, T] {
 
   def tmVar(x: String): Exp2[A, T] = sys.error("Unbound variable")
 
@@ -15,7 +16,7 @@ trait Eval[A[-R, E, -F] <: Term[R, E, F], T] extends Term[Exp2[A, T], Exp2[A, T]
     if (e1(isVal)) {
       if (e2(isVal)) {
         val c = convertStlc[A[-?, ?, T]](e1).getOrElse(sys.error("Conversion failed"))
-        c(new Query[Exp2[A, T], Exp2[A, T], T] {
+        c(new Term.Query[Exp2[A, T], Exp2[A, T], T] {
           def default: Exp2[A, T] = sys.error("Not a function")
 
           override def tmAbs(x: String, t: T, e: Exp2[A, T]): Exp2[A, T] =
@@ -32,15 +33,15 @@ trait Eval[A[-R, E, -F] <: Term[R, E, F], T] extends Term[Exp2[A, T], Exp2[A, T]
   def tmUnit(): Exp2[A, T] = TmUnit[A, A[-?, ?, T], T]()
 }
 
-trait IsVal[A[-R, E, -F], V] extends Query[Exp2[A, V], Boolean, V] {
-  def default: Boolean = false
+trait IsVal[A[-R, E, -F], V] extends Term.Query[Exp2[A, V], Boolean, V] {
+  override def default: Boolean = false
 
   override def tmUnit(): Boolean = true
 
   override def tmAbs(x: String, t: V, e: Exp2[A, V]) = true
 }
 
-trait Subst[A[-R, E, -F] <: Term[R, E, F], T] extends Transform[A, T] {
+trait Subst[A[-R, E, -F] <: Term[R, E, F], T] extends Term.Transform[A, T] {
   val u: String
   val v: Exp2[A, T]
 

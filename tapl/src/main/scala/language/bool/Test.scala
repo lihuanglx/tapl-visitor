@@ -1,6 +1,6 @@
-package gems.bool
+package language.bool
 
-import gems.common._
+import gems._
 
 trait Impl[T] extends Term[Exp[Term], T] {
   def apply(e: Exp[Term]): T = e(this)
