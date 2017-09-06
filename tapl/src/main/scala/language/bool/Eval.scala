@@ -13,16 +13,15 @@ trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]]
 
   def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[A] =
     if (e1(isVal)) {
-      val c = convertBool(e1).getOrElse(sys.error("Conversion failed"))
+      val c = convertBool(e1).getOrElse(cnvFailed)
       c(new Term[Exp[A], Exp[A]] {
         def tmTrue(): Exp[A] = e2
 
         def tmFalse(): Exp[A] = e3
 
-        def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[A] =
-          sys.error("Not a value")
+        def tmIf(e1: Exp[A], e2: Exp[A], e3: Exp[A]): Exp[A] = runtimeError
 
-        def apply(e: Exp[A]): Exp[A] = sys.error("impossible")
+        def apply(e: Exp[A]): Exp[A] = impossible
       })
     }
     else

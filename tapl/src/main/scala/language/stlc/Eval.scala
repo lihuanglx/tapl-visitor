@@ -7,7 +7,7 @@ import Term.Factory._
 trait Eval[A[-R, E, -F] <: Term[R, E, F], T] extends Term[Exp2[A, T], Exp2[A, T], T]
   with IIsVal[A[-?, ?, T]] with ISubst[A[-?, ?, T]] with Term.Convert[A, T] {
 
-  def tmVar(x: String): Exp2[A, T] = sys.error("Unbound variable")
+  def tmVar(x: String): Exp2[A, T] = runtimeError
 
   def tmAbs(x: String, t: T, e: Exp2[A, T]): Exp2[A, T] =
     TmAbs[A, A[-?, ?, T], T](x, t, e)
@@ -15,14 +15,14 @@ trait Eval[A[-R, E, -F] <: Term[R, E, F], T] extends Term[Exp2[A, T], Exp2[A, T]
   def tmApp(e1: Exp2[A, T], e2: Exp2[A, T]): Exp2[A, T] =
     if (e1(isVal)) {
       if (e2(isVal)) {
-        val c = convertStlc[A[-?, ?, T]](e1).getOrElse(sys.error("Conversion failed"))
+        val c = convertStlc[A[-?, ?, T]](e1).getOrElse(cnvFailed)
         c(new Term.Query[Exp2[A, T], Exp2[A, T], T] {
-          def default: Exp2[A, T] = sys.error("Not a function")
+          def default: Exp2[A, T] = runtimeError
 
           override def tmAbs(x: String, t: T, e: Exp2[A, T]): Exp2[A, T] =
             e(subst(x, e2))
 
-          override def apply(e: Exp2[A, T]): Exp2[A, T] = sys.error("Impossible")
+          override def apply(e: Exp2[A, T]): Exp2[A, T] = impossible
         })
       }
       else

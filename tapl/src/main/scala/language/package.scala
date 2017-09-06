@@ -24,4 +24,12 @@ package object language {
     def tEquals: A[Exp[A], Exp[A] => Boolean]
   }
 
+  def impossible: Nothing = sys.error("Impossible")
+
+  def cnvFailed: Nothing = sys.error("Conversion failed")
+
+  def typeError: Nothing = sys.error("Type error")
+
+  def runtimeError: Nothing = sys.error("Runtime error")
+
 }
