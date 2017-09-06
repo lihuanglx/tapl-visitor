@@ -431,7 +431,7 @@ class Maker(cname: String, alg: Defn.Trait, debug: Boolean) {
         val t = ("A" +: secTParams.map(_.syntax)).mkString(", ")
         s"ConvertChain$n[$t]".parse[Ctor.Call].get
       })
-      val allConvertChains = q"trait AllConvertChains[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] extends ..$chains"
+      val allConvertChains = q"trait AllChains[A[..$tParamsForA] <: ${alg.name}[..$typesForA], ..$secTParams] extends ..$chains"
 
       converts :+ allConvertChains
     }

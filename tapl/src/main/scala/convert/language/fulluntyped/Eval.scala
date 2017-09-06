@@ -6,7 +6,7 @@ import convert.language.{arith, untyped}
 import convert.language.fulluntyped.Term._
 
 trait Eval[A[-X, Y] <: Term[X, Y]] extends Term[Exp[A], Exp[A]] with arith.Eval[A] with untyped.Eval[A]
-  with floatstring.Eval[A] with let.Eval[A] with record.Eval[A] with Term.AllConvertChains[A]
+  with floatstring.Eval[A] with let.Eval[A] with record.Eval[A] with Term.AllChains[A]
 
 object Eval extends Eval[Term] with Impl[Exp[Term]] {
   override val isVal: Term[Exp[Term], Boolean] = IsVal
