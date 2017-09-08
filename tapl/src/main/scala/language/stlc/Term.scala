@@ -3,12 +3,12 @@ package language.stlc
 import gems._
 
 @Lang("stlc")
-trait Term[-R, E, -F] {
+trait Term[-R, E, -T] {
   def tmVar(x: String): E
 
   def tmApp(e1: R, e2: R): E
 
-  def tmAbs(x: String, t: F, e: R): E
+  def tmAbs(x: String, t: T, e: R): E
 
   def tmUnit(): E
 
@@ -16,10 +16,10 @@ trait Term[-R, E, -F] {
 }
 
 @Lang("stlc")
-trait Type[-F, T] {
-  def tyArr(t1: F, t2: F): T
+trait Type[-R, E] {
+  def tyArr(t1: R, t2: R): E
 
-  def tyUnit(): T
+  def tyUnit(): E
 
-  def apply(t: F): T
+  def apply(t: R): E
 }
